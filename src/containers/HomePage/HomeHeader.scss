@@ -1,0 +1,319 @@
+.home-header-container {
+    height          : 60px;
+    width           : 100%;
+    padding         : 0 170px;
+    position        : fixed;
+    background-color: #ffffff;
+    z-index         : 2;
+    height          : auto;
+    box-shadow      : rgba(0, 0, 0, 0.1) 0px 4px 12px;
+
+
+    .home-header-content {
+        width  : 100%;
+        height : 100%;
+        display: flex;
+        padding: 5px 0;
+
+        .left-content {
+            width      : 25%;
+            display    : flex;
+            align-items: center;
+
+            .header-logo {
+                background       : url(../../assets/careFlow_logo.png);
+                background-repeat: no-repeat;
+                background-size  : contain;
+                height           : 66px;
+                width            : 350px;
+                margin           : 0 10px;
+                cursor           : pointer;
+            }
+
+            i {
+                font-size: 25px;
+                color    : grey;
+                cursor   : pointer;
+            }
+        }
+
+        .center-content {
+            width          : 50%;
+            display        : flex;
+            align-items    : center;
+            justify-content: space-between;
+
+            .child-content {
+                :hover {
+                    // color : #0e87f8;
+                    cursor: pointer;
+                }
+
+                .subs-title {
+                    font-weight: 400;
+                    font-size  : 12px;
+                }
+            }
+        }
+
+        // .right-content {
+        //     width          : 25%;
+        //     display        : flex;
+        //     align-items    : center;
+        //     justify-content: flex-end;
+
+        //     .btn-login,
+        //     .btn-register {
+        //         padding-right   : 50px;
+        //         padding         : 6px 12px;
+        //         margin-left     : 10px;
+        //         cursor          : pointer;
+        //         background-color: #f0f0f0;
+        //         border-radius   : 4px;
+        //         transition      : 0.3s;
+
+        //         &:hover {
+        //             background-color: #ddd;
+        //         }
+        //     }
+
+        //     // .support {
+        //     //     display      : flex;
+        //     //     align-items  : center;
+        //     //     padding-right: 50px;
+        //     //     cursor       : pointer;
+
+        //     //     i {
+        //     //         color: #0056f7;
+        //     //     }
+        //     // }
+
+        //     .language-vi {
+        //         margin-right: 10px;
+
+        //         span {
+        //             cursor: pointer;
+        //         }
+
+        //         &.active {
+        //             color           : #fdf90d;
+        //             width           : 30px;
+        //             height          : 30px;
+        //             background-color: #f73a00;
+        //             border-radius   : 50%;
+        //             text-align      : center;
+        //             line-height     : 2.2;
+        //         }
+        //     }
+
+        //     .language-en {
+
+        //         span {
+        //             cursor: pointer;
+        //         }
+
+        //         &.active {
+        //             color           : #ffffff;
+        //             width           : 30px;
+        //             height          : 30px;
+        //             background-color: #004ef7;
+        //             border-radius   : 50%;
+        //             text-align      : center;
+        //             line-height     : 2.2;
+        //         }
+        //     }
+        // }
+        .right-content {
+            width          : 25%;
+            display        : flex;
+            align-items    : center;
+            justify-content: flex-end;
+            gap            : 12px;
+
+            .sign-in-out-content {
+                display    : flex;
+                align-items: center;
+                gap        : 10px;
+
+                span {
+                    font-size  : 14px;
+                    color      : #333;
+                    font-weight: 500;
+                }
+
+                .btn-login,
+                .btn-register {
+                    padding         : 6px 12px;
+                    background-color: #f0f0f0;
+                    border-radius   : 6px;
+                    cursor          : pointer;
+                    font-size       : 14px;
+                    font-weight     : 500;
+                    transition      : background-color 0.3s ease;
+
+                    &:hover {
+                        background-color: #ddd;
+                    }
+                }
+
+                .btn-logout {
+                    color        : #0c80e6;
+                    border-radius: 6px;
+                    font-size    : 14px;
+                    cursor       : pointer;
+                    transition   : background-color 0.3s ease;
+
+                    &:hover {
+                        background-color: #eee9e9;
+                    }
+
+                    i {
+                        font-size: 16px;
+                    }
+                }
+            }
+
+            .language-content {
+                display    : flex;
+                align-items: center;
+                gap        : 8px;
+
+                .language-vi,
+                .language-en {
+                    span {
+                        display         : inline-block;
+                        width           : 30px;
+                        height          : 30px;
+                        line-height     : 30px;
+                        text-align      : center;
+                        border-radius   : 50%;
+                        background-color: #eee;
+                        color           : #333;
+                        cursor          : pointer;
+                        transition      : 0.3s;
+                    }
+
+                    &.active span {
+                        color: #fff;
+                    }
+                }
+
+                .language-vi.active span {
+                    background-color: #f73a00;
+                    color           : #fdf90d;
+                }
+
+                .language-en.active span {
+                    background-color: #004ef7;
+                }
+            }
+        }
+    }
+}
+
+.home-header-banner {
+    // background            : url(../../assets/careFlow_bg.png);
+    background         : url(../../assets/images/banner_homepage.jpg);
+    background-repeat  : no-repeat;
+    background-size    : contain;
+    background-position: center;
+    height             : 650px;
+    display            : flex;
+    flex-direction     : column;
+
+
+    .content-up {
+        height          : 65%;
+        padding-top     : 80px;
+        background-image: linear-gradient(rgba(126, 126, 126, 0.25), rgba(255, 255, 255, 0.1));
+
+        .title1 {
+            color        : #003553;
+            text-align   : center;
+            font-size    : 30px;
+            font-weight  : 600;
+            text-shadow  : 1px 1px 1px #333;
+            margin-top   : 30px;
+            margin-bottom: 5px;
+        }
+
+        .title2 {
+            color        : #003553;
+            text-align   : center;
+            font-size    : 30px;
+            font-weight  : 600;
+            text-shadow  : 1px 1px 1px #333;
+            margin-bottom: 15px;
+        }
+
+        .search {
+            width          : fit-content;
+            display        : flex;
+            justify-content: center;
+            align-items    : center;
+            margin         : 0 auto;
+            padding        : 10px;
+            border-radius  : 5px;
+            background     : #fbfaf9;
+
+            i {
+                margin: 0 5px;
+            }
+
+            input {
+                height    : 30px;
+                width     : 660px;
+                background: transparent;
+                border    : none;
+                outline   : none;
+            }
+        }
+    }
+
+    .content-down {
+        height          : 35%;
+        display         : flex;
+        justify-content : center;
+        align-items     : flex-end;
+        padding-bottom  : 35px;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 1));
+        ;
+
+        .options {
+            text-align: center;
+            display   : flex;
+            gap       : 60px;
+
+            .option-child {
+                width: 100px;
+
+                .icon-child {
+                    width        : 50px;
+                    height       : 50px;
+                    background   : #ffffff;
+                    padding      : 10px;
+                    border-radius: 50%;
+                    text-align   : center;
+                    margin       : 0 auto;
+                    box-shadow   : rgba(199, 197, 197, 0.25) 0px 54px 55px, rgba(141, 139, 139, 0.12) 0px -12px 30px, rgba(126, 124, 124, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
+                    i {
+                        font-size: 30px;
+                        color    : #49bce2;
+                    }
+
+                }
+
+                .text-child {
+                    font-size  : 16px;
+                    font-weight: 600;
+
+                    &:hover {
+                        color : #49bce2;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+}

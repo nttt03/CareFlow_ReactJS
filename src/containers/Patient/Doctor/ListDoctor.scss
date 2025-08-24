@@ -1,0 +1,63 @@
+.list-doctor-container {
+    margin-top      : 80px;
+    min-height      : 570px;
+    padding         : 20px 0;
+    background-color: #ffffff; // Nền sáng giống hình
+
+    .list-doctor-content {
+        max-width: 1200px;
+        margin   : 0 auto;
+        padding  : 0 15px;
+
+        .section-title {
+            font-size    : 24px;
+            font-weight  : bold;
+            margin-bottom: 20px;
+            color        : #2996f0;
+        }
+
+        .doctor-item {
+            display      : flex;
+            align-items  : center;
+            padding      : 15px 0;
+            border-bottom: 1px solid #ddd;
+            cursor       : pointer;
+            transition   : background-color 0.3s;
+
+            &:hover {
+                background-color: #e8f0fe;
+            }
+
+            .doctor-image {
+                width              : 100px;
+                height             : 100px;
+                border-radius      : 50%;
+                background-size    : cover;
+                background-position: center;
+                margin-right       : 15px;
+                border             : 1px solid #ddd;
+            }
+
+            .doctor-info {
+                flex: 1;
+
+                .doctor-name {
+                    font-size    : 16px;
+                    font-weight  : 600;
+                    color        : #333;
+                    margin-bottom: 5px;
+                }
+
+                .doctor-specialty {
+                    font-size: 14px;
+                    color    : #666;
+                }
+            }
+        }
+
+        // Ẩn đường kẻ của mục cuối cùng
+        .doctor-item:last-child {
+            border-bottom: none;
+        }
+    }
+}

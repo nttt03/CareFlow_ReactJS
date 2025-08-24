@@ -1,0 +1,112 @@
+.login-background {
+    height       : 100vh;
+    // background: linear-gradient(135deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
+
+    .login-container {
+        position        : absolute;
+        width           : 400px;
+        height          : 450px;
+        margin          : auto;
+        top             : 0;
+        bottom          : 0;
+        left            : 0;
+        right           : 0;
+        border-radius   : 15px;
+        background-color: white;
+        border          : 1px solid #cccaca;
+    }
+
+    .login-content {
+        padding: 10px;
+
+        .text-login {
+            text-align : center;
+            font-weight: 600;
+            font-size  : 24px;
+            padding-top: 10px;
+        }
+
+        .login-input {
+            margin: 8px 0;
+
+            .custom-input-password {
+                position: relative;
+
+                i {
+                    position: absolute;
+                    right   : 10px;
+                    top     : 10px;
+                    cursor  : pointer;
+                }
+            }
+        }
+
+        .btn-login {
+            color           : white;
+            width           : 100%;
+            margin          : 10px 0;
+            height          : 35px;
+            border-radius   : 5px;
+            outline         : none;
+            border          : none;
+            background-color: rgb(28, 142, 242);
+
+            &:hover {
+                opacity: 0.9;
+            }
+
+        }
+
+        .forgot-password {
+            font-size : 14px;
+            color     : #555;
+            text-align: center;
+            margin-top: 10px;
+            cursor    : pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+
+            &:hover {
+                color          : #22c1c3;
+                text-decoration: underline;
+            }
+
+            &:active {
+                transform: scale(0.95);
+            }
+        }
+
+        .social-login {
+            display        : flex;
+            justify-content: center;
+            align-items    : center;
+            margin-top     : 10px;
+
+            .google {
+                font-size       : 28px;
+                color           : white;
+                width           : 45px;
+                height          : 45px;
+                border-radius   : 50%;
+                background-color: rgb(251, 29, 29);
+                display         : flex;
+                align-items     : center;
+                justify-content : center;
+                margin-right    : 10px;
+                cursor          : pointer;
+            }
+
+            .facebook {
+                font-size       : 28px;
+                color           : white;
+                width           : 45px;
+                height          : 45px;
+                border-radius   : 50%;
+                background-color: rgb(34, 116, 240);
+                display         : flex;
+                align-items     : center;
+                justify-content : center;
+                cursor          : pointer;
+            }
+        }
+    }
+}

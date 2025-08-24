@@ -1,0 +1,61 @@
+.manage-doctor-container {
+    padding: 15px;
+
+    .manage-doctor-title {
+        margin        : 15px 0;
+        text-align    : center;
+        font-size     : 22px;
+        font-weight   : 600;
+        text-transform: uppercase;
+    }
+
+    .more-infor {
+        display: flex;
+        gap    : 15px;
+
+        .content-left {
+            width: 33%;
+        }
+
+        .content-right {
+            width: 67%;
+        }
+    }
+
+    .save-content-doctor {
+        display         : block;
+        margin-top      : 15px;
+        margin-left     : auto;
+        /* Đẩy nút về bên phải */
+        padding         : 10px 20px;
+        background-color: #f1a206;
+        color           : rgb(255, 255, 255);
+        border          : none;
+        border-radius   : 5px;
+        cursor          : pointer;
+        font-size       : 16px;
+
+        &:hover {
+            background-color: #ffaa00;
+        }
+    }
+
+    .create-content-doctor {
+        display         : block;
+        margin-top      : 15px;
+        margin-left     : auto;
+        /* Đẩy nút về bên phải */
+        padding         : 10px 20px;
+        background-color: #0b66c7;
+        color           : white;
+        border          : none;
+        border-radius   : 5px;
+        cursor          : pointer;
+        font-size       : 16px;
+
+        &:hover {
+            background-color: #007bff;
+        }
+    }
+
+}

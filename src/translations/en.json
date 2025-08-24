@@ -1,0 +1,165 @@
+{
+    "homeheader": {
+        "speciality": "Medical speciality",
+        "search-doctor": "Find a doctor by speciality",
+        "health-facility": "Health facilities",
+        "select-room": "Choose hospital clinic",
+        "doctor": "Doctor",
+        "select-doctor": "Choose a good doctor",
+        "package": "Appointment schedule",
+        "check-health": "Check appointment schedule",
+        "support": "Support",
+        "welcome": "Welcome",
+        "list-specialty": "All Specialties",
+        "list-clinic": "All Clinics",
+        "list-doctor": "Outstanding Doctor"
+    },
+    "homefooter": {
+        "company": "CareFlow Company",
+        "address": "📍 123 Technology Street, District 1, HCMC, Vietnam",
+        "phone": "📞 0123-456-789 (8AM - 8PM)",
+        "email": "📧 support@careflow.vn (7AM - 6PM)",
+        "policy": "Policy",
+        "policy_contact": "Partnership Contact",
+        "policy_digital": "Digital Transformation",
+        "policy_security": "Privacy Policy",
+        "policy_terms": "Terms of Service",
+        "partner": "Content Sponsors",
+        "partner_1": "Hello Doctor - \"Mental Health\"",
+        "partner_2": "Bernard Medical System - \"Specialized Medicine\"",
+        "partner_3": "Doctor Check - \"General Health\"",
+        "connect": "Connect with us"
+    },
+    "banner": {
+        "title1": "MEDICAL FOUNDATION",
+        "title2": "COMPREHENSIVE HEALTH CARE",
+        "placeholder": "Find a specialist",
+        "child1": "Specialized examination",
+        "child2": "Remote examination",
+        "child3": "General examination",
+        "child4": "Medical tests",
+        "child5": "Mental health",
+        "child6": "Dental examination"
+    },
+    "menu": {
+        "admin": {
+            "manage-user": "User system",
+            "manage-doctor": "Manage doctor",
+            "manage-admin": "Manage admin",
+            "crud": "CRUD user",
+            "crud-redux": "CRUD user redux",
+            "clinic": "Clinic",
+            "manage-clinic": "Manage clinic",
+            "specialty": "Specialty",
+            "manage-specialty": "Manage speciality",
+            "handbook": "Handbook",
+            "manage-handbook": "Manage handbook"
+        },
+        "doctor": {
+            "manage-schedule": "Manage Doctor's schedule",
+            "manage-patient": "Manage Doctor's patient"
+        }
+    },
+    "manage-user": {
+        "add": "Add new user",
+        "email": "Email",
+        "password": "Password",
+        "first-name": "First Name",
+        "last-name": "Last Name",
+        "phone-number": "Phone Number",
+        "address": "Address",
+        "gender": "Gender",
+        "position": "Position",
+        "role": "Role",
+        "image": "Avatar",
+        "save": "Save user",
+        "edit": "Save change"
+    },
+    "homepage": {
+        "outstanding-doctor": "Doctor featured last week",
+        "specialty-popular": "Popular specialty",
+        "medical-facility-outstanding": "Medical facility outstanding",
+        "handbook": "Handbook",
+        "about": "What the media says about Care Flow",
+        "more-infor": "See more",
+        "text-about": "CareFlow is the leading online medical appointment platform in Vietnam, connecting patients with reputable doctors, clinics and hospitals nationwide. With a smart appointment system, CareFlow helps users easily choose doctors according to their specialty, location and suitable time, helping to save time and improve the medical examination and treatment experience."
+    },
+    "manage-schedule": {
+        "title": "Manage Doctor's schedule",
+        "choose-doctor": "Choose Doctor",
+        "choose-date": "Choose Date",
+        "save": "Save infor"
+    },
+    "patient": {
+        "detail-doctor": {
+            "schedule": "Schedule",
+            "no-schedule": "No appointments available at this time, please choose another time!",
+            "choose": "Choose ",
+            "book-free": " and book (free)"
+        },
+        "extra-infor-doctor": {
+            "text-address": "Examination address: ",
+            "price": "Examination price: ",
+            "detail": "See details",
+            "payment": "Patients can pay the cost by: ",
+            "hide": "Hide price"
+        },
+        "booking-modal": {
+            "title": "Medical appointment information",
+            "fullName": "Full name",
+            "phoneNumber": "Phone number",
+            "email": "Email",
+            "address": "Address",
+            "birthday": "Birthday",
+            "gender": "Gender",
+            "reason": "Reason",
+            "confirm": "Booking",
+            "cancel": "Cancel",
+            "placeholder": "Select gender...",
+            "price": "Price: ",
+            "free": "Free booking"
+        },
+        "appointment-patient": {
+            "new-appointment": "New appointment",
+            "done-appointment": "History",
+            "title": "Appointment information",
+            "title-none": "You currently do not have any appointments scheduled on this page!",
+            "date": "Date:",
+            "time": "Time:",
+            "address": "Address:",
+            "price": "Price:",
+            "doctor": "Doctor:"
+        }
+    },
+    "admin": {
+        "manage-doctor": {
+            "title": "Create additional doctor information",
+            "choose-doctor": "Select doctor",
+            "choose-doctor-placeholder": "Select...",
+            "intro": "Introductory information",
+            "price": "Price",
+            "payment": "Payment method",
+            "province": "Province/City",
+            "clinic-name": "Clinic name",
+            "clinic-address": "Clinic address",
+            "note": "Note",
+            "specialty": "Select Specialty",
+            "clinic": "Select Clinic",
+            "add": "Create infor",
+            "save": "Save infor"
+        },
+        "manage-specialty": {
+            "title": "Manage specialty",
+            "name-specialty": "Name specialty",
+            "img-specialty": "Image specialty",
+            "save": "Save"
+        },
+        "manage-clinic": {
+            "title": "Manage clinic",
+            "name-clinic": "Name clinic",
+            "img-clinic": "Image clinic",
+            "address": "Address clinic",
+            "save": "Save"
+        }
+    }
+}

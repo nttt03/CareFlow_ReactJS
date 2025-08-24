@@ -1,0 +1,98 @@
+.appointment-schedule-container {
+    margin-top         : 80px;
+    min-height         : 570px;
+    padding            : 30px 0 8px 0;
+    // background-color: #ccc;
+
+    .appointment-schedule-navigation {
+        .new-appointment {
+            border : none;
+            outline: none;
+            padding: 8px 20px;
+
+            &.actived {
+                background-color: #06a7d3;
+                color           : #ffffff;
+            }
+        }
+
+        .old-appointment {
+            border : none;
+            outline: none;
+            padding: 8px 20px;
+        }
+    }
+
+    .appointment-schedule-content {
+        background-color: #f9f6f6;
+        background-image: url(../../../assets/background.png);
+        ;
+        width     : 100%;
+        min-height: 480px;
+
+        .empty-image {
+            display        : flex;
+            justify-content: center;
+            align-items    : center;
+
+            img {
+                width: 300px;
+
+            }
+        }
+
+        .distance {
+            height: 15px;
+        }
+
+        .status {
+            margin          : 0 auto;
+            max-width       : 250px;
+            border-radius   : 3px;
+            background-color: #ecba07;
+            color           : aliceblue;
+            font-size       : 16px;
+            text-align      : center;
+            padding         : 10px 20px;
+        }
+
+        .status-confirmed {
+            color           : #ffffff;
+            background-color: #28a745;
+        }
+
+        .status-done {
+            color           : #ffffff;
+            background-color: #0e79d7;
+        }
+
+        .appointment-details {
+            margin       : 30px auto;
+            padding      : 20px;
+            max-width    : 600px;
+            background   : #ffffff;
+            box-shadow   : 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+
+            .appointment-item {
+                display        : flex;
+                justify-content: space-between;
+                padding        : 10px 0;
+                border-bottom  : 1px solid #ddd;
+
+                .label {
+                    font-weight: 600;
+                    color      : #333;
+                }
+
+                .value {
+                    color: #555;
+                }
+
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+        }
+    }
+}

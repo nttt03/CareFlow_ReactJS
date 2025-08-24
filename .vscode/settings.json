@@ -1,0 +1,7 @@
+{
+    "[scss]": {
+        "editor.formatOnPaste": true,
+        "editor.defaultFormatter": "MikeBovenlander.formate"
+    },
+    "editor.formatOnSave": true
+}
