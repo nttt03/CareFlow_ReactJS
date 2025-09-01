@@ -1,0 +1,187 @@
+@import "../../styles/common.scss";
+
+.auth-background {
+    min-height     : 100vh;
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+    background     : url(../../assets/images/bgLogin.jpg) no-repeat center center/cover;
+    position       : relative;
+
+    .auth-container {
+        position        : relative;
+        width           : 400px;
+        height          : auto;
+        border-radius   : 12px;
+        background-color: white;
+        padding         : 20px 25px;
+        box-shadow      : 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        &.register-container {
+            max-width: 600px;
+            width    : 100%;
+        }
+
+        .auth-content {
+            .text-login {
+                text-align   : center;
+                font-weight  : 600;
+                font-size    : 24px;
+                padding-top  : 10px;
+                color        : $colormain;
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+
+                &.login-input {
+                    label {
+                        font-weight  : 500;
+                        display      : block;
+                        margin-bottom: 5px;
+                    }
+
+                    .form-control {
+                        border-radius: 5px;
+                        padding      : 10px;
+                        border       : 1px solid #ced4da;
+
+                        &:focus {
+                            border-color: $colormain;
+                            box-shadow  : 0 0 5px rgba($colormain, 0.5);
+                        }
+                    }
+
+                    .form-select {
+                        border-radius: 5px;
+                        padding      : 10px;
+                        border       : 1px solid #ced4da;
+
+                        &:focus {
+                            border-color: $colormain;
+                            box-shadow  : 0 0 5px rgba($colormain, 0.5);
+                        }
+                    }
+
+                    // Input mật khẩu với icon
+                    .custom-input-password {
+                        position: relative;
+
+                        input {
+                            width        : 100%;
+                            padding-right: 40px;
+                        }
+
+                        span {
+                            position : absolute;
+                            right    : 10px;
+                            top      : 50%;
+                            transform: translateY(-50%);
+                            cursor   : pointer;
+                            color    : #6c757d;
+
+                            &:hover {
+                                color: #495057;
+                            }
+
+                            i {
+                                font-size: 18px;
+                            }
+                        }
+                    }
+
+                    .input-password {
+                        position: relative;
+
+                        input {
+                            width        : 100%;
+                            padding-right: 40px;
+                        }
+
+                        span {
+                            position : absolute;
+                            right    : 10px;
+                            top      : 50%;
+                            transform: translateY(-50%);
+                            cursor   : pointer;
+                            color    : #6c757d;
+
+                            &:hover {
+                                color: #495057;
+                            }
+
+                            i {
+                                font-size: 18px;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Button chung
+            .btn-login,
+            .btn-register {
+                width        : 100%;
+                padding      : 10px;
+                font-weight  : 500;
+                border-radius: 5px;
+                border       : none;
+                outline      : none;
+                transition   : opacity 0.3s ease;
+
+                &:hover {
+                    opacity: 0.9;
+                }
+            }
+
+            .btn-login {
+                background-color: $colormain;
+                color           : white;
+
+                &:hover {
+                    background-color: darken($colormain, 10%);
+                }
+            }
+
+            .btn-register {
+                background-color: $colormain;
+                color           : white;
+
+                &:hover {
+                    background-color: darken($colormain, 10%);
+                }
+            }
+
+            .forgot-password {
+                font-size : 14px;
+                color     : #555;
+                text-align: center;
+                margin-top: 10px;
+                cursor    : pointer;
+                transition: color 0.3s ease, transform 0.2s ease;
+
+                a,
+                &.hover-effect {
+                    color          : #dc3545;
+                    text-decoration: underline;
+
+                    &:hover {
+                        color: #bb2d3b;
+                    }
+
+                    &:active {
+                        transform: scale(0.95);
+                    }
+                }
+            }
+
+            // Thông báo lỗi
+            .err-message {
+                color        : red;
+                margin-bottom: 10px;
+            }
+
+        }
+    }
+}

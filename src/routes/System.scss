@@ -1,0 +1,23 @@
+@import "../styles/common.scss";
+
+.body-container {
+    display: flex;
+
+    .header-container {
+        z-index         : 99;
+        display         : flex;
+        flex-direction  : column;
+        /* Change to column layout */
+        background-color: $colormain;
+        color           : $common-text-color;
+        height          : 100vh;
+        /* Set a height for the full viewport */
+        width           : 200px;
+        /* Set a width for the container */
+
+    }
+
+    .system-container {
+        width: 100%;
+    }
+}

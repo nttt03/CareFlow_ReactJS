@@ -1,9 +1,10 @@
 @import "../styles/common.scss";
 
 .navigator-menu {
-    display: flex;
-    margin : 0;
-    padding: 0;
+    display       : flex;
+    flex-direction: column;
+    margin        : 0;
+    padding       : 0;
 
     &.list-unstyled,
     .list-unstyled {
@@ -11,6 +12,8 @@
     }
 
     .menu-group {
+        width: 200px;
+
         &:hover {
             cursor          : pointer;
             background-color: darken($colormain, 5);
@@ -19,10 +22,10 @@
         .menu-group-name {
             line-height : 40px;
             padding     : 0 15px;
-            border-right: 1px solid $border;
+            border-right: 0px solid $border;
 
             &:first-child {
-                border-left: 1px solid $border;
+                border-left: 2px solid $border;
             }
         }
 
@@ -34,6 +37,8 @@
             color             : $text-in-light;
             position          : absolute;
             padding           : 0;
+            width             : 230px;
+            margin-left       : 3%;
 
             .menu {
                 width         : 100%;
@@ -45,7 +50,7 @@
                 &.active {
                     a {
                         font-weight: 500;
-                        color      : #ec9209;
+                        color      : $colormain;
                     }
 
                     background-color: #ededed;
