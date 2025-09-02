@@ -52,6 +52,12 @@ class HomeHeader extends Component {
     }
   };
 
+  handleViewHome = () => {
+    if (this.props.history) {
+      this.props.history.push(`/home`);
+    }
+  };
+
   toggleMenu = () => {
     this.setState((prevState) => ({
       mobileMenu: !prevState.mobileMenu,
@@ -59,6 +65,7 @@ class HomeHeader extends Component {
   };
 
   render() {
+    const currentPath = this.props.location.pathname;
     const { intl } = this.props;
     const placeholderText = intl.formatMessage({ id: "banner.placeholder" });
     // console.log('check: ', this.props)
@@ -66,6 +73,7 @@ class HomeHeader extends Component {
     // language này đc lấy từ trong redux ra (trong mapStateToProps bên dưới) chứ ko phải truyền từ cha sang con
     let language = this.props.language;
     const { userInfo, processLogout, isLoggedIn } = this.props;
+    console.log("data userInfo: ", userInfo);
     return (
       <React.Fragment>
         <div className="home-header-container">
@@ -81,12 +89,26 @@ class HomeHeader extends Component {
               ></div>
             </div>
             <div
-              className={`center-content ${
+              className={`center-content text-uppercase ${
                 !this.state.mobileMenu ? "hide-mobile-menu" : ""
               }`}
             >
               <div
-                className="child-content"
+                className={`child-content ${
+                  currentPath === "/home" ? "active" : ""
+                }`}
+                onClick={() => this.handleViewHome()}
+              >
+                <div className="sub-title">
+                  <b>
+                    <FormattedMessage id="homeheader.home" />
+                  </b>
+                </div>
+              </div>
+              <div
+                className={`child-content ${
+                  currentPath === "/list-specialty" ? "active" : ""
+                }`}
                 onClick={() => this.handleViewListSpecialty()}
               >
                 <div className="sub-title">
@@ -99,7 +121,9 @@ class HomeHeader extends Component {
                 </div>
               </div>
               <div
-                className="child-content"
+                className={`child-content ${
+                  currentPath === "/list-clinic" ? "active" : ""
+                }`}
                 onClick={() => this.handleViewListClinic()}
               >
                 <div className="sub-title">
@@ -112,7 +136,9 @@ class HomeHeader extends Component {
                 </div>
               </div>
               <div
-                className="child-content"
+                className={`child-content ${
+                  currentPath === "/list-doctor" ? "active" : ""
+                }`}
                 onClick={() => this.handleViewListDoctor()}
               >
                 <div className="sub-title">
@@ -125,7 +151,9 @@ class HomeHeader extends Component {
                 </div>
               </div>
               <div
-                className="child-content"
+                className={`child-content ${
+                  currentPath === "/new-appointment" ? "active" : ""
+                }`}
                 onClick={() => this.handleViewNewAppointment()}
               >
                 <div className="sub-title">
@@ -148,9 +176,13 @@ class HomeHeader extends Component {
                     </strong>
                   </span>
                   <img
-                    className="avatar rounded-circle"
+                    className="avatar rounded-circle border border-2 border-primary"
                     alt="avatar"
-                    src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                    src={
+                      userInfo && userInfo.avatar
+                        ? `${userInfo.avatar}`
+                        : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                    }
                   />
                   <div className="sub-menu rounded-2 shadow-md">
                     <div
@@ -199,7 +231,7 @@ class HomeHeader extends Component {
                   </div>
                 </div>
               ) : (
-                <div className="sign-in-out-content">
+                <div className="sign-in-out-content text-nowrap">
                   <div
                     className="btn btn-login"
                     onClick={() => this.props.history.push("/login")}

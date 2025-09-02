@@ -1,5 +1,6 @@
 {
     "homeheader": {
+        "home": "Home",
         "speciality": "Medical speciality",
         "search-doctor": "Find a doctor by speciality",
         "health-facility": "Health facilities",
@@ -64,8 +65,7 @@
         "add": "Add new user",
         "email": "Email",
         "password": "Password",
-        "first-name": "First Name",
-        "last-name": "Last Name",
+        "full-name": "Full Name",
         "phone-number": "Phone Number",
         "address": "Address",
         "gender": "Gender",

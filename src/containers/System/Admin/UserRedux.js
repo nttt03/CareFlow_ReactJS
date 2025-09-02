@@ -10,6 +10,7 @@ import "react-image-lightbox/style.css";
 import { last } from "lodash";
 import TableManageUser from "./TableManageUser";
 import { Buffer } from "buffer";
+import { toast } from "react-toastify";
 
 class UserRedux extends Component {
   constructor(props) {
@@ -23,8 +24,7 @@ class UserRedux extends Component {
 
       email: "",
       password: "",
-      firstName: "",
-      lastName: "",
+      fullName: "",
       phoneNumber: "",
       address: "",
       gender: "",
@@ -88,8 +88,7 @@ class UserRedux extends Component {
       this.setState({
         email: "",
         password: "",
-        firstName: "",
-        lastName: "",
+        fullName: "",
         phoneNumber: "",
         address: "",
         gender: arrGenders && arrGenders.length > 0 ? arrGenders[0].keyMap : "",
@@ -107,14 +106,19 @@ class UserRedux extends Component {
     let data = event.target.files;
     let file = data[0];
     if (file) {
+      // kiểm tra MIME type
+      if (!["image/jpeg", "image/png"].includes(file.type)) {
+        toast.error("Chỉ chấp nhận ảnh JPG hoặc PNG!");
+        return;
+      }
+
       let base64 = await CommonUtils.getBase64(file);
-      console.log("img base64: ", base64);
       let objectUrl = URL.createObjectURL(file);
+
       this.setState({
         previewImgURL: objectUrl,
         avatar: base64,
       });
-      // console.log('check file 0: ', objectUrl)
     }
   };
 
@@ -127,14 +131,7 @@ class UserRedux extends Component {
 
   checkValidateInput = () => {
     let isValid = true;
-    let arrCheck = [
-      "email",
-      "password",
-      "firstName",
-      "lastName",
-      "phoneNumber",
-      "address",
-    ];
+    let arrCheck = ["email", "password", "fullName", "phoneNumber", "address"];
     for (let i = 0; i < arrCheck.length; i++) {
       if (!this.state[arrCheck[i]]) {
         isValid = false;
@@ -167,8 +164,7 @@ class UserRedux extends Component {
       this.props.createNewUser({
         email: this.state.email,
         password: this.state.password,
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
+        fullName: this.state.fullName,
         address: this.state.address,
         phoneNumber: this.state.phoneNumber,
         gender: this.state.gender,
@@ -183,8 +179,7 @@ class UserRedux extends Component {
         id: this.state.userEditId,
         email: this.state.email,
         password: this.state.password,
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
+        fullName: this.state.fullName,
         address: this.state.address,
         phoneNumber: this.state.phoneNumber,
         gender: this.state.gender,
@@ -198,16 +193,15 @@ class UserRedux extends Component {
   handleEditUserFromParent = (user) => {
     // console.log('check handle edit user from parent: ', user)
     let imageBase64 = "";
-    if (user.image) {
-      imageBase64 = new Buffer(user.image, "base64").toString("binary");
+    if (user.avatar) {
+      imageBase64 = Buffer.from(user.avatar, "base64").toString("binary");
     }
     this.setState({
       email: user.email,
       password: "hardcode",
-      firstName: user.firstName,
-      lastName: user.lastName,
+      fullName: this.state.fullName,
       phoneNumber: user.phoneNumber,
-      address: user.address,
+      address: user.addressDetail,
       gender: user.gender,
       position: user.positionId,
       role: user.roleId,
@@ -229,8 +223,7 @@ class UserRedux extends Component {
     let {
       email,
       password,
-      firstName,
-      lastName,
+      fullName,
       phoneNumber,
       address,
       gender,
@@ -282,27 +275,14 @@ class UserRedux extends Component {
               </div>
               <div className="col-3">
                 <label>
-                  <FormattedMessage id="manage-user.first-name" />
+                  <FormattedMessage id="manage-user.full-name" />
                 </label>
                 <input
                   className="form-control"
                   type="text"
-                  value={firstName}
+                  value={fullName}
                   onChange={(e) => {
-                    this.onChangeInput(e, "firstName");
-                  }}
-                />
-              </div>
-              <div className="col-3">
-                <label>
-                  <FormattedMessage id="manage-user.last-name" />
-                </label>
-                <input
-                  className="form-control"
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => {
-                    this.onChangeInput(e, "lastName");
+                    this.onChangeInput(e, "fullName");
                   }}
                 />
               </div>

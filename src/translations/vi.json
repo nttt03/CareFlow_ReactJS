@@ -1,5 +1,6 @@
 {
     "homeheader": {
+        "home": "Trang chủ",
         "speciality": "Chuyên khoa",
         "search-doctor": "Tìm bác sĩ theo chuyên khoa",
         "health-facility": "Cơ sở y tế",
@@ -64,8 +65,7 @@
         "add": "Thêm mới người dùng",
         "email": "Email",
         "password": "Mật khẩu",
-        "first-name": "Tên",
-        "last-name": "Họ",
+        "full-name": "Họ tên",
         "phone-number": "Số điện thoại",
         "address": "Địa chỉ",
         "gender": "Giới tính",
