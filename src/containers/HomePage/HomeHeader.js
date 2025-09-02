@@ -187,7 +187,9 @@ class HomeHeader extends Component {
                   <div className="sub-menu rounded-2 shadow-md">
                     <div
                       className="sub-menu-item"
-                      //   onClick={processLogout}
+                      onClick={() =>
+                        this.props.history.push(`/profile-user/${userInfo.id}`)
+                      }
                     >
                       Hồ sơ cá nhân
                     </div>

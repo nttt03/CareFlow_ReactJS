@@ -69,7 +69,7 @@ class Login extends Component {
   render() {
     return (
       <div className="auth-background">
-        <div className="auth-container py-5">
+        <div className="auth-container py-5 mx-3">
           <div className="auth-content row">
             <div className="col-12 text-login">ĐĂNG NHẬP</div>
             <div className="col-12 form-group login-input">

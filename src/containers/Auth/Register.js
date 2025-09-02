@@ -1,5 +1,6 @@
 import { useHistory } from "react-router-dom";
-import { useEffect, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useEffect, useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import * as actions from "../../store/actions";
@@ -7,6 +8,8 @@ import { registerNewUser } from "../../services/userService";
 import "./Auth.scss";
 
 function Register() {
+  const recaptchaRef = useRef(null);
+  const [captchaToken, setCaptchaToken] = useState("");
   const dispatch = useDispatch();
   const genders = useSelector((state) => state.admin.genders);
   const language = useSelector((state) => state.app.language);
@@ -109,22 +112,36 @@ function Register() {
     dispatch(actions.fetchGenderStart());
   }, [dispatch]);
 
+  const handleCaptchaChange = (token) => {
+    setCaptchaToken(token); // lưu token khi user check captcha
+  };
+
   const handleRegister = async () => {
     let check = isValidInputs();
     if (check) {
-      let serverData = await registerNewUser(formData);
-      if (+serverData.errCode === 0) {
-        toast.success(serverData.errMessage);
-        history.push("/login");
-      } else {
-        toast.error(serverData.errMessage);
+      if (!captchaToken) {
+        toast.error("Vui lòng xác thực Captcha!");
+        return;
+      }
+      try {
+        let serverData = await registerNewUser({ ...formData, captchaToken });
+        if (+serverData.errCode === 0) {
+          toast.success(serverData.errMessage);
+          history.push("/login");
+        } else {
+          toast.error(serverData.errMessage);
+          recaptchaRef.current.reset();
+        }
+      } catch (e) {
+        toast.error("Lỗi server khi đăng ký!");
+        recaptchaRef.current.reset();
       }
     }
   };
 
   return (
     <div className="auth-background">
-      <div className="auth-container register-container">
+      <div className="auth-container register-container m-3">
         <div className="auth-content row">
           <div className="col-12 text-login">ĐĂNG KÝ</div>
 
@@ -246,6 +263,17 @@ function Register() {
                 </span>
               </div>
             </div>
+          </div>
+
+          {/* reCAPTCHA */}
+          <div className="col-12 mb-3 d-flex justify-content-center">
+            <ReCAPTCHA
+              sitekey={process.env.REACT_APP_SITE_KEY_CAPTCHA}
+              onChange={handleCaptchaChange}
+              onExpired={() => setCaptchaToken("")}
+              onErrored={() => toast.error("Lỗi khi tải reCAPTCHA!")}
+              ref={recaptchaRef}
+            />
           </div>
 
           {/* Button */}

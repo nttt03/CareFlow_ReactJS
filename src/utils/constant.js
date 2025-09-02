@@ -14,6 +14,7 @@ export const path = {
   LIST_DOCTOR: "/list-doctor",
   NEW_APPOINTMENT: "/new-appointment",
   DONE_APPOINTMENT: "/done-appointment/:id",
+  PROFILE_USER: "/profile-user/:id",
 };
 
 export const LANGUAGES = {
