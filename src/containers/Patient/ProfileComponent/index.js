@@ -86,6 +86,7 @@ const ProfileComponent = () => {
         <Layout className="gap-3" style={{ background: "none" }}>
           {/* Sidebar */}
           <Sider
+            theme="light"
             className="rounded-3"
             breakpoint="lg"
             collapsedWidth="0"
@@ -102,12 +103,12 @@ const ProfileComponent = () => {
                 }
                 className="border border-2 border-primary rounded-circle"
               />
-              <div className="mt-2 fw-bold">
+              <div className="mt-2 fw-bold text-primary">
                 {userInfo?.fullName || "Người dùng"}
               </div>
             </div>
 
-            <Menu theme="dark" mode="inline" selectedKeys={[currentTab]}>
+            <Menu theme="light" mode="inline" selectedKeys={[currentTab]}>
               {sideBarTabs.map((tab) => (
                 <Menu.Item
                   key={tab.key}

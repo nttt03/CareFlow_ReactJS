@@ -142,6 +142,10 @@ const getInfoUser = (patientId) => {
   });
 };
 
+const updateInfoByUser = (data) => {
+  return axios.put("/api/update-info-by-user", data, { withCredentials: true });
+};
+
 const getAllProvince = () => {
   return axios.get(`/api/allprovince`);
 };
@@ -176,4 +180,5 @@ export {
   getDoneAppointment,
   getInfoUser,
   getAllProvince,
+  updateInfoByUser,
 };

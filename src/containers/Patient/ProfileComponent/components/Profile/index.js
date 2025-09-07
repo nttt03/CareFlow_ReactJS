@@ -18,6 +18,7 @@ import {
 import {
   getInfoUser,
   getAllProvince,
+  updateInfoByUser,
 } from "../../../../../services/userService";
 import { useDispatch } from "react-redux";
 import { showLoading, hideLoading } from "../../../../../store/actions";
@@ -92,21 +93,45 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         setAvatarPreview(e.target.result);
+        form.setFieldsValue({ avatar: e.target.result });
       };
       reader.readAsDataURL(file.originFileObj);
-      form.setFieldsValue({ avatar: file.originFileObj });
     }
   };
 
-  const handleSubmit = (values) => {
-    const updatedData = {
-      ...formData,
-      ...values,
-      avatar: avatarPreview || formData.avatar,
-    };
-    console.log("Thông tin cập nhật:", updatedData);
-    setFormData(updatedData);
-    setIsEditing(false);
+  const handleSubmit = async (values) => {
+    try {
+      dispatch(showLoading());
+
+      const updatedData = {
+        fullName: values.fullName,
+        phoneNumber: values.phoneNumber,
+        dateOfBirth: values.dateOfBirth
+          ? values.dateOfBirth.format("YYYY-MM-DD")
+          : null,
+        gender: values.gender === "male" ? "M" : "F",
+        addressDetail: values.addressDetail,
+        email: values.email,
+        CCCD: values.CCCD,
+        provinceId: values.provinceId,
+        avatar: avatarPreview || formData.avatar,
+      };
+
+      const res = await updateInfoByUser(updatedData);
+
+      if (res && res.errCode === 0) {
+        message.success("Cập nhật thông tin thành công!");
+        setFormData(res.data);
+        setIsEditing(false);
+      } else {
+        message.error(res.errMessage || "Cập nhật thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi cập nhật thông tin:", error);
+      message.error("Có lỗi xảy ra khi cập nhật thông tin!");
+    } finally {
+      dispatch(hideLoading());
+    }
   };
 
   // Hàm kiểm tra thông tin có đủ không
@@ -182,7 +207,11 @@ const Profile = () => {
             </div>
             <div className="row mb-2 border-bottom py-2">
               <div className="col-4 fw-semibold">Ngày sinh</div>
-              <div className="col-8">{formData?.dateOfBirth || "---"}</div>
+              <div className="col-8">
+                {formData?.dateOfBirth
+                  ? dayjs(formData.dateOfBirth).format("DD-MM-YYYY")
+                  : "---"}
+              </div>
             </div>
             <div className="row mb-2 border-bottom py-2">
               <div className="col-4 fw-semibold">Giới tính</div>
