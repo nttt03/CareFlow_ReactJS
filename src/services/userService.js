@@ -1,7 +1,15 @@
 import axios from "../axios";
 
+// const handleLoginApi = (userEmail, userPassword) => {
+//   return axios.post("/api/login", { email: userEmail, password: userPassword });
+// };
+
 const handleLoginApi = (userEmail, userPassword) => {
-  return axios.post("/api/login", { email: userEmail, password: userPassword });
+  return axios.post(
+    "/api/login",
+    { email: userEmail, password: userPassword },
+    { withCredentials: true }
+  );
 };
 
 const registerNewUser = ({ ...formData }) => {
@@ -127,6 +135,17 @@ const getDoneAppointment = (patientId) => {
 //     });
 // };
 
+const getInfoUser = (patientId) => {
+  return axios.get(`/api/get-info-user-by-id`, {
+    params: { patientId },
+    withCredentials: true,
+  });
+};
+
+const getAllProvince = () => {
+  return axios.get(`/api/allprovince`);
+};
+
 export {
   handleLoginApi,
   registerNewUser,
@@ -155,4 +174,6 @@ export {
   postSendRemedy,
   getNewAppointment,
   getDoneAppointment,
+  getInfoUser,
+  getAllProvince,
 };

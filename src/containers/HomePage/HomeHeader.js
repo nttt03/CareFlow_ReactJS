@@ -7,6 +7,7 @@ import { changeLanguageApp } from "../../store/actions";
 import { withRouter } from "react-router";
 import * as actions from "../../store/actions";
 import { injectIntl } from "react-intl";
+import { UserOutlined, LockOutlined, LogoutOutlined } from "@ant-design/icons";
 
 class HomeHeader extends Component {
   constructor(props) {
@@ -69,11 +70,39 @@ class HomeHeader extends Component {
     const { intl } = this.props;
     const placeholderText = intl.formatMessage({ id: "banner.placeholder" });
     // console.log('check: ', this.props)
-
-    // language này đc lấy từ trong redux ra (trong mapStateToProps bên dưới) chứ ko phải truyền từ cha sang con
     let language = this.props.language;
     const { userInfo, processLogout, isLoggedIn } = this.props;
-    console.log("data userInfo: ", userInfo);
+
+    const handleLogout = () => {
+      processLogout();
+      this.props.history.push("/home");
+    };
+
+    const baseTabs = [
+      {
+        key: "info",
+        label: "Hồ sơ cá nhân",
+        path: null,
+        icon: <UserOutlined />,
+      },
+      {
+        key: "changePassword",
+        label: "Đổi mật khẩu",
+        path: null,
+        icon: <LockOutlined />,
+      },
+    ];
+    const sideBarTabs = [...baseTabs];
+    if (isLoggedIn && userInfo) {
+      sideBarTabs[0].path = `profile-user/${userInfo.id}?tab=info`;
+      sideBarTabs[1].path = `profile-user/${userInfo.id}?tab=changePassword`;
+      sideBarTabs.push({
+        key: "logout",
+        label: "Đăng xuất",
+        onClick: handleLogout,
+        icon: <LogoutOutlined />,
+      });
+    }
     return (
       <React.Fragment>
         <div className="home-header-container">
@@ -185,27 +214,20 @@ class HomeHeader extends Component {
                     }
                   />
                   <div className="sub-menu rounded-2 shadow-md">
-                    <div
-                      className="sub-menu-item"
-                      onClick={() =>
-                        this.props.history.push(`/profile-user/${userInfo.id}`)
-                      }
-                    >
-                      Hồ sơ cá nhân
-                    </div>
-                    <div
-                      className="sub-menu-item"
-                      //   onClick={processLogout}
-                    >
-                      Đổi mật khẩu
-                    </div>
-                    <div
-                      className="sub-menu-item"
-                      onClick={processLogout}
-                      title="Đăng xuất"
-                    >
-                      Đăng xuất
-                    </div>
+                    {sideBarTabs.map((tab) => (
+                      <div
+                        className="sub-menu-item"
+                        key={tab.key}
+                        icon={tab.icon}
+                        onClick={() =>
+                          tab.onClick
+                            ? tab.onClick()
+                            : this.props.history.push(`/${tab.path}`)
+                        }
+                      >
+                        {tab.label}
+                      </div>
+                    ))}
                     <div className="sub-menu-item language-content">
                       <div
                         className={

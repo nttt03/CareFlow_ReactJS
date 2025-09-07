@@ -24,10 +24,11 @@ import ListClinic from "./Patient/Clinic/ListClinic.js";
 import ListDoctor from "./Patient/Doctor/ListDoctor.js";
 import NewAppointment from "./Patient/AppointmentSchedule/NewAppointment.js";
 import DoneAppointment from "./Patient/AppointmentSchedule/DoneAppointment.js";
-import ProfileComponent from "./Patient/ProfileComponent/ProfileComponent.js";
+import ProfileComponent from "./Patient/ProfileComponent/index.js";
 
 import { CustomToastCloseButton } from "../components/CustomToast";
 import CustomScrollbars from "../components/CustomScrollbars.js";
+import GlobalLoading from "../components/GlobalLoading.js";
 import VerifyEmail from "./Patient/VerifyEmail.js";
 
 class App extends Component {
@@ -52,6 +53,7 @@ class App extends Component {
   render() {
     return (
       <Fragment>
+        <GlobalLoading />
         <Router history={history}>
           <div className="main-container">
             <div className="content-container">
