@@ -37,6 +37,8 @@ const Profile = () => {
   const [form] = Form.useForm();
   const [provinces, setProvinces] = useState([]);
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarBase64, setAvatarBase64] = useState(null);
+  const [fileList, setFileList] = useState([]);
 
   const fetchUserInfo = async () => {
     if (!patientId) return;
@@ -56,7 +58,9 @@ const Profile = () => {
           email: res.data.email,
           CCCD: res.data.CCCD,
           provinceId: res.data.provinceId || null,
+          avatar: res.data.avatar || null,
         });
+        setAvatarPreview(res.data.avatar);
       }
     } catch (error) {
       console.error("Lỗi khi fetch user info:", error);
@@ -88,14 +92,17 @@ const Profile = () => {
     }
   }, [patientId]);
 
-  const handleAvatarChange = ({ file }) => {
-    if (file.originFileObj) {
+  const handleAvatarChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+    if (newFileList[0]?.originFileObj) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setAvatarPreview(e.target.result);
-        form.setFieldsValue({ avatar: e.target.result });
+        const base64String = e.target.result;
+        setAvatarPreview(base64String);
+        setAvatarBase64(base64String);
+        form.setFieldsValue({ avatar: base64String });
       };
-      reader.readAsDataURL(file.originFileObj);
+      reader.readAsDataURL(newFileList[0].originFileObj);
     }
   };
 
@@ -114,14 +121,16 @@ const Profile = () => {
         email: values.email,
         CCCD: values.CCCD,
         provinceId: values.provinceId,
-        avatar: avatarPreview || formData.avatar,
+        avatar: avatarBase64 || formData.avatar,
       };
 
       const res = await updateInfoByUser(updatedData);
 
       if (res && res.errCode === 0) {
         message.success("Cập nhật thông tin thành công!");
-        setFormData(res.data);
+        setFormData({ ...res.data, avatar: res.data.avatar });
+        setAvatarPreview(res.data.avatar); // Cập nhật preview từ server
+        setAvatarBase64(null); // Reset base64
         setIsEditing(false);
       } else {
         message.error(res.errMessage || "Cập nhật thất bại!");
@@ -153,8 +162,10 @@ const Profile = () => {
     <>
       <div className="d-flex flex-column flex-md-row align-items-center justify-content-between">
         <div>
-          <h4 className="text-uppercase">Hồ sơ cá nhân</h4>
-          <h5 className="text-primary text-uppercase">
+          <h4 className="text-uppercase px-3 py-2 border border-primary rounded-3 d-inline-block">
+            {isEditing ? "Cập nhật hồ sơ" : "Hồ sơ cá nhân"}
+          </h4>
+          <h5 className="text-primary text-uppercase px-3">
             {formData?.fullName || "---"}
           </h5>
         </div>
@@ -269,24 +280,17 @@ const Profile = () => {
                   <Upload
                     listType="picture-circle"
                     showUploadList={false}
-                    beforeUpload={(file) => {
-                      const isImage = file.type.startsWith("image/");
-                      if (!isImage) {
-                        message.error("Chỉ được upload file ảnh!");
-                        return Upload.LIST_IGNORE;
-                      }
-                      const previewUrl = URL.createObjectURL(file);
-                      setFormData((prev) => ({ ...prev, avatar: previewUrl }));
-                      return false; // Ngăn upload tự động
-                    }}
+                    beforeUpload={() => false}
+                    fileList={fileList}
+                    onChange={handleAvatarChange}
                     style={{
                       width: 70,
                       height: 70,
                     }}
                   >
-                    {formData?.avatar ? (
+                    {avatarPreview || formData?.avatar ? (
                       <img
-                        src={formData.avatar}
+                        src={avatarPreview || formData.avatar}
                         alt="avatar"
                         style={{
                           width: "60px",

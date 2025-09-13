@@ -150,6 +150,10 @@ const getAllProvince = () => {
   return axios.get(`/api/allprovince`);
 };
 
+const changePassword = (data) => {
+  return axios.post("/api/changepassword", data, { withCredentials: true });
+};
+
 export {
   handleLoginApi,
   registerNewUser,
@@ -181,4 +185,5 @@ export {
   getInfoUser,
   getAllProvince,
   updateInfoByUser,
+  changePassword,
 };

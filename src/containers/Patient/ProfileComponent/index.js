@@ -4,7 +4,7 @@ import { UserOutlined, LockOutlined, LogoutOutlined } from "@ant-design/icons";
 import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
 import Profile from "./components/Profile";
-import ChangePassword from "./components/ChangePassword";
+import ChangePassword from "../../../components/ChangePassword";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../../store/actions";
 import { useHistory, useLocation } from "react-router-dom";

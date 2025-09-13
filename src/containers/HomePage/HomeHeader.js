@@ -103,6 +103,7 @@ class HomeHeader extends Component {
         icon: <LogoutOutlined />,
       });
     }
+    console.log("check userInfo: ", userInfo);
     return (
       <React.Fragment>
         <div className="home-header-container">
@@ -205,7 +206,7 @@ class HomeHeader extends Component {
                     </strong>
                   </span>
                   <img
-                    className="avatar rounded-circle border border-2 border-primary"
+                    className="avatar object-fit-cover rounded-circle border border-2 border-primary"
                     alt="avatar"
                     src={
                       userInfo && userInfo.avatar
