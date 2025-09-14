@@ -11,6 +11,7 @@ import ManageDoctor from "../containers/System/Admin/ManageDoctor";
 import ManageSpecialty from "../containers/System/Specialty/ManageSpecialty";
 import ManageHospital from "../containers/System/Hospital/ManageHospital";
 import AddHospital from "../containers/System/Hospital/AddHospital";
+import EditHospital from "../containers/System/Hospital/EditHospital";
 
 class System extends Component {
   render() {
@@ -39,6 +40,11 @@ class System extends Component {
                   path="/system/manage-hospital/add-hospital"
                   component={AddHospital}
                 />
+                <Route
+                  path="/system/manage-hospital/edit-hospital/:hospitalId"
+                  component={EditHospital}
+                />
+
                 <Route
                   exact
                   path="/system/manage-hospital"

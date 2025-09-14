@@ -157,12 +157,16 @@
         "manage-hospital": {
             "title": "Manage hospital",
             "title-add": "Add new hospital",
+            "title-edit": "Edit hospital",
             "name-hospital": "Name hospital",
             "img-hospital": "Image hospital",
             "address": "Address hospital",
             "province": "Province",
             "upload": "upload",
-            "save": "Save"
+            "save": "Save",
+            "update": "Update",
+            "description": "Description"
+
         }
     }
 }

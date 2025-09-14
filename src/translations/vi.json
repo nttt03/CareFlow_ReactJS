@@ -157,12 +157,15 @@
         "manage-hospital": {
             "title": "Quản lý bệnh viện",
             "title-add": "Thêm bệnh viện",
+            "title-edit": "Cập nhật thông tin bệnh viện",
             "name-hospital": "Tên bệnh viện",
             "img-hospital": "Ảnh bệnh viện",
             "address": "Địa chỉ bệnh viện",
             "province": "Tỉnh/Thành",
             "upload": "Tải ảnh",
-            "save": "Lưu thông tin"
+            "save": "Lưu thông tin",
+            "update": "Cập nhật",
+            "description": "Mô tả chi tiết bệnh viện"
         }
     }
 }

@@ -12,7 +12,12 @@ import {
   Col,
   Tag,
 } from "antd";
-import { EditOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  EyeOutlined,
+  PlusOutlined,
+  EnvironmentOutlined,
+} from "@ant-design/icons";
 import {
   getAllHospitalByAdmin,
   getAllProvince,
@@ -125,15 +130,29 @@ function ManageHospital({ language }) {
           <Image
             src={record.image || undefined}
             alt={record.name}
-            width={50}
-            height={50}
-            style={{ objectFit: "cover", borderRadius: 8 }}
+            style={{
+              width: 50,
+              height: 50,
+              padding: 2,
+              objectFit: "cover",
+              border: "1px solid #ddd",
+              borderRadius: 5,
+            }}
             preview={false}
             fallback="/defaultimg.png"
           />
           <div>
             <div style={{ fontWeight: "bold" }}>{record.name}</div>
-            <div style={{ color: "#666", fontSize: 12 }}>
+            <div
+              style={{
+                color: "#666",
+                fontSize: 12,
+                display: "flex",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              <EnvironmentOutlined style={{ color: "#1890ff" }} />
               {record.provinceData?.name || "Không có thông tin"}
             </div>
           </div>
@@ -197,14 +216,16 @@ function ManageHospital({ language }) {
             icon={<EditOutlined />}
             size="small"
             onClick={() =>
-              history.push(`/system/manage-hospital/edit/${record.id}`)
+              history.push(`/system/manage-hospital/edit-hospital/${record.id}`)
             }
           />
           <Button
             icon={<EyeOutlined />}
             size="small"
             onClick={() =>
-              history.push(`/system/manage-hospital/detail/${record.id}`)
+              history.push(
+                `/system/manage-hospital/detail-hospital/${record.id}`
+              )
             }
           />
         </Space>
@@ -282,6 +303,13 @@ function ManageHospital({ language }) {
         loading={loading}
         onChange={handleTableChange}
         scroll={{ x: 1000 }}
+        // components={{
+        //   header: {
+        //     cell: (props) => (
+        //       <th {...props} style={{ background: "#B7B7B7" }} />
+        //     ),
+        //   },
+        // }}
       />
     </div>
   );

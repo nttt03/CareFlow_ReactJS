@@ -158,6 +158,14 @@ export const getAllHospitalByAdmin = (params) => {
   return axios.get("/api/get-all-hospital-by-admin", { params });
 };
 
+export const getHospitalById = (id) => {
+  return axios.get(`/api/get-detail-hospital-by-id?id=${id}`);
+};
+
+export const updateHospital = (data) => {
+  return axios.put("/api/update-hospital-by-id", data);
+};
+
 export {
   handleLoginApi,
   registerNewUser,
