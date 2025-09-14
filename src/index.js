@@ -11,6 +11,22 @@ import IntlProviderWrapper from "./hoc/IntlProviderWrapper";
 import { Provider } from "react-redux";
 import reduxStore, { persistor } from "./redux";
 
+// 👉 Fix ResizeObserver warning bằng override console.error
+const originalError = console.error;
+console.error = (...args) => {
+  if (
+    args[0] &&
+    typeof args[0].message === "string" &&
+    args[0].message.includes(
+      "ResizeObserver loop completed with undelivered notifications."
+    )
+  ) {
+    // bỏ qua không log, không show overlay
+    return;
+  }
+  originalError.apply(console, args);
+};
+
 const renderApp = () => {
   ReactDOM.render(
     <Provider store={reduxStore}>
@@ -23,7 +39,4 @@ const renderApp = () => {
 };
 
 renderApp();
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();

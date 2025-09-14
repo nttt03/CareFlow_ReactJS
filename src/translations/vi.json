@@ -4,7 +4,7 @@
         "speciality": "Chuyên khoa",
         "search-doctor": "Tìm bác sĩ theo chuyên khoa",
         "health-facility": "Cơ sở y tế",
-        "select-room": "Chọn bệnh viện phòng khám",
+        "select-room": "Chọn bệnh viện bệnh viện",
         "doctor": "Bác sĩ",
         "select-doctor": "Chọn bác sĩ giỏi",
         "package": "Lịch hẹn",
@@ -12,7 +12,7 @@
         "support": "Hỗ trợ",
         "welcome": "Xin chào",
         "list-specialty": "Danh sách chuyên khoa",
-        "list-clinic": "Danh sách phòng khám",
+        "list-hospital": "Danh sách bệnh viện",
         "list-doctor": "Danh sách bác sĩ"
     },
     "homefooter": {
@@ -49,8 +49,8 @@
             "manage-admin": "Quản lý admin",
             "crud": "CRUD user",
             "crud-redux": "CRUD user redux",
-            "clinic": "Phòng khám",
-            "manage-clinic": "Quản lý phòng khám",
+            "hospital": "Bệnh viện",
+            "manage-hospital": "Quản lý bệnh viện",
             "specialty": "Chuyên khoa",
             "manage-specialty": "Quản lý chuyên khoa",
             "handbook": "Cẩm nang",
@@ -82,7 +82,7 @@
         "handbook": "Cẩm nang",
         "about": "Truyền thông nói gì về Care Flow",
         "more-infor": "Xem thêm",
-        "text-about": "CareFlow là nền tảng đặt lịch khám bệnh trực tuyến hàng đầu tại Việt Nam, giúp kết nối bệnh nhân với các bác sĩ, phòng khám và bệnh viện uy tín trên toàn quốc. Với hệ thống đặt lịch thông minh, CareFlow giúp người dùng dễ dàng lựa chọn bác sĩ theo chuyên khoa, địa điểm và thời gian phù hợp, giúp tiết kiệm thời gian và nâng cao trải nghiệm khám chữa bệnh."
+        "text-about": "CareFlow là nền tảng đặt lịch khám bệnh trực tuyến hàng đầu tại Việt Nam, giúp kết nối bệnh nhân với các bác sĩ, bệnh viện và bệnh viện uy tín trên toàn quốc. Với hệ thống đặt lịch thông minh, CareFlow giúp người dùng dễ dàng lựa chọn bác sĩ theo chuyên khoa, địa điểm và thời gian phù hợp, giúp tiết kiệm thời gian và nâng cao trải nghiệm khám chữa bệnh."
     },
     "manage-schedule": {
         "title": "Quản lý kế hoạch khám bệnh của bác sĩ",
@@ -140,11 +140,11 @@
             "price": "Giá khám",
             "payment": "Phương thức thanh toán",
             "province": "Tỉnh/TP",
-            "clinic-name": "Tên phòng khám",
-            "clinic-address": "Địa chỉ phòng khám",
+            "hospital-name": "Tên bệnh viện",
+            "hospital-address": "Địa chỉ bệnh viện",
             "note": "Ghi chú",
             "specialty": "Chọn Chuyên khoa",
-            "clinic": "Chọn Phòng khám",
+            "hospital": "Chọn bệnh viện",
             "add": "Tạo thông tin",
             "save": "Lưu thông tin"
         },
@@ -154,12 +154,15 @@
             "img-specialty": "Ảnh chuyên khoa",
             "save": "Lưu"
         },
-        "manage-clinic": {
-            "title": "Quản lý phòng khám",
-            "name-clinic": "Tên phòng khám",
-            "img-clinic": "Ảnh phòng khám",
-            "address": "Địa chỉ phòng khám",
-            "save": "Lưu"
+        "manage-hospital": {
+            "title": "Quản lý bệnh viện",
+            "title-add": "Thêm bệnh viện",
+            "name-hospital": "Tên bệnh viện",
+            "img-hospital": "Ảnh bệnh viện",
+            "address": "Địa chỉ bệnh viện",
+            "province": "Tỉnh/Thành",
+            "upload": "Tải ảnh",
+            "save": "Lưu thông tin"
         }
     }
 }

@@ -18,9 +18,9 @@ import Register from "./Auth/Register";
 import HomePage from "./HomePage/HomePage.js";
 import DetailDoctor from "./Patient/Doctor/DetailDoctor.js";
 import DetailSpecialty from "./Patient/Specialty/DetailSpecialty.js";
-import DetailClinic from "./Patient/Clinic/DetailClinic.js";
+import DetailHospital from "./Patient/Hospital/DetailHospital.js";
 import ListSpecialty from "./Patient/Specialty/ListSpecialty.js";
-import ListClinic from "./Patient/Clinic/ListClinic.js";
+import ListHospital from "./Patient/Hospital/ListHospital.js";
 import ListDoctor from "./Patient/Doctor/ListDoctor.js";
 import NewAppointment from "./Patient/AppointmentSchedule/NewAppointment.js";
 import DoneAppointment from "./Patient/AppointmentSchedule/DoneAppointment.js";
@@ -80,14 +80,17 @@ class App extends Component {
                     path={path.DETAIL_SPECIALTY}
                     component={DetailSpecialty}
                   />
-                  <Route path={path.DETAIL_CLINIC} component={DetailClinic} />
+                  <Route
+                    path={path.DETAIL_HOSPITAL}
+                    component={DetailHospital}
+                  />
                   <Route
                     path={path.VERIFY_EMAIL_BOOKING}
                     component={VerifyEmail}
                   />
 
                   <Route path={path.LIST_SPECIALTY} component={ListSpecialty} />
-                  <Route path={path.LIST_CLINIC} component={ListClinic} />
+                  <Route path={path.LIST_HOSPITAL} component={ListHospital} />
                   <Route path={path.LIST_DOCTOR} component={ListDoctor} />
 
                   <Route
@@ -115,7 +118,7 @@ class App extends Component {
                         /> */}
 
             <ToastContainer
-              position="bottom-right"
+              position="top-right"
               autoClose={5000}
               hideProgressBar={false}
               newestOnTop={false}

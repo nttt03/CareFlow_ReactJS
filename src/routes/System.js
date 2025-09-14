@@ -9,7 +9,8 @@ import Navigator from "../components/Navigator";
 import "./System.scss";
 import ManageDoctor from "../containers/System/Admin/ManageDoctor";
 import ManageSpecialty from "../containers/System/Specialty/ManageSpecialty";
-import ManageClinic from "../containers/System/Clinic/ManageClinic";
+import ManageHospital from "../containers/System/Hospital/ManageHospital";
+import AddHospital from "../containers/System/Hospital/AddHospital";
 
 class System extends Component {
   render() {
@@ -34,7 +35,15 @@ class System extends Component {
                   path="/system/manage-specialty"
                   component={ManageSpecialty}
                 />
-                <Route path="/system/manage-clinic" component={ManageClinic} />
+                <Route
+                  path="/system/manage-hospital/add-hospital"
+                  component={AddHospital}
+                />
+                <Route
+                  exact
+                  path="/system/manage-hospital"
+                  component={ManageHospital}
+                />
 
                 <Route
                   component={() => {

@@ -4,7 +4,7 @@
         "speciality": "Medical speciality",
         "search-doctor": "Find a doctor by speciality",
         "health-facility": "Health facilities",
-        "select-room": "Choose hospital clinic",
+        "select-room": "Choose hospital hospital",
         "doctor": "Doctor",
         "select-doctor": "Choose a good doctor",
         "package": "Appointment schedule",
@@ -12,7 +12,7 @@
         "support": "Support",
         "welcome": "Welcome",
         "list-specialty": "All Specialties",
-        "list-clinic": "All Clinics",
+        "list-hospital": "All Hospitals",
         "list-doctor": "Outstanding Doctor"
     },
     "homefooter": {
@@ -49,8 +49,8 @@
             "manage-admin": "Manage admin",
             "crud": "CRUD user",
             "crud-redux": "CRUD user redux",
-            "clinic": "Clinic",
-            "manage-clinic": "Manage clinic",
+            "hospital": "Hospital",
+            "manage-hospital": "Manage hospital",
             "specialty": "Specialty",
             "manage-specialty": "Manage speciality",
             "handbook": "Handbook",
@@ -82,7 +82,7 @@
         "handbook": "Handbook",
         "about": "What the media says about Care Flow",
         "more-infor": "See more",
-        "text-about": "CareFlow is the leading online medical appointment platform in Vietnam, connecting patients with reputable doctors, clinics and hospitals nationwide. With a smart appointment system, CareFlow helps users easily choose doctors according to their specialty, location and suitable time, helping to save time and improve the medical examination and treatment experience."
+        "text-about": "CareFlow is the leading online medical appointment platform in Vietnam, connecting patients with reputable doctors, hospitals and hospitals nationwide. With a smart appointment system, CareFlow helps users easily choose doctors according to their specialty, location and suitable time, helping to save time and improve the medical examination and treatment experience."
     },
     "manage-schedule": {
         "title": "Manage Doctor's schedule",
@@ -140,11 +140,11 @@
             "price": "Price",
             "payment": "Payment method",
             "province": "Province/City",
-            "clinic-name": "Clinic name",
-            "clinic-address": "Clinic address",
+            "hospital-name": "Hospital name",
+            "hospital-address": "Hospital address",
             "note": "Note",
             "specialty": "Select Specialty",
-            "clinic": "Select Clinic",
+            "hospital": "Select Hospital",
             "add": "Create infor",
             "save": "Save infor"
         },
@@ -154,11 +154,14 @@
             "img-specialty": "Image specialty",
             "save": "Save"
         },
-        "manage-clinic": {
-            "title": "Manage clinic",
-            "name-clinic": "Name clinic",
-            "img-clinic": "Image clinic",
-            "address": "Address clinic",
+        "manage-hospital": {
+            "title": "Manage hospital",
+            "title-add": "Add new hospital",
+            "name-hospital": "Name hospital",
+            "img-hospital": "Image hospital",
+            "address": "Address hospital",
+            "province": "Province",
+            "upload": "upload",
             "save": "Save"
         }
     }

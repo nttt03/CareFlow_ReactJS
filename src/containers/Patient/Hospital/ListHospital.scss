@@ -1,17 +1,17 @@
-.list-clinic {
+.list-hospital {
     margin-top: 80px;
     padding   : 40px 0;
     text-align: center;
     min-height: 570px;
 
-    .list-clinic__title {
+    .list-hospital__title {
         font-size    : 24px;
         font-weight  : bold;
         margin-bottom: 30px;
         color        : #0b9bcf;
     }
 
-    .list-clinic__content {
+    .list-hospital__content {
         margin-bottom: 20px;
         transition   : transform 0.3s ease-in-out;
 
@@ -19,7 +19,7 @@
             transform: translateY(-5px);
         }
 
-        .list-clinic__content__item {
+        .list-hospital__content__item {
             background     : #fff;
             border-radius  : 5px;
             padding        : 15px;
@@ -31,7 +31,7 @@
             justify-content: center; // Căn giữa theo chiều dọc
             align-items    : center; // Căn giữa theo chiều ngang
 
-            .list-clinic__content__item__image {
+            .list-hospital__content__item__image {
                 display        : flex;
                 justify-content: center; // Căn giữa theo chiều ngang
                 align-items    : center; // Căn giữa theo chiều dọc
@@ -45,7 +45,7 @@
                 }
             }
 
-            .list-clinic__content__item__info {
+            .list-hospital__content__item__info {
                 margin-top        : 10px;
                 font-size         : 16px;
                 font-weight       : bold;
@@ -55,7 +55,7 @@
                 // justify-content: center;
                 // text-align     : center;
 
-                .list-clinic__content__item__info__name {
+                .list-hospital__content__item__info__name {
                     display           : -webkit-box;
                     -webkit-box-orient: vertical;
                     -webkit-line-clamp: 2; // Giới hạn tối đa 2 dòng

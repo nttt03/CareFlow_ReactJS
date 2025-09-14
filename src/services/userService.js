@@ -99,16 +99,16 @@ const getAllDetailSpecialtyById = (data) => {
   );
 };
 
-const createNewClinic = (data) => {
-  return axios.post(`/api/create-new-clinic`, data);
+const createNewHospital = (data) => {
+  return axios.post(`/api/create-new-hospital`, data);
 };
 
-const getAllClinic = () => {
-  return axios.get(`/api/get-all-clinic`);
+const getAllHospital = () => {
+  return axios.get(`/api/get-all-hospital`);
 };
 
-const getAllDetailClinicById = (data) => {
-  return axios.get(`api/get-detail-clinic-by-id?id=${data.id}`);
+const getAllDetailHospitalById = (data) => {
+  return axios.get(`api/get-detail-hospital-by-id?id=${data.id}`);
 };
 
 const getAllPatientForDoctor = (data) => {
@@ -154,6 +154,10 @@ const changePassword = (data) => {
   return axios.post("/api/changepassword", data, { withCredentials: true });
 };
 
+export const getAllHospitalByAdmin = (params) => {
+  return axios.get("/api/get-all-hospital-by-admin", { params });
+};
+
 export {
   handleLoginApi,
   registerNewUser,
@@ -175,9 +179,9 @@ export {
   createNewSpecialty,
   getAllSpecialty,
   getAllDetailSpecialtyById,
-  createNewClinic,
-  getAllClinic,
-  getAllDetailClinicById,
+  createNewHospital,
+  getAllHospital,
+  getAllDetailHospitalById,
   getAllPatientForDoctor,
   postSendRemedy,
   getNewAppointment,

@@ -35,9 +35,9 @@ class HomeHeader extends Component {
     }
   };
 
-  handleViewListClinic = () => {
+  handleViewListHospital = () => {
     if (this.props.history) {
-      this.props.history.push(`/list-clinic`);
+      this.props.history.push(`/list-hospital`);
     }
   };
 
@@ -152,9 +152,9 @@ class HomeHeader extends Component {
               </div>
               <div
                 className={`child-content ${
-                  currentPath === "/list-clinic" ? "active" : ""
+                  currentPath === "/list-hospital" ? "active" : ""
                 }`}
-                onClick={() => this.handleViewListClinic()}
+                onClick={() => this.handleViewListHospital()}
               >
                 <div className="sub-title">
                   <b>
