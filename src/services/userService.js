@@ -89,8 +89,8 @@ const createNewSpecialty = (data) => {
   return axios.post(`/api/create-new-specialty`, data);
 };
 
-const getAllSpecialty = () => {
-  return axios.get(`/api/get-all-specialty`);
+const getAllSpecialty = (params) => {
+  return axios.get(`/api/get-all-specialty`, { params });
 };
 
 const getAllDetailSpecialtyById = (data) => {
@@ -164,6 +164,22 @@ export const getHospitalById = (id) => {
 
 export const updateHospital = (data) => {
   return axios.put("/api/update-hospital-by-id", data);
+};
+
+export const getAllDetailSpecialty = (specialtyId) => {
+  return axios.get(`api/get-detail-specialty?id=${specialtyId}`);
+};
+
+export const updateSpecialty = (data) => {
+  return axios.put("/api/update-specialty-by-id", data);
+};
+
+export const deleteHospital = (id) => {
+  return axios.delete("/api/delete-hospital-by-id", { data: { id } });
+};
+
+export const deleteSpecialty = (id) => {
+  return axios.delete("/api/delete-specialty-by-id", { data: { id } });
 };
 
 export {

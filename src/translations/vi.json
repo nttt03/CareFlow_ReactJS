@@ -150,9 +150,12 @@
         },
         "manage-specialty": {
             "title": "Quản lý chuyên khoa",
+            "title-add": "Thêm chuyên khoa",
+            "title-edit": "Cập nhật thông tin chuyên khoa",
             "name-specialty": "Tên chuyên khoa",
             "img-specialty": "Ảnh chuyên khoa",
-            "save": "Lưu"
+            "save": "Lưu thông tin",
+            "update": "Cập nhật"
         },
         "manage-hospital": {
             "title": "Quản lý bệnh viện",
@@ -163,6 +166,7 @@
             "address": "Địa chỉ bệnh viện",
             "province": "Tỉnh/Thành",
             "upload": "Tải ảnh",
+            "status": "Trạng thái",
             "save": "Lưu thông tin",
             "update": "Cập nhật",
             "description": "Mô tả chi tiết bệnh viện"

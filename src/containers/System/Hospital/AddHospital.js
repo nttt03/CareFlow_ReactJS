@@ -71,7 +71,7 @@ function AddHospital({ language }) {
       setDescriptionHTML("");
       setDescriptionMarkdown("");
     } else if (res && res.errCode === 1) {
-      toast.error("Vui lòng điền đầy đủ thông tin và tải ảnh!");
+      toast.warn("Vui lòng điền đầy đủ thông tin và tải ảnh!");
     } else {
       toast.error("Lỗi khi thêm mới bệnh viện!");
       console.log("check res-err: ", res);

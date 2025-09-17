@@ -30,6 +30,11 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 const mdParser = new markdownIt();
 
+const hospitalStatuses = {
+  A1: { vi: "Hoạt động", en: "Active" },
+  A2: { vi: "Ngừng hoạt động", en: "Inactive" },
+};
+
 function EditHospital({ language }) {
   const history = useHistory();
   const { hospitalId } = useParams();
@@ -38,6 +43,7 @@ function EditHospital({ language }) {
   const [imageBase64, setImageBase64] = useState("");
   const [descriptionHTML, setDescriptionHTML] = useState("");
   const [descriptionMarkdown, setDescriptionMarkdown] = useState("");
+  const [status, setStatus] = useState("");
 
   const [specialties, setSpecialties] = useState([]);
   const [leaders, setLeaders] = useState([]);
@@ -68,10 +74,12 @@ function EditHospital({ language }) {
           name: hospital.name,
           provinceId: hospital.provinceId,
           addressDetail: hospital.addressDetail,
+          status: hospital.status,
         });
         setDescriptionMarkdown(hospital.descriptionMarkdown || "");
         setDescriptionHTML(hospital.descriptionHTML || "");
         setImageBase64(hospital.image || "");
+        setStatus(hospital.status || "");
         setSpecialties(hospital.specialties || []);
         setLeaders(hospital.leaders || []);
         setDoctors(hospital.doctors || []);
@@ -108,6 +116,7 @@ function EditHospital({ language }) {
       imageBase64,
       descriptionHTML,
       descriptionMarkdown,
+      status,
     };
 
     let res = await updateHospital(hospitalData);
@@ -173,6 +182,28 @@ function EditHospital({ language }) {
                       </Button>
                     </Upload>
                   </div>
+                </Form.Item>
+              </Col>
+
+              <Col xs={24} md={12}>
+                <Form.Item
+                  name="status"
+                  label={<FormattedMessage id="admin.manage-hospital.status" />}
+                  rules={[{ required: true, message: "Chọn trạng thái" }]}
+                >
+                  <Select
+                    placeholder="Chọn trạng thái"
+                    onChange={(value) => setStatus(value)}
+                    value={status}
+                  >
+                    {Object.keys(hospitalStatuses).map((key) => (
+                      <Option key={key} value={key}>
+                        {language === "vi"
+                          ? hospitalStatuses[key].vi
+                          : hospitalStatuses[key].en}
+                      </Option>
+                    ))}
+                  </Select>
                 </Form.Item>
               </Col>
 

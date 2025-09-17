@@ -151,8 +151,12 @@
         "manage-specialty": {
             "title": "Manage specialty",
             "name-specialty": "Name specialty",
+            "title-add": "Add new specialty",
+            "title-edit": "Update specialty",
             "img-specialty": "Image specialty",
-            "save": "Save"
+            "save": "Save",
+             "update": "Update"
+            
         },
         "manage-hospital": {
             "title": "Manage hospital",
@@ -163,6 +167,7 @@
             "address": "Address hospital",
             "province": "Province",
             "upload": "upload",
+            "status": "Status",
             "save": "Save",
             "update": "Update",
             "description": "Description"

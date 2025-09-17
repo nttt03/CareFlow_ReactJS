@@ -12,6 +12,8 @@ import ManageSpecialty from "../containers/System/Specialty/ManageSpecialty";
 import ManageHospital from "../containers/System/Hospital/ManageHospital";
 import AddHospital from "../containers/System/Hospital/AddHospital";
 import EditHospital from "../containers/System/Hospital/EditHospital";
+import AddSpecialty from "../containers/System/Specialty/AddSpecialty";
+import EditSpecialty from "../containers/System/Specialty/EditSpecialty";
 
 class System extends Component {
   render() {
@@ -33,6 +35,16 @@ class System extends Component {
                 <Route path="/system/user-redux" component={UserRedux} />
                 <Route path="/system/manage-doctor" component={ManageDoctor} />
                 <Route
+                  path="/system/manage-specialty/edit-specialty/:specialtyId"
+                  component={EditSpecialty}
+                />
+                <Route
+                  exact
+                  path="/system/manage-specialty/add-specialty"
+                  component={AddSpecialty}
+                />
+                <Route
+                  exact
                   path="/system/manage-specialty"
                   component={ManageSpecialty}
                 />

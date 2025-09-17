@@ -11,20 +11,24 @@ import {
   Row,
   Col,
   Tag,
+  Popconfirm,
 } from "antd";
 import {
   EditOutlined,
   EyeOutlined,
   PlusOutlined,
   EnvironmentOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import {
   getAllHospitalByAdmin,
   getAllProvince,
+  deleteHospital,
 } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
 import { showLoading, hideLoading } from "../../../store/actions";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 const { Option } = Select;
 
@@ -99,6 +103,21 @@ function ManageHospital({ language }) {
   useEffect(() => {
     fetchHospitals(pagination.current, pagination.pageSize);
   }, []);
+
+  const handleDeleteHospital = async (id) => {
+    try {
+      const res = await deleteHospital(id);
+      if (res && res.errCode === 0) {
+        toast.success("Xóa bệnh viện thành công!");
+        fetchHospitals();
+      } else {
+        toast.error("Xóa bệnh viện thất bại!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Có lỗi xảy ra khi xóa bệnh viện!");
+    }
+  };
 
   const handleTableChange = (pagination) => {
     fetchHospitals(pagination.current, pagination.pageSize, filters);
@@ -228,6 +247,15 @@ function ManageHospital({ language }) {
               )
             }
           />
+          <Popconfirm
+            title="Xóa bản ghi"
+            description="Bạn có chắc muốn xóa bản ghi này không?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => handleDeleteHospital(record.id)} // gọi hàm xoá
+          >
+            <Button icon={<DeleteOutlined />} size="small" danger />
+          </Popconfirm>
         </Space>
       ),
     },
@@ -295,22 +323,26 @@ function ManageHospital({ language }) {
         </Col>
       </Row>
 
-      <Table
-        rowKey="id"
-        columns={columns}
-        dataSource={Array.isArray(hospitals) ? hospitals : []}
-        pagination={pagination}
-        loading={loading}
-        onChange={handleTableChange}
-        scroll={{ x: 1000 }}
-        // components={{
-        //   header: {
-        //     cell: (props) => (
-        //       <th {...props} style={{ background: "#B7B7B7" }} />
-        //     ),
-        //   },
-        // }}
-      />
+      <div className="overflow-auto">
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={Array.isArray(hospitals) ? hospitals : []}
+          pagination={pagination}
+          loading={loading}
+          onChange={handleTableChange}
+          // scroll={{ x: 1000, y: 400 }}
+          // style={{ height: 400 }}
+          // virtual
+          // components={{
+          //   header: {
+          //     cell: (props) => (
+          //       <th {...props} style={{ background: "#B7B7B7" }} />
+          //     ),
+          //   },
+          // }}
+        />
+      </div>
     </div>
   );
 }
