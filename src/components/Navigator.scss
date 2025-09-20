@@ -5,124 +5,90 @@
     flex-direction: column;
     margin        : 0;
     padding       : 0;
-
-    &.list-unstyled,
-    .list-unstyled {
-        list-style-type: none;
-    }
+    list-style    : none;
+    width         : 220px;
+    min-height    : 100vh;
+    background    : linear-gradient(180deg, #2366f7 0%, #08379c 100%);
+    color         : white;
+    font-family   : 'Roboto', sans-serif;
 
     .menu-group {
-        width: 200px;
-
-        &:hover {
-            cursor          : pointer;
-            background-color: darken($colormain, 5);
-        }
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
 
         .menu-group-name {
-            line-height : 40px;
-            padding     : 0 15px;
-            border-right: 0px solid $border;
+            font-size      : 15px;
+            font-weight    : 500;
+            padding        : 12px 18px;
+            display        : flex;
+            justify-content: space-between;
+            align-items    : center;
+            cursor         : pointer;
+            transition     : background 0.3s ease;
+            color          : #fff;
 
-            &:first-child {
-                border-left: 2px solid $border;
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            .dropdown-icon {
+                font-size : 13px;
+                opacity   : 0.7;
+                transition: transform 0.3s ease;
+            }
+
+            &.open .dropdown-icon {
+                transform: rotate(90deg);
+                opacity  : 1;
             }
         }
 
         .menu-list {
-            display           : none;
-            background-color  : $bg-menu-color;
-            box-shadow        : 2px 2px 4px 0 $box-shadow-color;
-            -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
-            color             : $text-in-light;
-            position          : absolute;
-            padding           : 0;
-            width             : 230px;
-            margin-left       : 3%;
+            background-color: rgba(0, 0, 0, 0.15);
+            margin          : 0;
+            list-style      : none;
+            animation       : fadeIn 0.3s ease;
 
             .menu {
-                width         : 100%;
-                padding       : 0 15px;
-                height        : 35px;
-                line-height   : 35px;
-                text-transform: none;
+                padding    : 8px 20px;
+                font-size  : 14px;
+                color      : #e0e0e0;
+                border-left: 3px solid transparent;
+                transition : all 0.2s ease;
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.08);
+                    color     : #fff;
+                }
 
                 &.active {
-                    a {
-                        font-weight: 500;
-                        color      : $colormain;
-                    }
+                    border-left: 3px solid #ffcc00;
+                    background : rgba(255, 255, 255, 0.15);
 
-                    background-color: #ededed;
+                    a {
+                        font-weight: 600;
+                        color      : #ffcc00;
+                    }
                 }
 
                 .menu-link {
                     text-decoration: none;
-                    color          : $text-in-light;
-                }
-
-                .sub-menu-list {
-                    display           : none;
-                    background-color  : $bg-menu-color;
-                    box-shadow        : 2px 2px 4px 0 $box-shadow-color;
-                    -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
-                    position          : absolute;
-                    top               : 0;
-                    left              : 205px;
-                    padding           : 0;
-
-                    .sub-menu {
-                        padding    : 0 15px;
-                        height     : 35px;
-                        line-height: 35px;
-                        white-space: nowrap;
-
-                        &:hover {
-                            background-color: darken($bg-menu-color, 5);
-                        }
-
-                        .sub-menu-link {
-                            text-decoration: none;
-                            color          : $text-in-light;
-                        }
-
-                        a {
-                            display: block;
-                        }
-
-                        &.active a {
-                            font-weight: 500;
-                            color      : $colormain;
-                        }
-                    }
-                }
-
-                &.active span {
-                    font-weight: 500;
-                    color      : $colormain;
-                }
-
-                &:hover {
-                    background-color: darken($bg-menu-color, 3);
-
-                    .sub-menu-list {
-                        display: block;
-                    }
-                }
-
-                .icon-right {
-                    display : block;
-                    position: absolute;
-                    top     : 0;
-                    right   : 10px;
+                    color          : inherit;
+                    display        : block;
+                    width          : 100%;
                 }
             }
         }
+    }
+}
 
-        &:hover {
-            .menu-list {
-                display: block;
-            }
-        }
+@keyframes fadeIn {
+    from {
+        opacity  : 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity  : 1;
+        transform: translateY(0);
     }
 }
