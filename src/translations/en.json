@@ -44,6 +44,8 @@
     },
     "menu": {
         "admin": {
+            "system": "System",
+            "dashboard": "Overview",
             "manage-user": "User system",
             "manage-account": "Manage account",
             "manage-doctor": "Manage doctor",
@@ -155,6 +157,8 @@
             "title-add": "Add new specialty",
             "title-edit": "Update specialty",
             "img-specialty": "Image specialty",
+            "description": "Description",
+            "status": "Status",
             "save": "Save",
              "update": "Update"
             

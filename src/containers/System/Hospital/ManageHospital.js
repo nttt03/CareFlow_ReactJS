@@ -106,14 +106,26 @@ function ManageHospital({ language }) {
     try {
       const res = await deleteHospital(id);
       if (res && res.errCode === 0) {
-        toast.success("Xóa bệnh viện thành công!");
+        toast.success(
+          language === "vi"
+            ? "Xóa bệnh viện thành công!"
+            : "Delete hospital successed!"
+        );
         fetchHospitals();
       } else {
-        toast.error("Xóa bệnh viện thất bại!");
+        toast.error(
+          language === "vi"
+            ? "Xóa bệnh viện thất bại!"
+            : "Delete hospital failed"
+        );
       }
     } catch (err) {
       console.error(err);
-      toast.error("Có lỗi xảy ra khi xóa bệnh viện!");
+      toast.error(
+        language === "vi"
+          ? "Có lỗi xảy ra khi xóa bệnh viện!"
+          : "An error occurred while deleting hospital!"
+      );
     }
   };
 
@@ -138,7 +150,7 @@ function ManageHospital({ language }) {
         (pagination.current - 1) * pagination.pageSize + index + 1,
     },
     {
-      title: "Bệnh viện",
+      title: language === "vi" ? "Bệnh viện" : "Hospital",
       dataIndex: "name",
       key: "name",
       width: 250,
@@ -177,14 +189,14 @@ function ManageHospital({ language }) {
       ),
     },
     {
-      title: "Địa chỉ chi tiết",
+      title: language === "vi" ? "Địa chỉ chi tiết" : "Address detail",
       dataIndex: "addressDetail",
       key: "addressDetail",
       width: 250,
       ellipsis: true,
     },
     {
-      title: "Trạng thái",
+      title: language === "vi" ? "Trạng thái" : "Status",
       dataIndex: "status",
       key: "status",
       width: 120,
@@ -207,7 +219,7 @@ function ManageHospital({ language }) {
       },
     },
     {
-      title: "Ngày tạo",
+      title: language === "vi" ? "Ngày tạo" : "Create At",
       dataIndex: "createdAt",
       key: "createdAt",
       width: 150,
@@ -215,7 +227,7 @@ function ManageHospital({ language }) {
         value ? moment(value).format("DD/MM/YYYY HH:mm") : "",
     },
     {
-      title: "Ngày cập nhật",
+      title: language === "vi" ? "Ngày cập nhật" : "Update At",
       dataIndex: "updatedAt",
       key: "updatedAt",
       width: 150,
@@ -223,7 +235,7 @@ function ManageHospital({ language }) {
         value ? moment(value).format("DD/MM/YYYY HH:mm") : "",
     },
     {
-      title: "Hành động",
+      title: language === "vi" ? "Hành động" : "Actions",
       key: "action",
       width: 120,
       fixed: "right",
@@ -246,8 +258,12 @@ function ManageHospital({ language }) {
             }
           />
           <Popconfirm
-            title="Xóa bản ghi"
-            description="Bạn có chắc muốn xóa bản ghi này không?"
+            title={language === "vi" ? "Xóa bản ghi" : "Delete record"}
+            description={
+              language === "vi"
+                ? "Bạn có chắc muốn xóa bản ghi này không?"
+                : "Are you sure to delete this record?"
+            }
             okText="Yes"
             cancelText="No"
             onConfirm={() => handleDeleteHospital(record.id)} // gọi hàm xoá
@@ -270,14 +286,18 @@ function ManageHospital({ language }) {
           icon={<PlusOutlined />}
           onClick={() => history.push("/system/manage-hospital/add-hospital")}
         >
-          Thêm bệnh viện
+          <FormattedMessage id="admin.manage-hospital.title-add" />
         </Button>
       </div>
       {/* Bộ lọc */}
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={8}>
           <Input
-            placeholder="Tìm theo tên bệnh viện"
+            placeholder={
+              language === "vi"
+                ? "Tìm theo tên bệnh viện"
+                : "Search by hospital name"
+            }
             value={filters.name}
             onChange={(e) => handleFilterChange({ name: e.target.value })}
             allowClear
@@ -286,7 +306,9 @@ function ManageHospital({ language }) {
         <Col span={8}>
           <Select
             showSearch
-            placeholder="Chọn tỉnh thành"
+            placeholder={
+              language === "vi" ? "Chọn tỉnh thành" : "Select province"
+            }
             style={{ width: "100%" }}
             allowClear
             value={filters.provinceId}
@@ -305,7 +327,9 @@ function ManageHospital({ language }) {
         </Col>
         <Col span={8}>
           <Select
-            placeholder="Chọn trạng thái"
+            placeholder={
+              language === "vi" ? "Chọn trạng thái" : "Select status"
+            }
             style={{ width: "100%" }}
             allowClear
             value={filters.status}

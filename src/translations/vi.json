@@ -44,6 +44,8 @@
     },
     "menu": {
         "admin": {
+            "system": "Hệ thống",
+            "dashboard": "Tổng quan",
             "manage-user": "Người dùng",
             "manage-account": "Quản lý tài khoản",
             "manage-doctor": "Quản lý bác sĩ",
@@ -156,6 +158,8 @@
             "name-specialty": "Tên chuyên khoa",
             "img-specialty": "Ảnh chuyên khoa",
             "save": "Lưu thông tin",
+            "description": "Mô tả chi tiết",
+            "status": "Trạng thái",
             "update": "Cập nhật"
         },
         "manage-hospital": {

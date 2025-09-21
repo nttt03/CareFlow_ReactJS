@@ -86,14 +86,26 @@ function ManageSpecialty({ language }) {
     try {
       const res = await deleteSpecialty(id);
       if (res && res.errCode === 0) {
-        toast.success("Xóa chuyên khoa thành công!");
+        toast.success(
+          language === "vi"
+            ? "Xóa chuyên khoa thành công!"
+            : "Delete specialty successfully!"
+        );
         fetchSpecialty();
       } else {
-        toast.error("Xóa chuyên khoa thất bại!");
+        toast.error(
+          language === "vi"
+            ? "Xóa chuyên khoa thất bại!"
+            : "Delete specialty failed!"
+        );
       }
     } catch (err) {
       console.error(err);
-      toast.error("Có lỗi xảy ra khi xóa chuyên khoa!");
+      toast.error(
+        language === "vi"
+          ? "Có lỗi xảy ra khi xóa chuyên khoa!"
+          : "An error occurred while deleting specialty!"
+      );
     }
   };
 
@@ -118,7 +130,7 @@ function ManageSpecialty({ language }) {
         (pagination.current - 1) * pagination.pageSize + index + 1,
     },
     {
-      title: "Chuyên khoa",
+      title: language === "vi" ? "Chuyên khoa" : "Specialty",
       dataIndex: "name",
       key: "name",
       width: 250,
@@ -143,7 +155,7 @@ function ManageSpecialty({ language }) {
       ),
     },
     {
-      title: "Trạng thái",
+      title: language === "vi" ? "Trạng thái" : "Status",
       dataIndex: "status",
       key: "status",
       width: 120,
@@ -166,7 +178,7 @@ function ManageSpecialty({ language }) {
       },
     },
     {
-      title: "Ngày tạo",
+      title: language === "vi" ? "Ngày tạo" : "Create At",
       dataIndex: "createdAt",
       key: "createdAt",
       width: 150,
@@ -174,7 +186,7 @@ function ManageSpecialty({ language }) {
         value ? moment(value).format("DD/MM/YYYY HH:mm") : "",
     },
     {
-      title: "Ngày cập nhật",
+      title: language === "vi" ? "Ngày cập nhật" : "Update At",
       dataIndex: "updatedAt",
       key: "updatedAt",
       width: 150,
@@ -182,7 +194,7 @@ function ManageSpecialty({ language }) {
         value ? moment(value).format("DD/MM/YYYY HH:mm") : "",
     },
     {
-      title: "Hành động",
+      title: language === "vi" ? "Hành động" : "Actions",
       key: "action",
       width: 120,
       fixed: "right",
@@ -207,8 +219,12 @@ function ManageSpecialty({ language }) {
             }
           />
           <Popconfirm
-            title="Xóa bản ghi"
-            description="Bạn có chắc muốn xóa bản ghi này không?"
+            title={language === "vi" ? "Xóa bản ghi" : "Delete record"}
+            description={
+              language === "vi"
+                ? "Bạn có chắc muốn xóa bản ghi này không?"
+                : "Are you sure to delete this record?"
+            }
             okText="Yes"
             cancelText="No"
             onConfirm={() => handleDeleteSpecialty(record.id)}
@@ -231,14 +247,18 @@ function ManageSpecialty({ language }) {
           icon={<PlusOutlined />}
           onClick={() => history.push("/system/manage-specialty/add-specialty")}
         >
-          Thêm chuyên khoa
+          <FormattedMessage id="admin.manage-specialty.title-add" />
         </Button>
       </div>
       {/* Bộ lọc */}
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={8}>
           <Input
-            placeholder="Tìm theo tên chuyên khoa"
+            placeholder={
+              language === "vi"
+                ? "Tìm theo tên chuyên khoa"
+                : "Search by specialty name"
+            }
             value={filters.name}
             onChange={(e) => handleFilterChange({ name: e.target.value })}
             allowClear
@@ -246,7 +266,9 @@ function ManageSpecialty({ language }) {
         </Col>
         <Col span={8}>
           <Select
-            placeholder="Chọn trạng thái"
+            placeholder={
+              language === "vi" ? "Chọn trạng thái" : "Select by status"
+            }
             style={{ width: "100%" }}
             allowClear
             value={filters.status}

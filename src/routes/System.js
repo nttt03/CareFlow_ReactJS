@@ -16,6 +16,7 @@ import AddSpecialty from "../containers/System/Specialty/AddSpecialty";
 import EditSpecialty from "../containers/System/Specialty/EditSpecialty";
 import ManageAccount from "../containers/System/Admin/ManageAccount";
 import ManageSchedule from "../containers/System/Doctor/ManageSchedule";
+import AdminDashboard from "../containers/System/Admin/AdminDashboard";
 
 class System extends Component {
   render() {
@@ -33,6 +34,7 @@ class System extends Component {
           <div className="system-container">
             <div className="system-list">
               <Switch>
+                <Route path="/system/dashboard" component={AdminDashboard} />
                 <Route
                   path="/system/manage-account"
                   component={ManageAccount}

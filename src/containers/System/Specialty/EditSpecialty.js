@@ -23,6 +23,7 @@ import {
 import { FormattedMessage } from "react-intl";
 import { useParams, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
+import BackButton from "../../../components/BackButton";
 
 const { Option } = Select;
 const mdParser = new markdownIt();
@@ -112,6 +113,11 @@ function EditSpecialty({ language }) {
   return (
     <Spin spinning={loading}>
       <div className="px-3 edit-specialty-container">
+        <BackButton
+          to="/system/manage-specialty"
+          label={language === "vi" ? "Quay lại" : "Back"}
+          style={{ color: "#0071ba", marginTop: "2px" }}
+        />
         <h2 className="title">
           <FormattedMessage id="admin.manage-specialty.title-edit" />
         </h2>
@@ -135,7 +141,7 @@ function EditSpecialty({ language }) {
             {/* Trạng thái */}
             <Col xs={24} md={12}>
               <Form.Item
-                label="Trạng thái"
+                label={<FormattedMessage id="admin.manage-specialty.status" />}
                 name="status"
                 rules={[{ required: true, message: "Chọn trạng thái!" }]}
               >
@@ -158,7 +164,7 @@ function EditSpecialty({ language }) {
           {/* Upload ảnh */}
           <Form.Item
             label={
-              <FormattedMessage id="admin.manage-hospital.img-specialty" />
+              <FormattedMessage id="admin.manage-specialty.img-specialty" />
             }
             name="image"
           >
@@ -186,7 +192,9 @@ function EditSpecialty({ language }) {
           </Form.Item>
 
           {/* Editor */}
-          <Form.Item label="Mô tả chi tiết">
+          <Form.Item
+            label={<FormattedMessage id="admin.manage-specialty.description" />}
+          >
             <MdEditor
               value={descriptionMarkdown}
               style={{ height: "400px" }}
@@ -197,7 +205,7 @@ function EditSpecialty({ language }) {
 
           {/* Nút Save */}
           <Form.Item>
-            <Button type="primary" onClick={handleSave}>
+            <Button type="primary" onClick={handleSave} className="float-end">
               <FormattedMessage id="admin.manage-specialty.save" />
             </Button>
           </Form.Item>

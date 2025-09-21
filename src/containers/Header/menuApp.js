@@ -1,5 +1,16 @@
 export const adminMenu = [
   {
+    // hệ thống
+    name: "menu.admin.system",
+    menus: [
+      {
+        name: "menu.admin.dashboard",
+        link: "/system/dashboard",
+      },
+    ],
+  },
+
+  {
     // quản lý người dùng
     name: "menu.admin.manage-user",
     menus: [

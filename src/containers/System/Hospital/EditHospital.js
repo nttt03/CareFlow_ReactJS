@@ -25,6 +25,8 @@ import {
   Table,
 } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import BackButton from "../../../components/BackButton";
+import HospitalSpecialtyConfig from "./Config/HospitalSpecialtyConfig";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -44,7 +46,6 @@ function EditHospital({ language }) {
   const [descriptionHTML, setDescriptionHTML] = useState("");
   const [descriptionMarkdown, setDescriptionMarkdown] = useState("");
   const [status, setStatus] = useState("");
-
   const [specialties, setSpecialties] = useState([]);
   const [leaders, setLeaders] = useState([]);
   const [doctors, setDoctors] = useState([]);
@@ -88,7 +89,6 @@ function EditHospital({ language }) {
       console.error("Lỗi khi fetch hospital detail:", err);
     }
   };
-
   useEffect(() => {
     fetchProvinces();
     fetchHospitalDetail();
@@ -130,14 +130,24 @@ function EditHospital({ language }) {
   };
 
   return (
-    <div className="container mt-3 manage-hospital-container">
-      <div className="title py-2">
+    <div className="container mt-2 manage-hospital-container">
+      <BackButton
+        to="/system/manage-hospital"
+        label={language === "vi" ? "Quay lại" : "Back"}
+        style={{ color: "#0071ba" }}
+      />
+      <div className="title mb-1">
         <FormattedMessage id="admin.manage-hospital.title-edit" />
       </div>
 
       <Tabs defaultActiveKey="1">
         {/* Tab 1 - Thông tin bệnh viện */}
-        <TabPane tab="Thông tin bệnh viện" key="1">
+        <TabPane
+          tab={
+            language === "vi" ? "Thông tin bệnh viện" : "Hospital information"
+          }
+          key="1"
+        >
           <Form form={form} layout="vertical" onFinish={handleSaveHospital}>
             <Row gutter={16}>
               <Col xs={24} md={12}>
@@ -270,7 +280,9 @@ function EditHospital({ language }) {
                     cancelText="No"
                     onConfirm={handleCancel}
                   >
-                    <Button danger>Hủy</Button>
+                    <Button danger>
+                      {language === "vi" ? "Hủy" : "Cancel"}
+                    </Button>
                   </Popconfirm>
                   <Button type="primary" htmlType="submit">
                     <FormattedMessage id="admin.manage-hospital.update" />
@@ -282,19 +294,25 @@ function EditHospital({ language }) {
         </TabPane>
 
         {/* Tab 2 - Chuyên khoa */}
-        <TabPane tab="Cấu hình chuyên khoa" key="2">
-          <Table
-            dataSource={specialties}
-            rowKey="id"
-            columns={[
-              { title: "Tên chuyên khoa", dataIndex: "name" },
-              { title: "Mô tả", dataIndex: "descriptionMarkdown" },
-            ]}
+        <TabPane
+          tab={language === "vi" ? "Cấu hình chuyên khoa" : "Specialty config"}
+          key="2"
+        >
+          <HospitalSpecialtyConfig
+            hospitalId={hospitalId}
+            hospitalName={form.getFieldValue("name")}
+            hospitalAvatar={imageBase64}
+            specialties={specialties}
           />
         </TabPane>
 
         {/* Tab 3 - Lãnh đạo */}
-        <TabPane tab="Cấu hình lãnh đạo" key="3">
+        <TabPane
+          tab={
+            language === "vi" ? "Cấu hình lãnh đạo" : "Hospital leader config"
+          }
+          key="3"
+        >
           <Table
             dataSource={leaders}
             rowKey="id"
@@ -307,7 +325,10 @@ function EditHospital({ language }) {
         </TabPane>
 
         {/* Tab 4 - Bác sĩ */}
-        <TabPane tab="Cấu hình bác sĩ" key="4">
+        <TabPane
+          tab={language === "vi" ? "Cấu hình bác sĩ" : "Doctor config"}
+          key="4"
+        >
           <Table
             dataSource={doctors}
             rowKey="id"

@@ -182,6 +182,14 @@ export const deleteSpecialty = (id) => {
   return axios.delete("/api/delete-specialty-by-id", { data: { id } });
 };
 
+export const saveSpecialtiesForHospital = (data) => {
+  return axios.post("/hospital-specialties", data);
+};
+
+export const getSpecialtiesByHospital = (hospitalId) => {
+  return axios.get(`/hospital-specialties/${hospitalId}`);
+};
+
 export {
   handleLoginApi,
   registerNewUser,

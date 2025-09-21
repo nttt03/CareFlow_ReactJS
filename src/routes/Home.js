@@ -17,7 +17,7 @@ class Home extends Component {
 
     switch (roleId) {
       case "R1":
-        return <Redirect to="/system/user-manage" />;
+        return <Redirect to="/system/dashboard" />;
       case "R2":
         return <Redirect to="/doctor/manage-schedule" />;
       case "R3":

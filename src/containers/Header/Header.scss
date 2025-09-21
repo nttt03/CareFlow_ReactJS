@@ -24,12 +24,46 @@
         align-items: center;
         color      : #ffffff;
 
-        .welcome {
-            margin-right    : 15px;
-            white-space     : nowrap;
-            background-color: #4783f3;
-            padding         : 5px 10px;
-            border-radius   : 5px;
+        .user-box {
+            display       : flex;
+            flex-direction: column;
+            align-items   : start;
+
+            .welcome {
+                align-items: center;
+                gap        : 8px;
+                white-space: nowrap;
+
+                .username {
+                    font-weight : 600;
+                    margin-right: 5px;
+                }
+            }
+
+            .role-badge {
+                font-size    : 0.85rem;
+                padding      : 2px 8px;
+                border-radius: 12px;
+                color        : #fff;
+                white-space  : nowrap;
+
+                &.R1 {
+                    background-color: #0fdd7d;
+                }
+
+                &.R2 {
+                    background-color: #56c7fc;
+                }
+
+                &.R3 {
+                    background-color: #6c757d;
+                }
+
+                &.R4 {
+                    background-color: #ffc107;
+                    color           : #000;
+                }
+            }
         }
 
         .language-vi {

@@ -187,7 +187,11 @@ function AddHospital({ language }) {
           </Col>
 
           <Col span={24}>
-            <Form.Item label="Mô tả chi tiết bệnh viện">
+            <Form.Item
+              label={
+                <FormattedMessage id="admin.manage-hospital.description" />
+              }
+            >
               <MdEditor
                 value={descriptionMarkdown}
                 style={{ height: "400px" }}

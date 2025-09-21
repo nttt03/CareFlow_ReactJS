@@ -7,6 +7,7 @@ import { CommonUtils } from "../../../utils";
 import { createNewSpecialty } from "../../../services/userService";
 import { toast } from "react-toastify";
 import { FormattedMessage } from "react-intl";
+import BackButton from "../../../components/BackButton";
 
 const mdParser = new markdownIt();
 
@@ -70,9 +71,15 @@ class AddSpecialty extends Component {
   };
 
   render() {
+    const { language } = this.props;
     return (
       <div>
         <div className="manage-spetialty-container">
+          <BackButton
+            to="/system/manage-specialty"
+            label={language === "vi" ? "Quay lại" : "Back"}
+            style={{ color: "#0071ba" }}
+          />
           <div className="ms-title">
             <FormattedMessage id="admin.manage-specialty.title-add" />
           </div>
