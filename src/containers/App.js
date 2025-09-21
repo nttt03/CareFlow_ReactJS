@@ -32,24 +32,6 @@ import GlobalLoading from "../components/GlobalLoading.js";
 import VerifyEmail from "./Patient/VerifyEmail.js";
 
 class App extends Component {
-  handlePersistorState = () => {
-    const { persistor } = this.props;
-    let { bootstrapped } = persistor.getState();
-    if (bootstrapped) {
-      if (this.props.onBeforeLift) {
-        Promise.resolve(this.props.onBeforeLift())
-          .then(() => this.setState({ bootstrapped: true }))
-          .catch(() => this.setState({ bootstrapped: true }));
-      } else {
-        this.setState({ bootstrapped: true });
-      }
-    }
-  };
-
-  componentDidMount() {
-    this.handlePersistorState();
-  }
-
   render() {
     return (
       <Fragment>
@@ -57,7 +39,7 @@ class App extends Component {
         <Router history={history}>
           <div className="main-container">
             <div className="content-container">
-              <CustomScrollbars style={{ height: "100vh", with: "100%" }}>
+              <CustomScrollbars style={{ height: "100vh", width: "100%" }}>
                 <Switch>
                   <Route path={path.HOME} exact component={Home} />
                   <Route
@@ -109,13 +91,6 @@ class App extends Component {
                 </Switch>
               </CustomScrollbars>
             </div>
-
-            {/* <ToastContainer
-                            className="toast-container" toastClassName="toast-item" bodyClassName="toast-item-body"
-                            autoClose={false} hideProgressBar={true} pauseOnHover={false}
-                            pauseOnFocusLoss={true} closeOnClick={false} draggable={false}
-                            closeButton={<CustomToastCloseButton />}
-                        /> */}
 
             <ToastContainer
               position="top-right"

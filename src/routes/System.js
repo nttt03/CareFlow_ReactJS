@@ -14,6 +14,8 @@ import AddHospital from "../containers/System/Hospital/AddHospital";
 import EditHospital from "../containers/System/Hospital/EditHospital";
 import AddSpecialty from "../containers/System/Specialty/AddSpecialty";
 import EditSpecialty from "../containers/System/Specialty/EditSpecialty";
+import ManageAccount from "../containers/System/Admin/ManageAccount";
+import ManageSchedule from "../containers/System/Doctor/ManageSchedule";
 
 class System extends Component {
   render() {
@@ -31,9 +33,17 @@ class System extends Component {
           <div className="system-container">
             <div className="system-list">
               <Switch>
+                <Route
+                  path="/system/manage-account"
+                  component={ManageAccount}
+                />
                 <Route path="/system/user-manage" component={UserManage} />
                 <Route path="/system/user-redux" component={UserRedux} />
                 <Route path="/system/manage-doctor" component={ManageDoctor} />
+                <Route
+                  path="/system/manage-schedule"
+                  component={ManageSchedule}
+                />
                 <Route
                   path="/system/manage-specialty/edit-specialty/:specialtyId"
                   component={EditSpecialty}

@@ -102,13 +102,16 @@ export const createNewUser = (data) => {
       let res = await createNewUserService(data);
       console.log("check create user redux: ", res);
       if (res && res.errCode === 0) {
-        toast.success("Create new user success!");
+        toast.success("Tạo tài khoản người dùng thành công!");
         dispatch(saveUserSuccess());
         dispatch(fetchAllUsersStart());
       } else {
+        toast.error(res.errMessage || "Có lỗi xảy ra khi tạo tài khoản!");
         dispatch(saveUserFailed());
       }
+      return res;
     } catch (e) {
+      toast.error("Lỗi server!");
       dispatch(saveUserFailed());
       console.log("saveUserFailed error: ", e);
     }
@@ -185,17 +188,19 @@ export const editUserStart = (data) => {
     try {
       let res = await editUserService(data);
       if (res && res.errCode === 0) {
-        toast.success("Edit user success!");
+        toast.success("Chỉnh sửa thông tin thành công!");
         dispatch(editUserSuccess());
         dispatch(fetchAllUsersStart());
       } else {
-        toast.error("Edit user error!");
+        toast.error(res?.errMessage || "Chỉnh sửa thông tin bị lỗi!");
         dispatch(editUserFailed());
       }
+      return res;
     } catch (e) {
-      toast.error("Edit user error!");
+      toast.error("Chỉnh sửa thông tin bị lỗi!");
       dispatch(editUserFailed());
       console.log("editUserFailed error: ", e);
+      return { errCode: -1, errMessage: "Server error" };
     }
   };
 };
@@ -263,18 +268,18 @@ export const saveDetailDoctor = (data) => {
     try {
       let res = await saveDetailDoctorService(data);
       if (res && res.errCode === 0) {
-        toast.success("Save infor detail doctor success!");
+        toast.success("Lưu thông tin bác sĩ thành công!");
         dispatch({
           type: actionTypes.SAVE_DETAIL_DOCTOR_SUCCESS,
         });
-      } else {
-        toast.error("Save infor detail doctor error!");
+      } else if (res && res.errCode === 1) {
+        toast.error("Vui lòng điền đầy đủ thông tin bắt buộc!");
         dispatch({
           type: actionTypes.SAVE_DETAIL_DOCTOR_FAILED,
         });
       }
     } catch (e) {
-      toast.error("Save infor detail doctor error!");
+      toast.error("Lưu thông tin bác sĩ thất bại!");
       console.log("SAVE_DETAIL_DOCTOR_FAILED: ", e);
       dispatch({
         type: actionTypes.SAVE_DETAIL_DOCTOR_FAILED,

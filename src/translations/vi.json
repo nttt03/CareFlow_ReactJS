@@ -45,6 +45,7 @@
     "menu": {
         "admin": {
             "manage-user": "Người dùng",
+            "manage-account": "Quản lý tài khoản",
             "manage-doctor": "Quản lý bác sĩ",
             "manage-admin": "Quản lý admin",
             "crud": "CRUD user",
@@ -170,6 +171,10 @@
             "save": "Lưu thông tin",
             "update": "Cập nhật",
             "description": "Mô tả chi tiết bệnh viện"
+        },
+        "manage-account": {
+            "title": "Quản lý tài khoản",
+            "title-add": "Thêm tài khoản"
         }
     }
 }
