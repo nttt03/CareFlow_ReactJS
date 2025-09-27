@@ -27,6 +27,7 @@ const HospitalSpecialtyConfig = ({
 }) => {
   const [specialties, setSpecialties] = useState([]);
   const [selectedSpecialties, setSelectedSpecialties] = useState([]);
+  const [totalSpecialty, setTotalSpecialty] = useState(0);
 
   const fetchAllSpecialty = async () => {
     try {
@@ -46,6 +47,7 @@ const HospitalSpecialtyConfig = ({
       if (res && res.data && res.errCode === 0) {
         const ids = res.data.map((s) => s.id);
         setSelectedSpecialties(ids);
+        setTotalSpecialty(res.data.length);
       }
     } catch (err) {
       console.error("Lỗi khi lấy chuyên khoa của bệnh viện:", err);
@@ -99,13 +101,22 @@ const HospitalSpecialtyConfig = ({
       {/* Cột trái */}
       <Col span={12}>
         <Card className="border border-1 border-secondary">
-          <div className="d-flex align-items-center justify-content-start gap-3 mb-3">
-            <Avatar
-              src={hospitalAvatar}
-              size={64}
-              className="border border-1 border-black"
-            />
-            <span className="fs-5 fw-bold">{hospitalName}</span>
+          <div className="d-flex align-items-center justify-content-between mb-3">
+            <div className="d-flex align-items-center gap-3">
+              <Avatar
+                src={hospitalAvatar}
+                size={64}
+                className="border border-1 border-black"
+              />
+              <span className="fs-5 fw-bold">{hospitalName}</span>
+            </div>
+
+            <span
+              style={{ backgroundColor: "#08bb25" }}
+              className="text-white px-3 py-1 rounded-pill"
+            >
+              {totalSpecialty} {language === "vi" ? "chuyên khoa" : "specialty"}
+            </span>
           </div>
 
           <Divider

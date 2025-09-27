@@ -30,6 +30,7 @@ const DoctorConfig = ({
   const [doctors, setDoctors] = useState([]);
   const [doctorsSelected, setDoctorsSelected] = useState([]);
   const [selectedDoctors, setSelectedDoctors] = useState([]);
+  const [totalDoctor, setTotalDoctor] = useState([]);
 
   const fetchAllDoctorConfig = async () => {
     try {
@@ -53,6 +54,7 @@ const DoctorConfig = ({
         }));
         setDoctorsSelected(res.data);
         setSelectedDoctors(selected);
+        setTotalDoctor(res.data.length);
       }
     } catch (err) {
       console.error("Lỗi khi lấy bác sĩ của bệnh viện:", err);
@@ -106,13 +108,22 @@ const DoctorConfig = ({
       {/* Cột trái */}
       <Col span={12}>
         <Card className="border border-1 border-secondary">
-          <div className="d-flex align-items-center justify-content-start gap-3 mb-3">
-            <Avatar
-              src={hospitalAvatar}
-              size={64}
-              className="border border-1 border-black"
-            />
-            <span className="fs-5 fw-bold">{hospitalName}</span>
+          <div className="d-flex align-items-center justify-content-between mb-3">
+            <div className="d-flex align-items-center gap-3">
+              <Avatar
+                src={hospitalAvatar}
+                size={64}
+                className="border border-1 border-black"
+              />
+              <span className="fs-5 fw-bold">{hospitalName}</span>
+            </div>
+
+            <span
+              style={{ backgroundColor: "#08bb25" }}
+              className=" text-white px-3 py-1 rounded-pill"
+            >
+              {totalDoctor} {language === "vi" ? "bác sĩ" : "doctor"}
+            </span>
           </div>
 
           <Divider

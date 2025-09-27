@@ -28,6 +28,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import BackButton from "../../../components/BackButton";
 import HospitalSpecialtyConfig from "./Config/HospitalSpecialtyConfig";
 import DoctorConfig from "./Config/DoctorConfig";
+import PriceConfig from "./Config/PriceConfig";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -331,6 +332,18 @@ function EditHospital({ language }) {
           key="4"
         >
           <DoctorConfig
+            hospitalId={hospitalId}
+            hospitalName={form.getFieldValue("name")}
+            hospitalAvatar={imageBase64}
+            specialties={specialties}
+          />
+        </TabPane>
+
+        <TabPane
+          tab={language === "vi" ? "Cấu hình giá khám" : "Price config"}
+          key="5"
+        >
+          <PriceConfig
             hospitalId={hospitalId}
             hospitalName={form.getFieldValue("name")}
             hospitalAvatar={imageBase64}

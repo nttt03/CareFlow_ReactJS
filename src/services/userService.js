@@ -202,6 +202,10 @@ export const saveDoctorsForHospital = (data) => {
   return axios.post("/hospital-doctors", data);
 };
 
+export const savePriceForHospital = (data) => {
+  return axios.post("/save-price-hospital", data);
+};
+
 export {
   handleLoginApi,
   registerNewUser,
