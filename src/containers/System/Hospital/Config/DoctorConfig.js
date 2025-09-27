@@ -78,6 +78,7 @@ const DoctorConfig = ({
 
       if (res && res.errCode === 0) {
         fetchHospitalDoctors();
+        fetchAllDoctorConfig();
         message.success(
           language === "vi"
             ? "Cập nhật bác sĩ thành công!"
@@ -99,8 +100,6 @@ const DoctorConfig = ({
       );
     }
   };
-  console.log("selectedDoctor: ", selectedDoctors);
-  console.log("doctors", doctors);
 
   return (
     <Row gutter={24}>
