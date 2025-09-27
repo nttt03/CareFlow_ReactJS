@@ -7,6 +7,7 @@ import * as actions from "../../../store/actions";
 import { LANGUAGES } from "../../../utils";
 import { FormattedMessage } from "react-intl";
 import { Buffer } from "buffer";
+import DoctorImg from "../../../assets/specialty/doctor.jpg";
 
 class ListDoctor extends Component {
   constructor(props) {
@@ -54,15 +55,19 @@ class ListDoctor extends Component {
                   );
                 }
 
-                let nameVi = `${item.positionData.valueVi}, ${item.lastName} ${item.firstName}`;
-                let nameEn = `${item.positionData.valueEn}, ${item.firstName} ${item.lastName}`;
+                let nameVi = `${item.positionData?.valueVi || "Bác sĩ"}, ${
+                  item.fullName
+                }`;
+                let nameEn = `${item.positionData?.valueEn || "Doctor"}, ${
+                  item.fullName
+                }`;
 
                 // Kiểm tra và hiển thị tên chuyên khoa, nếu không có thì hiển thị "Chưa xác định"
                 const specialtyName =
-                  item.Doctor_Infor &&
-                  item.Doctor_Infor.Specialty &&
-                  item.Doctor_Infor.Specialty.name
-                    ? item.Doctor_Infor.Specialty.name
+                  item.doctorInfor &&
+                  item.doctorInfor.specialty &&
+                  item.doctorInfor.specialty.name
+                    ? item.doctorInfor.specialty.name
                     : "Chưa xác định";
 
                 return (
@@ -74,7 +79,7 @@ class ListDoctor extends Component {
                     <div
                       className="doctor-image"
                       style={{
-                        backgroundImage: `url(${imageBase64 || ""})`,
+                        backgroundImage: `url(${imageBase64 || DoctorImg})`,
                       }}
                     ></div>
                     <div className="doctor-info">

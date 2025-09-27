@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Slider from "react-slick";
-import specialtyImg from "../../../assets/specialty/doctor.jpg";
+import DoctorImg from "../../../assets/specialty/doctor.jpg";
 import * as actions from "../../../store/actions";
 import { LANGUAGES } from "../../../utils";
 import { FormattedMessage } from "react-intl";
@@ -75,14 +75,19 @@ class OutStandingDoctor extends Component {
                     );
                   }
 
-                  let nameVi = `${item.positionData.valueVi}, ${item.lastName} ${item.firstName}`;
-                  let nameEn = `${item.positionData.valueEn}, ${item.firstName} ${item.lastName}`;
+                  let nameVi = `${item.positionData?.valueVi || "Bác sĩ"}, ${
+                    item.fullName
+                  }`;
+                  let nameEn = `${item.positionData?.valueEn || "Doctor"}, ${
+                    item.fullName
+                  }`;
+
                   // Kiểm tra và hiển thị tên chuyên khoa, nếu không có thì hiển thị "Chưa xác định"
                   let specialtyName =
-                    item.Doctor_Infor &&
-                    item.Doctor_Infor.Specialty &&
-                    item.Doctor_Infor.Specialty.name
-                      ? item.Doctor_Infor.Specialty.name
+                    item.doctorInfor &&
+                    item.doctorInfor.specialty &&
+                    item.doctorInfor.specialty.name
+                      ? item.doctorInfor.specialty.name
                       : "Chưa xác định";
                   return (
                     <div
@@ -90,14 +95,14 @@ class OutStandingDoctor extends Component {
                       key={index}
                       onClick={() => this.handleViewDetailDoctor(item)}
                     >
-                      {/* <img className='bg-image bg-image-doctor' src={specialtyImg} /> */}
+                      {/* <img className='bg-image bg-image-doctor' src={DoctorImg} /> */}
                       <div className="customize-border">
                         <div className="outer-bg">
                           <div
                             className="bg-image section-outstanding-doctor"
                             style={{
                               backgroundImage: `url(${
-                                imageBase64 || specialtyImg
+                                imageBase64 || DoctorImg
                               })`,
                             }}
                           ></div>

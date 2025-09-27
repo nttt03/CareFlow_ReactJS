@@ -158,7 +158,7 @@ class UserRedux extends Component {
   handleSaveUser = () => {
     let isValid = this.checkValidateInput();
     if (isValid === false) return;
-    let { action } = this.state; // = let action = this.state.action
+    let { action } = this.state;
     if (action === CRUD_ACTIONS.CREATE) {
       // fire redux action create user
       this.props.createNewUser({
@@ -199,7 +199,7 @@ class UserRedux extends Component {
     this.setState({
       email: user.email,
       password: "hardcode",
-      fullName: this.state.fullName,
+      fullName: user.fullName,
       phoneNumber: user.phoneNumber,
       address: user.addressDetail,
       gender: user.gender,
@@ -234,7 +234,9 @@ class UserRedux extends Component {
 
     return (
       <div className="user-redux-container">
-        <div className="title">User Redux</div>
+        <div className="title">
+          <FormattedMessage id="menu.admin.crud" />
+        </div>
         <div className="user-redux-body">
           <div className="container">
             <div>{isGetGender === true ? "Loading Genders..." : ""}</div>

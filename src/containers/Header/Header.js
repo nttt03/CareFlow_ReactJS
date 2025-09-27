@@ -10,6 +10,7 @@ import { changeLanguageApp } from "../../store/actions";
 import { FormattedMessage } from "react-intl";
 import _ from "lodash";
 import { Avatar } from "antd";
+import { CrownTwoTone } from "@ant-design/icons";
 
 class Header extends Component {
   constructor(props) {
@@ -80,6 +81,7 @@ class Header extends Component {
                   </span>
                 </span>
                 <span className={`role-badge mt-1 ${userInfo.roleId}`}>
+                  <CrownTwoTone className="me-1" />
                   {this.getRoleName(userInfo.roleId)}
                 </span>
               </div>

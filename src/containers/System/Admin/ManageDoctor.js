@@ -38,8 +38,10 @@ class ManageDoctor extends Component {
       price: "",
       listSpecialty: [],
       listHospital: [],
+      positionArr: [],
       selectedSpecialty: null,
       selectedHospital: null,
+      selectedPosition: null,
 
       note: "",
     };
@@ -48,6 +50,7 @@ class ManageDoctor extends Component {
   componentDidMount() {
     this.props.fetchAllDoctorsRedux();
     this.props.getAllRequiredDoctorInfor();
+    this.props.getPositionStart();
   }
 
   buildDataInputSelect = (inputData) => {
@@ -74,6 +77,16 @@ class ManageDoctor extends Component {
         listHospital: this.buildDataInputSelect(resHospital),
       });
     }
+    if (prevProps.positionRedux !== this.props.positionRedux) {
+      let arrPositions = this.props.positionRedux;
+      this.setState({
+        positionArr: arrPositions,
+        selectedPosition:
+          arrPositions && arrPositions.length > 0
+            ? arrPositions[0].keyMap
+            : null,
+      });
+    }
   }
 
   handleEditorChange = ({ html, text }) => {
@@ -95,6 +108,7 @@ class ManageDoctor extends Component {
       note: this.state.note,
       specialtyId: this.state.selectedSpecialty?.value,
       hospitalId: this.state.selectedHospital?.value || "",
+      positionId: this.state.selectedPosition || "",
     });
   };
 
@@ -108,6 +122,7 @@ class ManageDoctor extends Component {
         price = "",
         selectedSpecialty = null,
         selectedHospital = null;
+      let selectedPosition = null;
 
       if (res.data.Doctor_Infor) {
         note = res.data.Doctor_Infor.note;
@@ -119,6 +134,7 @@ class ManageDoctor extends Component {
         selectedHospital = listHospital.find(
           (item) => item.value === res.data.Doctor_Infor.hospitalId
         );
+        selectedPosition = res.data.positionId || null;
       }
 
       this.setState({
@@ -130,6 +146,7 @@ class ManageDoctor extends Component {
         price,
         selectedSpecialty,
         selectedHospital,
+        selectedPosition,
       });
     } else {
       this.setState({
@@ -141,6 +158,7 @@ class ManageDoctor extends Component {
         price: "",
         selectedSpecialty: null,
         selectedHospital: null,
+        selectedPosition: null,
       });
     }
   };
@@ -159,9 +177,11 @@ class ManageDoctor extends Component {
       hasOlData,
     } = this.state;
 
+    const { language } = this.props;
+
     return (
       <div className="manage-doctor-container" style={{ padding: 24 }}>
-        <Title level={3} className="title">
+        <Title level={3} className="title mt-0">
           <FormattedMessage id="admin.manage-doctor.title" />
         </Title>
 
@@ -176,7 +196,9 @@ class ManageDoctor extends Component {
                 >
                   <AntdSelect
                     showSearch
-                    placeholder="Chọn bác sĩ"
+                    placeholder={
+                      language === "vi" ? "Chọn bác sĩ" : "Select doctor"
+                    }
                     options={listDoctors}
                     value={selectedOption}
                     onChange={this.handleChangeDoctor}
@@ -206,34 +228,27 @@ class ManageDoctor extends Component {
             <Row gutter={16}>
               <Col span={8}>
                 <Form.Item
-                  label={<FormattedMessage id="admin.manage-doctor.price" />}
+                  label={
+                    <>
+                      <span>
+                        <FormattedMessage id="admin.manage-doctor.hospital" />
+                      </span>
+                      <span className="text-danger ms-2">*</span>
+                    </>
+                  }
                 >
-                  <InputNumber
-                    style={{ width: "100%" }}
-                    value={price}
-                    onChange={(value) => this.setState({ price: value })}
-                    formatter={(value) =>
-                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+                  <AntdSelect
+                    placeholder={
+                      language === "vi" ? "Chọn bệnh viện" : "Select hospital"
                     }
-                    parser={(value) => value.replace(/\ VNĐ\s?|(\.)/g, "")}
-                    placeholder="Nhập giá khám"
-                    min={0}
+                    options={listHospital}
+                    value={selectedHospital}
+                    onChange={(value, option) =>
+                      this.setState({ selectedHospital: option })
+                    }
                   />
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item
-                  label={<FormattedMessage id="admin.manage-doctor.note" />}
-                >
-                  <Input
-                    value={note}
-                    onChange={(e) => this.setState({ note: e.target.value })}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Row gutter={16}>
               <Col span={8}>
                 <Form.Item
                   label={
@@ -241,12 +256,16 @@ class ManageDoctor extends Component {
                       <span>
                         <FormattedMessage id="admin.manage-doctor.specialty" />
                       </span>
-                      <span className="text-danger pl-2">*</span>
+                      <span className="text-danger ms-2">*</span>
                     </>
                   }
                 >
                   <AntdSelect
-                    placeholder="Chọn chuyên khoa"
+                    placeholder={
+                      language === "vi"
+                        ? "Chọn chuyên khoa"
+                        : "Select specialty"
+                    }
                     options={listSpecialty}
                     value={selectedSpecialty}
                     onChange={(value, option) =>
@@ -260,18 +279,58 @@ class ManageDoctor extends Component {
                   label={
                     <>
                       <span>
-                        <FormattedMessage id="admin.manage-doctor.hospital" />
+                        <FormattedMessage id="admin.manage-doctor.position" />
                       </span>
-                      <span className="text-danger pl-2">*</span>
+                      <span className="text-danger ms-2">*</span>
                     </>
                   }
                 >
                   <AntdSelect
-                    placeholder="Chọn bệnh viện"
-                    options={listHospital}
-                    value={selectedHospital}
-                    onChange={(value, option) =>
-                      this.setState({ selectedHospital: option })
+                    placeholder={
+                      language === "vi" ? "Chọn chức danh" : "Select position"
+                    }
+                    options={this.state.positionArr.map((item) => ({
+                      label: language === "vi" ? item.valueVi : item.valueEn,
+                      value: item.keyMap,
+                    }))}
+                    value={this.state.selectedPosition || null}
+                    onChange={(value) =>
+                      this.setState({ selectedPosition: value })
+                    }
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={16}>
+              <Col span={8}>
+                <Form.Item
+                  label={<FormattedMessage id="admin.manage-doctor.price" />}
+                >
+                  <InputNumber
+                    style={{ width: "100%" }}
+                    value={price}
+                    onChange={(value) => this.setState({ price: value })}
+                    formatter={(value) =>
+                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " VNĐ"
+                    }
+                    parser={(value) => value.replace(/\ VNĐ\s?|(\.)/g, "")}
+                    placeholder={
+                      language === "vi" ? "Nhập giá khám" : "Enter price"
+                    }
+                    min={0}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item
+                  label={<FormattedMessage id="admin.manage-doctor.note" />}
+                >
+                  <Input
+                    value={note}
+                    onChange={(e) => this.setState({ note: e.target.value })}
+                    placeholder={
+                      language === "vi" ? "Nhập ghi chú" : "Enter note"
                     }
                   />
                 </Form.Item>
@@ -280,7 +339,7 @@ class ManageDoctor extends Component {
           </Form>
         </Card>
 
-        <Card title="Chi tiết & Nội dung">
+        <Card title={language === "vi" ? "Chi tiết & Nội dung" : "Description"}>
           <MdEditor
             value={this.state.contentMarkdown}
             style={{ height: "300px" }}
@@ -311,12 +370,14 @@ const mapStateToProps = (state) => ({
   language: state.app.language,
   allDoctors: state.admin.allDoctors,
   allRequiredDoctorInfor: state.admin.allRequiredDoctorInfor,
+  positionRedux: state.admin.positions,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   fetchAllDoctorsRedux: () => dispatch(actions.fetchAllDoctors()),
   getAllRequiredDoctorInfor: () => dispatch(actions.getRequiredDoctorInfor()),
   saveDetailDoctor: (data) => dispatch(actions.saveDetailDoctor(data)),
+  getPositionStart: () => dispatch(actions.fetchPositionStart()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageDoctor);

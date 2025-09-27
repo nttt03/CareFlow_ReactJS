@@ -61,13 +61,10 @@ class ManageSchedule extends Component {
 
   buildDataInputSelect = (inputData) => {
     let result = [];
-    let { language } = this.props;
     if (inputData && inputData.length > 0) {
       inputData.map((item, index) => {
         let object = {};
-        let labelVi = `${item.lastName} ${item.firstName}`;
-        let labelEn = `${item.firstName} ${item.lastName}`;
-        object.label = language === LANGUAGES.VI ? labelVi : labelEn;
+        object.label = item.fullName;
         object.value = item.id;
         result.push(object);
       });

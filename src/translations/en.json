@@ -50,8 +50,8 @@
             "manage-account": "Manage account",
             "manage-doctor": "Manage doctor",
             "manage-admin": "Manage admin",
-            "crud": "CRUD user",
-            "crud-redux": "CRUD user redux",
+            "crud": "Manage user",
+            "crud-redux": "Manage user",
             "hospital": "Hospital",
             "manage-hospital": "Manage hospital",
             "specialty": "Specialty",
@@ -148,6 +148,7 @@
             "note": "Note",
             "specialty": "Select Specialty",
             "hospital": "Select Hospital",
+            "position": "Select Position",
             "add": "Create infor",
             "save": "Save infor"
         },

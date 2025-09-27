@@ -76,9 +76,10 @@
             }
 
             .bg-image {
-                width            : inherit;
+                // width            : inherit;
                 padding          : 8px;
                 background-repeat: no-repeat;
+                margin           : auto;
 
             }
 
@@ -99,7 +100,10 @@
             }
 
             span {
-                padding-left: 8px;
+                // padding-left: 8px;
+                margin     : auto;
+                font-weight: 600;
+
             }
         }
     }

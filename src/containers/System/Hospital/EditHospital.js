@@ -27,6 +27,7 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import BackButton from "../../../components/BackButton";
 import HospitalSpecialtyConfig from "./Config/HospitalSpecialtyConfig";
+import DoctorConfig from "./Config/DoctorConfig";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -329,14 +330,11 @@ function EditHospital({ language }) {
           tab={language === "vi" ? "Cấu hình bác sĩ" : "Doctor config"}
           key="4"
         >
-          <Table
-            dataSource={doctors}
-            rowKey="id"
-            columns={[
-              { title: "Họ tên", dataIndex: ["doctor", "fullName"] },
-              { title: "Email", dataIndex: ["doctor", "email"] },
-              { title: "Chuyên khoa", dataIndex: ["specialty", "name"] },
-            ]}
+          <DoctorConfig
+            hospitalId={hospitalId}
+            hospitalName={form.getFieldValue("name")}
+            hospitalAvatar={imageBase64}
+            specialties={specialties}
           />
         </TabPane>
       </Tabs>

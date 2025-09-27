@@ -66,7 +66,9 @@ class HomePage extends Component {
                     >
                       <div className="customize-border-slider">
                         <img className="bg-image-slider" src={item.image} />
-                        <span className="name-slider">{item.name}</span>
+                        <span className="name-slider text-truncate">
+                          {item.name}
+                        </span>
                       </div>
                     </div>
                   );

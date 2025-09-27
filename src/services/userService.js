@@ -190,6 +190,18 @@ export const getSpecialtiesByHospital = (hospitalId) => {
   return axios.get(`/hospital-specialties/${hospitalId}`);
 };
 
+export const getAllDoctorConfig = () => {
+  return axios.get(`/api/get-all-doctor-config`);
+};
+
+export const getDoctorsByHospital = (hospitalId) => {
+  return axios.get(`/hospital-doctors/${hospitalId}`);
+};
+
+export const saveDoctorsForHospital = (data) => {
+  return axios.post("/hospital-doctors", data);
+};
+
 export {
   handleLoginApi,
   registerNewUser,

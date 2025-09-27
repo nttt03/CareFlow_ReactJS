@@ -12,49 +12,56 @@ import {
   message,
 } from "antd";
 import {
-  getAllSpecialty,
-  saveSpecialtiesForHospital,
-  getSpecialtiesByHospital,
+  getAllDoctorConfig,
+  saveDoctorsForHospital,
+  getDoctorsByHospital,
 } from "../../../../services/userService";
+import * as actions from "../../../../store/actions";
+import { Buffer } from "buffer";
 
 const { Option } = Select;
 
-const HospitalSpecialtyConfig = ({
+const DoctorConfig = ({
   hospitalId,
   hospitalName,
   hospitalAvatar,
   language,
 }) => {
-  const [specialties, setSpecialties] = useState([]);
-  const [selectedSpecialties, setSelectedSpecialties] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const [doctorsSelected, setDoctorsSelected] = useState([]);
+  const [selectedDoctors, setSelectedDoctors] = useState([]);
 
-  const fetchAllSpecialty = async () => {
+  const fetchAllDoctorConfig = async () => {
     try {
-      const res = await getAllSpecialty();
+      const res = await getAllDoctorConfig();
       if (res && res.data && res.errCode === 0) {
-        setSpecialties(res.data || []);
+        setDoctors(res.data || []);
       }
     } catch (err) {
-      console.error("Lỗi khi lấy danh sách chuyên khoa:", err);
+      console.error("Lỗi khi lấy danh sách bác sĩ:", err);
     }
   };
 
-  const fetchHospitalSpecialties = async () => {
+  const fetchHospitalDoctors = async () => {
     if (!hospitalId) return;
     try {
-      const res = await getSpecialtiesByHospital(hospitalId);
+      const res = await getDoctorsByHospital(hospitalId);
       if (res && res.data && res.errCode === 0) {
-        const ids = res.data.map((s) => s.id);
-        setSelectedSpecialties(ids);
+        const selected = res.data.map((s) => ({
+          value: s.id,
+          label: s.fullName,
+        }));
+        setDoctorsSelected(res.data);
+        setSelectedDoctors(selected);
       }
     } catch (err) {
-      console.error("Lỗi khi lấy chuyên khoa của bệnh viện:", err);
+      console.error("Lỗi khi lấy bác sĩ của bệnh viện:", err);
     }
   };
 
   useEffect(() => {
-    fetchAllSpecialty();
-    fetchHospitalSpecialties();
+    fetchAllDoctorConfig();
+    fetchHospitalDoctors();
   }, [hospitalId]);
 
   const handleSave = async () => {
@@ -64,35 +71,36 @@ const HospitalSpecialtyConfig = ({
       );
 
     try {
-      const res = await saveSpecialtiesForHospital({
+      const res = await saveDoctorsForHospital({
         hospitalId,
-        specialtyIds: selectedSpecialties,
+        doctorIds: selectedDoctors.map((d) => d.value),
       });
 
       if (res && res.errCode === 0) {
+        fetchHospitalDoctors();
         message.success(
           language === "vi"
-            ? "Cập nhật chuyên khoa thành công!"
-            : "Update specialty success!"
+            ? "Cập nhật bác sĩ thành công!"
+            : "Update doctor success!"
         );
       } else {
         message.error(
           res.message || language === "vi"
-            ? "Lỗi khi lưu chuyên khoa!"
-            : "Error saving specialty!"
+            ? "Lỗi khi lưu bác sĩ!"
+            : "Error saving doctor!"
         );
       }
     } catch (err) {
       console.error(err);
       message.error(
         language === "vi"
-          ? "Có lỗi xảy ra khi lưu chuyên khoa!"
-          : "Error saving specialty!"
+          ? "Có lỗi xảy ra khi lưu bác sĩ!"
+          : "Error saving doctor!"
       );
     }
   };
-
-  console.log("selectedSpecialties: ", selectedSpecialties);
+  console.log("selectedDoctor: ", selectedDoctors);
+  console.log("doctors", doctors);
 
   return (
     <Row gutter={24}>
@@ -118,16 +126,14 @@ const HospitalSpecialtyConfig = ({
 
           <List
             header={
-              <b>
-                {language === "vi" ? "Danh sách chuyên khoa" : "List specialty"}
-              </b>
+              <b>{language === "vi" ? "Danh sách bác sĩ" : "List doctor"}</b>
             }
-            dataSource={specialties.filter((s) =>
-              selectedSpecialties.includes(s.id)
+            dataSource={doctorsSelected.filter((s) =>
+              selectedDoctors.some((d) => d.value === s.id)
             )}
             grid={{ gutter: 16, column: 3 }}
             renderItem={(item) => {
-              console.log("item: ", item);
+              console.log("itemDoctor: ", item);
               return (
                 <List.Item>
                   <Card
@@ -135,8 +141,12 @@ const HospitalSpecialtyConfig = ({
                     className="text-center"
                     bodyStyle={{ padding: "8px" }}
                   >
-                    <Avatar src={item.image} size={48} className="mb-2" />
-                    <div>{item.name}</div>
+                    <Avatar
+                      src={item.avatar || "/defaultimg.png"}
+                      size={48}
+                      className="mb-2"
+                    />
+                    <div>{item.fullName}</div>
                   </Card>
                 </List.Item>
               );
@@ -147,31 +157,29 @@ const HospitalSpecialtyConfig = ({
 
       {/* Cột phải */}
       <Col span={12}>
-        <h5>{language === "vi" ? "Chọn chuyên khoa" : "Select specialty"}</h5>
+        <h5>{language === "vi" ? "Chọn bác sĩ" : "Select doctor"}</h5>
         <p className="text-danger">
           {language === "vi" ? "Lưu ý nhấn" : "Note the press"}{" "}
           <strong>{language === "vi" ? "Lưu" : "Save"}</strong>{" "}
           {language === "vi"
-            ? "để lưu chuyên khoa vào danh sách!"
-            : "to save the specialty to your list!"}
+            ? "để lưu bác sĩ vào danh sách!"
+            : "to save the doctor to your list!"}
         </p>
         <Select
           showSearch
           mode="multiple"
+          labelInValue
           style={{ width: "100%", marginBottom: 16 }}
-          placeholder={
-            language === "vi" ? "Chọn chuyên khoa" : "Select sepcialty"
-          }
-          value={selectedSpecialties}
-          onChange={setSelectedSpecialties}
-          optionLabelProp="label"
+          placeholder={language === "vi" ? "Chọn bác sĩ" : "Select doctor"}
+          value={selectedDoctors} // [{ value: id, label: fullName }]
+          onChange={(values) => setSelectedDoctors(values)}
           filterOption={(input, option) =>
             option.label.toLowerCase().includes(input.toLowerCase())
           }
         >
-          {specialties.map((s) => (
-            <Option key={s.id} value={s.id} label={s.name}>
-              {s.name}
+          {doctors.map((item) => (
+            <Option key={item.id} value={item.id} label={item.fullName}>
+              {item.fullName}
             </Option>
           ))}
         </Select>
@@ -190,4 +198,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(HospitalSpecialtyConfig);
+const mapDispatchToProps = (dispatch) => {
+  return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DoctorConfig);

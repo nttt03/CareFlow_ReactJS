@@ -74,10 +74,18 @@ function ManageAccount({
   const handleDeleteUser = async (id) => {
     try {
       await deleteUser(id);
-      toast.success("Xóa tài khoản thành công!");
+      toast.success(
+        language === "vi"
+          ? "Xóa tài khoản thành công!"
+          : "Account deleted successfully!"
+      );
       getAllUsers();
     } catch (err) {
-      toast.error("Xóa tài khoản thất bại!");
+      toast.error(
+        language === "vi"
+          ? "Xóa tài khoản thất bại!"
+          : "Account deletion failed!"
+      );
     }
   };
 
@@ -89,7 +97,9 @@ function ManageAccount({
   const filteredUsers = Array.isArray(listUsers)
     ? listUsers.filter((u) => {
         const matchName = filters.name
-          ? u.fullName.toLowerCase().includes(filters.name.toLowerCase())
+          ? String(u.fullName || "")
+              .toLowerCase()
+              .includes(filters.name.toLowerCase())
           : true;
         const matchStatus = filters.status ? u.status === filters.status : true;
         const matchRole = filters.role ? u.roleId === filters.role : true;
@@ -112,7 +122,7 @@ function ManageAccount({
         (pagination.current - 1) * pagination.pageSize + index + 1,
     },
     {
-      title: "Họ tên",
+      title: language === "vi" ? "Họ tên" : "Full Name",
       dataIndex: "fullName",
       key: "fullName",
       width: 250,
@@ -137,14 +147,12 @@ function ManageAccount({
       ),
     },
     {
-      title: "Phân quyền",
+      title: language === "vi" ? "Phân quyền" : "Decentralization",
       dataIndex: "roleId",
       key: "roleId",
       width: 150,
       render: (roleId) => {
         const role = roleRedux?.find((r) => r.keyMap === roleId);
-        console.log("roleRedux: ", roleRedux);
-        console.log("role: ", role);
         let color = "default";
         if (roleId === "R1") color = "red";
         else if (roleId === "R2") color = "green";
@@ -166,13 +174,13 @@ function ManageAccount({
       width: 200,
     },
     {
-      title: "Số điện thoại",
+      title: language === "vi" ? "Số điện thoại" : "Phone",
       dataIndex: "phoneNumber",
       key: "phoneNumber",
       width: 120,
     },
     {
-      title: "Trạng thái",
+      title: language === "vi" ? "Trạng thái" : "Status",
       dataIndex: "status",
       key: "status",
       width: 120,
@@ -189,21 +197,21 @@ function ManageAccount({
       },
     },
     {
-      title: "Ngày tạo",
+      title: language === "vi" ? "Ngày tạo" : "Create At",
       dataIndex: "createdAt",
       key: "createdAt",
       render: (value) =>
         value ? moment(value).format("DD/MM/YYYY HH:mm") : "",
     },
     {
-      title: "Ngày cập nhật",
+      title: language === "vi" ? "Ngày cập nhật" : "Update At",
       dataIndex: "updatedAt",
       key: "updatedAt",
       render: (value) =>
         value ? moment(value).format("DD/MM/YYYY HH:mm") : "",
     },
     {
-      title: "Hành động",
+      title: language === "vi" ? "Hành động" : "Actions",
       key: "action",
       width: 150,
       render: (_, record) => (
@@ -214,7 +222,7 @@ function ManageAccount({
             onClick={() => handleOpenEdit(record)}
           />
           <Popconfirm
-            title="Xóa tài khoản"
+            title={language === "vi" ? "Xóa tài khoản" : "Delete account"}
             okText="Yes"
             cancelText="No"
             onConfirm={() => handleDeleteUser(record.id)}
@@ -233,7 +241,7 @@ function ManageAccount({
       </div>
       <div style={{ textAlign: "left", marginBottom: 16 }}>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleOpenAdd}>
-          Thêm tài khoản
+          {language === "vi" ? "Thêm tài khoản" : "Add account"}
         </Button>
       </div>
       <ModalAccount
@@ -247,7 +255,7 @@ function ManageAccount({
       <Row gutter={16} style={{ marginBottom: 16 }}>
         <Col span={8}>
           <Input
-            placeholder="Tìm theo tên"
+            placeholder={language === "vi" ? "Tìm theo tên" : "Search by name"}
             value={filters.name}
             onChange={(e) => handleFilterChange({ name: e.target.value })}
             allowClear
@@ -255,7 +263,9 @@ function ManageAccount({
         </Col>
         <Col span={8}>
           <Select
-            placeholder="Chọn phân quyền"
+            placeholder={
+              language === "vi" ? "Chọn phân quyền" : "Select permissions"
+            }
             style={{ width: "100%" }}
             allowClear
             value={filters.role}
@@ -277,7 +287,9 @@ function ManageAccount({
         </Col>
         <Col span={8}>
           <Select
-            placeholder="Chọn trạng thái"
+            placeholder={
+              language === "vi" ? "Chọn trạng thái" : "Select status"
+            }
             style={{ width: "100%" }}
             allowClear
             value={filters.status}

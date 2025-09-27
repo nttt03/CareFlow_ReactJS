@@ -50,8 +50,8 @@
             "manage-account": "Quản lý tài khoản",
             "manage-doctor": "Quản lý bác sĩ",
             "manage-admin": "Quản lý admin",
-            "crud": "CRUD user",
-            "crud-redux": "CRUD user redux",
+            "crud": "Quản lý người dùng",
+            "crud-redux": "Quản lý người dùng",
             "hospital": "Bệnh viện",
             "manage-hospital": "Quản lý bệnh viện",
             "specialty": "Chuyên khoa",
@@ -148,6 +148,7 @@
             "note": "Ghi chú",
             "specialty": "Chọn Chuyên khoa",
             "hospital": "Chọn bệnh viện",
+            "position": "Chọn vị trí",
             "add": "Tạo thông tin",
             "save": "Lưu thông tin"
         },
