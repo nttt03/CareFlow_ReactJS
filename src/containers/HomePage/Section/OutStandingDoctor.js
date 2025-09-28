@@ -63,7 +63,7 @@ class OutStandingDoctor extends Component {
             </button>
           </div>
 
-          <div className="section-body">
+          <div className="section-body mb-5">
             <Slider {...this.props.settings}>
               {arrDoctors &&
                 arrDoctors.length > 0 &&
@@ -95,24 +95,26 @@ class OutStandingDoctor extends Component {
                       key={index}
                       onClick={() => this.handleViewDetailDoctor(item)}
                     >
-                      {/* <img className='bg-image bg-image-doctor' src={DoctorImg} /> */}
-                      <div className="customize-border">
-                        <div className="outer-bg">
-                          <div
-                            className="bg-image section-outstanding-doctor"
-                            style={{
-                              backgroundImage: `url(${
-                                imageBase64 || DoctorImg
-                              })`,
-                            }}
-                          ></div>
-                        </div>
-                        <div className="position text-center">
-                          <div style={{ fontWeight: 600 }}>
-                            {language === LANGUAGES.VI ? nameVi : nameEn}
-                          </div>
-                          <div>{specialtyName}</div>
-                        </div>
+                      <div
+                        style={{ background: "navy" }}
+                        className="mx-3 text-white card hoverable border-0 shadow-sm text-center p-3 doctor-card"
+                      >
+                        <img
+                          src={imageBase64 || DoctorImg}
+                          alt={item.fullName}
+                          className="rounded-circle mx-auto"
+                          style={{
+                            width: "90px",
+                            height: "90px",
+                            objectFit: "cover",
+                            border: "2px solid #eee",
+                          }}
+                        />
+
+                        <h5 className="mt-3 mb-1 fw-bold">
+                          {language === LANGUAGES.VI ? nameVi : nameEn}
+                        </h5>
+                        <p className="small mb-0 text-white">{specialtyName}</p>
                       </div>
                     </div>
                   );

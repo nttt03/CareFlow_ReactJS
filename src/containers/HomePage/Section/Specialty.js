@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import "./Specialty.scss";
 import Slider from "react-slick";
 import { getAllSpecialty } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
 import { withRouter } from "react-router";
+import "../HomePage.scss";
 
 class Specialty extends Component {
   constructor(props) {
@@ -55,7 +55,7 @@ class Specialty extends Component {
             </button>
           </div>
 
-          <div className="section-body">
+          <div className="section-body mb-5">
             <Slider {...this.props.settings}>
               {dataSpecialty &&
                 dataSpecialty.length > 0 &&
@@ -63,11 +63,28 @@ class Specialty extends Component {
                   return (
                     <div
                       key={index}
-                      className="section-customize specialty-child"
+                      className="px-3"
                       onClick={() => this.handleViewDetailSpecialty(item)}
                     >
-                      <img className="bg-image" src={item.image} />
-                      <span className="specialty-name mt-1">{item.name}</span>
+                      <div className="card hoverable text-center border-0 shadow-sm specialty-card">
+                        <div className="card-img-top d-flex justify-content-center align-items-center p-3">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="img-fluid rounded"
+                            style={{
+                              width: "80px",
+                              height: "80px",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </div>
+                        <div className="card-body p-2">
+                          <h6 className="specialty-name bold text-truncate">
+                            {item.name}
+                          </h6>
+                        </div>
+                      </div>
                     </div>
                   );
                 })}

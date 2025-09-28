@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import "./Slider.scss";
 import Slider from "react-slick";
+import { Card } from "antd";
+import { EnvironmentOutlined } from "@ant-design/icons";
 import { FormattedMessage } from "react-intl";
 import { getAllHospital } from "../../../services/userService";
 import { withRouter } from "react-router";
+import "./Slider.scss";
 
 class HomePage extends Component {
   constructor(props) {
@@ -18,10 +20,9 @@ class HomePage extends Component {
     let res = await getAllHospital();
     if (res && res.errCode === 0) {
       this.setState({
-        dataHospitals: res.data ? res.data : [],
+        dataHospitals: res.data || [],
       });
     }
-    // console.log('check res hospital', res);
   }
 
   handleViewListHospital = () => {
@@ -37,42 +38,78 @@ class HomePage extends Component {
   };
 
   render() {
-    let { dataHospitals } = this.state;
+    const { dataHospitals } = this.state;
+
     return (
       <div className="section-share section-medical-facility">
         <div className="section-container">
           <div className="section-header">
-            <span>
+            <span className="text-white">
               <FormattedMessage id="homepage.medical-facility-outstanding" />
             </span>
             <button
               className="btn btn-secondary px-3"
-              onClick={() => this.handleViewListHospital()}
+              onClick={this.handleViewListHospital}
             >
               <FormattedMessage id="homepage.more-infor" />
             </button>
           </div>
 
-          <div className="section-body">
+          <div className="section-body mb-5">
             <Slider {...this.props.settings}>
-              {dataHospitals &&
-                dataHospitals.length > 0 &&
-                dataHospitals.map((item, index) => {
-                  return (
-                    <div
-                      className="section-customize slider-child"
-                      key={index}
-                      onClick={() => this.handleViewDetailHospital(item)}
-                    >
-                      <div className="customize-border-slider">
-                        <img className="bg-image-slider" src={item.image} />
-                        <span className="name-slider text-truncate">
-                          {item.name}
-                        </span>
-                      </div>
+              {dataHospitals.map((item, index) => (
+                <div
+                  key={index}
+                  onClick={() => this.handleViewDetailHospital(item)}
+                >
+                  <div
+                    className="card hoverable mx-2 d-flex flex-column justify-content-between"
+                    style={{
+                      height: 320,
+                      borderRadius: 12,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div className="position-relative">
+                      <img
+                        src="/bg-hospital.jpg"
+                        alt={item.name}
+                        className="w-100"
+                        style={{ height: 120, objectFit: "cover" }}
+                      />
+                      <img
+                        src={item.logo || item.image}
+                        alt="Logo"
+                        className="position-absolute bg-white border"
+                        style={{
+                          bottom: -25,
+                          left: "20%",
+                          transform: "translateX(-50%)",
+                          width: 100,
+                          height: 100,
+                          borderRadius: 8,
+                          padding: 10,
+                          objectFit: "cover",
+                          borderColor: "#ccc",
+                        }}
+                      />
                     </div>
-                  );
-                })}
+
+                    <div
+                      className="card-body text-center"
+                      style={{ marginTop: 30 }}
+                    >
+                      <h5 className="bold">{item.name}</h5>
+                      <p
+                        className="text-muted small mt-n2"
+                        style={{ fontSize: 14 }}
+                      >
+                        <EnvironmentOutlined /> {item.addressDetail}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </Slider>
           </div>
         </div>
@@ -81,16 +118,8 @@ class HomePage extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isLoggedIn: state.user.isLoggedIn,
-  };
-};
+const mapStateToProps = (state) => ({
+  isLoggedIn: state.user.isLoggedIn,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(HomePage)
-);
+export default withRouter(connect(mapStateToProps)(HomePage));
