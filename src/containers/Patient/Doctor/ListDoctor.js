@@ -8,6 +8,7 @@ import { LANGUAGES } from "../../../utils";
 import { FormattedMessage } from "react-intl";
 import { Buffer } from "buffer";
 import DoctorImg from "../../../assets/specialty/doctor.jpg";
+import BackButton from "../../../components/BackButton";
 
 class ListDoctor extends Component {
   constructor(props) {
@@ -43,7 +44,12 @@ class ListDoctor extends Component {
         <HomeHeader />
         <div className="list-doctor-container">
           <div className="list-doctor-content">
-            <h2 className="section-title">
+            <BackButton
+              to="/home"
+              label={language === "vi" ? "Quay lại" : "Back"}
+              style={{ color: "#0071ba" }}
+            />
+            <h2 className="section-title mt-1">
               <FormattedMessage id="homeheader.list-doctor" />
             </h2>
             {arrDoctors && arrDoctors.length > 0 ? (

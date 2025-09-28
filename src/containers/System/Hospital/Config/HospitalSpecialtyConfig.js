@@ -77,6 +77,7 @@ const HospitalSpecialtyConfig = ({
             ? "Cập nhật chuyên khoa thành công!"
             : "Update specialty success!"
         );
+        fetchHospitalSpecialties();
       } else {
         message.error(
           res.message || language === "vi"
@@ -112,7 +113,7 @@ const HospitalSpecialtyConfig = ({
             </div>
 
             <span
-              style={{ backgroundColor: "#08bb25" }}
+              style={{ backgroundColor: "#08bb25", whiteSpace: "nowrap" }}
               className="text-white px-3 py-1 rounded-pill"
             >
               {totalSpecialty} {language === "vi" ? "chuyên khoa" : "specialty"}

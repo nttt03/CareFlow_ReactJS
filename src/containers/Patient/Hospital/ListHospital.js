@@ -5,6 +5,8 @@ import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
 import { getAllHospital } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
+import BackButton from "../../../components/BackButton";
+import { EnvironmentOutlined } from "@ant-design/icons";
 
 class ListHospital extends Component {
   constructor(props) {
@@ -32,11 +34,17 @@ class ListHospital extends Component {
 
   render() {
     let { dataHospitals } = this.state;
+    let { language } = this.props;
     return (
       <React.Fragment>
         <HomeHeader />
         <div className="list-hospital">
           <div className="container">
+            <BackButton
+              to="/home"
+              label={language === "vi" ? "Quay lại" : "Back"}
+              style={{ color: "#0071ba" }}
+            />
             <h2 className="list-hospital__title">
               <FormattedMessage id="homeheader.list-hospital" />
             </h2>
@@ -46,20 +54,54 @@ class ListHospital extends Component {
                 dataHospitals.map((item, index) => {
                   return (
                     <div
+                      className="col-12 col-md-3"
                       key={index}
-                      className="col-md-3 col-sm-6 col-12"
                       onClick={() => this.handleViewDetailHospital(item)}
                     >
-                      <div className="list-hospital__content">
-                        <div className="list-hospital__content__item">
-                          <div className="list-hospital__content__item__image">
-                            <img src={item.image} />
-                          </div>
-                          <div className="list-hospital__content__item__info">
-                            <div className="list-hospital__content__item__info__name">
-                              {item.name}
-                            </div>
-                          </div>
+                      <div
+                        className="card hoverable m-2 d-flex flex-column justify-content-between"
+                        style={{
+                          height: 320,
+                          borderRadius: 12,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div className="position-relative">
+                          <img
+                            src="/bg-hospital.jpg"
+                            alt={item.name}
+                            className="w-100"
+                            style={{ height: 120, objectFit: "cover" }}
+                          />
+                          <img
+                            src={item.logo || item.image}
+                            alt="Logo"
+                            className="position-absolute bg-white border"
+                            style={{
+                              bottom: -25,
+                              left: "22%",
+                              transform: "translateX(-50%)",
+                              width: 100,
+                              height: 100,
+                              borderRadius: 8,
+                              padding: 10,
+                              objectFit: "cover",
+                              borderColor: "#ccc",
+                            }}
+                          />
+                        </div>
+
+                        <div
+                          className="card-body text-center"
+                          style={{ marginTop: 30 }}
+                        >
+                          <h5 className="bold">{item.name}</h5>
+                          <p
+                            className="text-muted small mt-n2"
+                            style={{ fontSize: 14 }}
+                          >
+                            <EnvironmentOutlined /> {item.addressDetail}
+                          </p>
                         </div>
                       </div>
                     </div>

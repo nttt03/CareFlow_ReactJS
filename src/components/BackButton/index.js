@@ -12,7 +12,7 @@ const BackButton = ({ to = "/", label = "Quay lại", style, className }) => {
       icon={<ArrowLeftOutlined />}
       onClick={() => history.push(to)}
       className={`d-flex align-items-center gap-1 ${className || ""}`}
-      style={{ padding: 0, fontSize: 16, ...style }}
+      style={{ padding: 0, fontSize: 17, ...style }}
     >
       {label}
     </Button>

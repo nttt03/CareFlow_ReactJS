@@ -83,7 +83,7 @@ class HomePage extends Component {
                         className="position-absolute bg-white border"
                         style={{
                           bottom: -25,
-                          left: "20%",
+                          left: "22%",
                           transform: "translateX(-50%)",
                           width: 100,
                           height: 100,
