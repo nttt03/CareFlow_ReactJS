@@ -136,7 +136,7 @@ class NewAppointment extends Component {
                         <span className="value">
                           {isVietnamese
                             ? appointment.timeTypeDataPatient?.valueVi
-                            : appointment.timeTypeDataPatient?.valueEn || "N/A"}
+                            : appointment.timeTypeDataPatient?.valueEn || "-"}
                         </span>
                       </div>
                       <div className="appointment-item">
@@ -144,7 +144,12 @@ class NewAppointment extends Component {
                           <FormattedMessage id="patient.appointment-patient.address" />
                         </span>
                         <span className="value">
-                          {appointment.doctorInfoData?.addressHospital || "N/A"}
+                          {appointment.doctorInfoData?.hospital
+                            ?.addressDetail || "-"}
+                          {appointment.doctorInfoData?.hospital?.provinceData
+                            ?.name
+                            ? `, ${appointment.doctorInfoData.hospital.provinceData.name}`
+                            : ""}
                         </span>
                       </div>
                       <div className="appointment-item">
@@ -160,7 +165,7 @@ class NewAppointment extends Component {
                                   : appointment.doctorInfoData.priceTypeData
                                       .valueEn
                               } ${isVietnamese ? "VNĐ" : "USD"}`
-                            : "N/A"}
+                            : "-"}
                         </span>
                       </div>
                       <div className="appointment-item">
@@ -174,9 +179,7 @@ class NewAppointment extends Component {
                                   ?.valueVi
                               : appointment.infoDataDoctor?.positionData
                                   ?.valueEn || ""
-                          } ${appointment.infoDataDoctor?.firstName || ""} ${
-                            appointment.infoDataDoctor?.lastName || ""
-                          }`.trim() || "N/A"}
+                          } ${appointment.infoDataDoctor?.fullName || ""} `}
                         </span>
                       </div>
                     </div>

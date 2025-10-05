@@ -1,6 +1,7 @@
 .profile-doctor-container {
     .intro-doctor {
-        display: flex;
+        display    : flex;
+        align-items: center;
 
         .content-left {
             background-size    : cover;

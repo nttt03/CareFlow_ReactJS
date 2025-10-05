@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import "./DetailHospital.scss";
+import "../Specialty/DetailSpecialty.scss";
 import { LANGUAGES } from "../../../utils";
 import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
@@ -13,7 +13,7 @@ import {
 } from "../../../services/userService";
 import _ from "lodash";
 import { EnvironmentOutlined, HeartFilled } from "@ant-design/icons";
-import { Tooltip, Row, Col, Card } from "antd";
+import { Tooltip, Carousel, Card } from "antd";
 import { Buffer } from "buffer";
 import BackButton from "../../../components/BackButton";
 
@@ -26,6 +26,8 @@ class DetailHospital extends Component {
       arrDoctorId: [],
       dataDetailHospital: {},
       isShowFullDescription: false,
+      selectedSpecialtyId: null,
+      hospitalId: "",
     };
   }
 
@@ -36,6 +38,7 @@ class DetailHospital extends Component {
       this.props.match.params.id
     ) {
       let id = this.props.match.params.id;
+      this.setState({ hospitalId: id });
 
       let res = await getAllDetailHospitalById({
         id: id,
@@ -61,7 +64,37 @@ class DetailHospital extends Component {
     }
   }
 
-  async componentDidUpdate(prevProps, prevState, snapshot) {}
+  async componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.selectedSpecialtyId !== this.state.selectedSpecialtyId) {
+      // Nếu thay đổi specialtyId, gọi API hoặc lọc danh sách bác sĩ
+      await this.filterDoctorsBySpecialty();
+    }
+  }
+
+  filterDoctorsBySpecialty = async () => {
+    const { dataDetailHospital, selectedSpecialtyId } = this.state;
+    if (
+      selectedSpecialtyId &&
+      dataDetailHospital &&
+      dataDetailHospital.doctors
+    ) {
+      const filteredDoctors = dataDetailHospital.doctors.filter(
+        (doctor) => doctor.specialtyId === selectedSpecialtyId
+      );
+      const arrDoctorId = filteredDoctors.map((doctor) => doctor.doctorId);
+      this.setState({ arrDoctorId });
+    } else {
+      // Nếu không có specialtyId được chọn, hiển thị tất cả bác sĩ
+      const arrDoctorId = dataDetailHospital.doctors
+        ? dataDetailHospital.doctors.map((doctor) => doctor.doctorId)
+        : [];
+      this.setState({ arrDoctorId });
+    }
+  };
+
+  handleSpecialtyClick = (specialtyId) => {
+    this.setState({ selectedSpecialtyId: specialtyId });
+  };
 
   toggleDescription = () => {
     this.setState((prevState) => ({
@@ -78,7 +111,12 @@ class DetailHospital extends Component {
   };
 
   render() {
-    let { arrDoctorId, dataDetailHospital, isShowFullDescription } = this.state;
+    let {
+      arrDoctorId,
+      dataDetailHospital,
+      isShowFullDescription,
+      selectedSpecialtyId,
+    } = this.state;
     let { language } = this.props;
 
     return (
@@ -94,7 +132,7 @@ class DetailHospital extends Component {
             {dataDetailHospital && !_.isEmpty(dataDetailHospital) && (
               <>
                 <div className="d-flex flex-column flex-md-row justify-content-between border-bottom">
-                  <div className="d-flex gap-3 justify-content-center align-items-center aligh">
+                  <div className="d-flex gap-3 justify-content-center align-items-center my-3">
                     <img
                       className="border border-primary p-2 rounded-4"
                       alt={dataDetailHospital.name}
@@ -134,7 +172,7 @@ class DetailHospital extends Component {
                   </Tooltip>
                 </div>
                 <div
-                  className={`description-content ${
+                  className={`description-content mt-3 ${
                     isShowFullDescription ? "expanded" : "collapsed"
                   }`}
                   style={{
@@ -169,18 +207,28 @@ class DetailHospital extends Component {
                   ? "Chọn Chuyên khoa cần khám"
                   : "Select Specialties"}
               </h2>
-              <div className="row">
+              <div className="d-flex flex-nowrap overflow-x-auto pb-3">
                 {dataDetailHospital?.specialties &&
                   dataDetailHospital.specialties.length > 0 &&
                   dataDetailHospital.specialties.map((specialty, index) => (
                     <div
-                      className="specialty-item col-12 col-md-3 p-3"
+                      className="specialty-item p-2 flex-shrink-0"
                       key={index}
                     >
-                      <div className="card d-flex specialty-card h-100">
+                      <div
+                        className={`card d-flex specialty-card h-100 ${
+                          selectedSpecialtyId === specialty.specialtyId
+                            ? "border-primary"
+                            : ""
+                        }`}
+                        onClick={() =>
+                          this.handleSpecialtyClick(specialty.specialtyId)
+                        }
+                        style={{ cursor: "pointer", minWidth: "200px" }}
+                      >
                         <div className="card-body d-flex gap-3 align-items-center px-3">
                           <img
-                            style={{ width: "80px", height: "80px" }}
+                            style={{ width: "30px", height: "30px" }}
                             alt={specialty?.specialty?.name}
                             src={Buffer.from(
                               specialty?.specialty?.image,
@@ -206,35 +254,34 @@ class DetailHospital extends Component {
                   ))}
               </div>
             </div>
-          </div>
-
-          <div className="list-doctor">
-            {arrDoctorId &&
-              arrDoctorId.length > 0 &&
-              arrDoctorId.map((item, index) => {
-                return (
-                  <div className="each-doctor" key={index}>
-                    <div className="detail-content-left">
-                      <div className="profile-doctor">
-                        <ProfileDoctor
-                          doctorId={item}
-                          isShowDescriptionDoctor={true}
-                          isShowLinkDetail={true}
-                          isShowPrice={false}
-                        />
+            <div className="list-doctor">
+              {arrDoctorId &&
+                arrDoctorId.length > 0 &&
+                arrDoctorId.map((item, index) => {
+                  return (
+                    <div className="each-doctor" key={index}>
+                      <div className="detail-content-left">
+                        <div className="profile-doctor">
+                          <ProfileDoctor
+                            doctorId={item}
+                            isShowDescriptionDoctor={true}
+                            isShowLinkDetail={true}
+                            isShowPrice={false}
+                          />
+                        </div>
+                      </div>
+                      <div className="detail-content-right">
+                        <div className="doctor-schedule">
+                          <DoctorSchedule
+                            doctorIdFromParent={item}
+                            hospitalId={this.state.hospitalId}
+                          />
+                        </div>
                       </div>
                     </div>
-                    <div className="detail-content-right">
-                      <div className="doctor-schedule">
-                        <DoctorSchedule doctorIdFromParent={item} />
-                      </div>
-                      <div className="doctor-extra-infor">
-                        <DoctorExtraInfor doctorIdFromParent={item} />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+            </div>
           </div>
         </div>
         <HomeFooter />

@@ -115,7 +115,7 @@
             "address": "Address",
             "birthday": "Birthday",
             "gender": "Gender",
-            "reason": "Reason",
+            "symptoms": "Symptoms",
             "confirm": "Booking",
             "cancel": "Cancel",
             "placeholder": "Select gender...",

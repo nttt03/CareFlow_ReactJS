@@ -124,15 +124,15 @@ class ManageDoctor extends Component {
         selectedHospital = null;
       let selectedPosition = null;
 
-      if (res.data.Doctor_Infor) {
-        note = res.data.Doctor_Infor.note;
-        price = res.data.Doctor_Infor.price;
+      if (res.data.doctorInfor) {
+        note = res.data.doctorInfor.note;
+        price = res.data.doctorInfor.price;
 
         selectedSpecialty = listSpecialty.find(
-          (item) => item.value === res.data.Doctor_Infor.specialtyId
+          (item) => item.value === res.data.doctorInfor.specialtyId
         );
         selectedHospital = listHospital.find(
-          (item) => item.value === res.data.Doctor_Infor.hospitalId
+          (item) => item.value === res.data.doctorInfor.hospitalId
         );
         selectedPosition = res.data.positionId || null;
       }

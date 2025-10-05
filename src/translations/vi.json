@@ -95,7 +95,7 @@
     },
     "patient": {
         "detail-doctor": {
-            "schedule": "Lịch khám",
+            "schedule": "Khung giờ khám",
             "no-schedule": "Không có lịch hẹn trong thời gian này, vui lòng chọn thời gian khác!",
             "choose": "Chọn ",
             "book-free": " và đặt (miễn phí)"
@@ -115,7 +115,7 @@
             "address": "Địa chỉ",
             "birthday": "Ngày sinh",
             "gender": "Giới tính",
-            "reason": "Lý do",
+            "symptoms": "Triệu chứng",
             "confirm": "Đặt lịch",
             "cancel": "Hủy",
             "placeholder": "Chọn giới tính...",
