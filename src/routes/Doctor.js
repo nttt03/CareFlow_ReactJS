@@ -12,7 +12,7 @@ class Doctor extends Component {
     const { systemMenuPath, isLoggedIn } = this.props;
     return (
       <Fragment>
-        {isLoggedIn && <Header />}
+        {isLoggedIn && <Header history={this.props.history} />}
         <div className="body-container">
           <div className="header-container">
             {/* thanh navigator */}

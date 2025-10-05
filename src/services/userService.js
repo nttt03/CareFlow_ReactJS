@@ -206,6 +206,16 @@ export const savePriceForHospital = (data) => {
   return axios.post("/save-price-hospital", data);
 };
 
+export const getNotifications = (userId, roleId) => {
+  return axios.get(`/api/notifications`, {
+    params: { userId, roleId },
+  });
+};
+
+export const markAsRead = (notificationId) => {
+  return axios.put(`/api/notification/read`, { id: notificationId });
+};
+
 export {
   handleLoginApi,
   registerNewUser,
