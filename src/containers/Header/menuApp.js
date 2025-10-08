@@ -82,6 +82,10 @@ export const doctorMenu = [
         link: "/doctor/manage-schedule",
       },
       {
+        name: "menu.doctor.waiting-approval",
+        link: "/doctor/waiting-approval",
+      },
+      {
         // quản lý bệnh nhân của bác sĩ
         name: "menu.doctor.manage-patient",
         link: "/doctor/manage-patient",

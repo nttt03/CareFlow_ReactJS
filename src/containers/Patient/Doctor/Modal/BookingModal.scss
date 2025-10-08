@@ -1,42 +1,105 @@
 .booking-modal-container {
     .booking-modal-content {
-        height        : auto;
-        display       : flex;
-        flex-direction: column;
+        padding         : 20px;
+        background-color: #fff;
+        border-radius   : 10px;
 
         .booking-modal-header {
-            padding      : 10px;
-            border-bottom: 1px solid #ccc;
+            display        : flex;
+            justify-content: space-between;
+            align-items    : center;
+            margin-bottom  : 10px;
 
             .left {
-                font-size  : 18px;
-                font-weight: 600;
-                color      : #333;
+                font-size  : 1.5rem;
+                font-weight: 500;
+                color      : #007bff;
             }
 
             .right {
-                font-size: 18px;
-                float    : right;
                 cursor   : pointer;
+                font-size: 1.2rem;
+                color    : #dc3545;
+
+                &:hover {
+                    color: #a71d31;
+                }
             }
         }
 
         .booking-modal-body {
-            height : 100%;
-            padding: 15px;
-        }
 
-        .booking-modal-footer {
-            display        : flex;
-            justify-content: flex-end;
-            border-top     : 1px solid #ccc;
-            padding        : 10px;
-
-            .btn-booking-confirm {
-                margin-right: 10px;
+            .doctor-info,
+            .booking-form {
+                padding: 15px;
             }
 
-            // .btn-booking-cancel {}
+            .card {
+                border       : none;
+                box-shadow   : 0 2px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+                overflow     : hidden;
+            }
+
+            .card-body {
+                padding: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+
+                label {
+                    font-weight  : 500;
+                    margin-bottom: 0.5rem;
+                    display      : block;
+                }
+
+                .form-control {
+                    border-radius: 5px;
+                    border       : 1px solid #ced4da;
+                    padding      : 10px;
+                    font-size    : 1rem;
+                }
+
+                .basic-single {
+                    .select__control {
+                        border-radius: 5px;
+                        border       : 1px solid #ced4da;
+                        padding      : 5px;
+                    }
+                }
+            }
+
+            .card-footer {
+                padding   : 15px 20px;
+                border-top: 1px solid #eee;
+            }
+
+            .btn {
+                padding      : 10px 20px;
+                border-radius: 5px;
+                font-weight  : 500;
+            }
+
+            .btn-success {
+                background-color: #28a745;
+                border-color    : #28a745;
+            }
+
+            .btn-success:hover {
+                background-color: #218838;
+                border-color    : #218838;
+            }
+
+            .btn-secondary {
+                background-color: #6c757d;
+                border-color    : #6c757d;
+            }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                border-color    : #5a6268;
+            }
         }
     }
 }

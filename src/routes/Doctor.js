@@ -4,6 +4,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import Header from "../containers/Header/Header";
 import ManageSchedule from "../containers/System/Doctor/ManageSchedule";
 import ManagePatient from "../containers/System/Doctor/ManagePatient";
+import WaitingApproval from "../containers/System/Doctor/WaitingApproval";
 import Navigator from "../components/Navigator";
 import { doctorMenu } from "../containers/Header/menuApp";
 
@@ -26,6 +27,10 @@ class Doctor extends Component {
                 <Route
                   path="/doctor/manage-schedule"
                   component={ManageSchedule}
+                />
+                <Route
+                  path="/doctor/waiting-approval"
+                  component={WaitingApproval}
                 />
                 <Route
                   path="/doctor/manage-patient"

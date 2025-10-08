@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import "./ManagePatient.scss";
-import DatePicker from "../../../components/Input/DatePicker";
 import {
-  getAllPatientForDoctor,
-  postSendRemedy,
+  getWaitingApprovalForDoctor,
+  updateBookingStatus,
 } from "../../../services/userService";
 import moment from "moment";
 import { LANGUAGES } from "../../../utils";
@@ -12,7 +11,7 @@ import RemedyModal from "./RemedyModal";
 import { toast } from "react-toastify";
 import { Spin } from "antd";
 
-class ManagePatient extends Component {
+class WaitingApproval extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,70 +31,41 @@ class ManagePatient extends Component {
     let { user } = this.props;
     let { currentDate } = this.state;
     let formatedDate = new Date(currentDate).getTime();
-    let res = await getAllPatientForDoctor({
+    let res = await getWaitingApprovalForDoctor({
       doctorId: user.id,
-      date: formatedDate,
-      status: "S2",
+      // date: formatedDate,
+      status: "S1",
     });
     if (res && res.errCode === 0) {
       this.setState({ dataPatient: res.data });
     }
   };
 
-  handleOnChangeDatePicker = (data) => {
-    this.setState(
-      {
-        currentDate: data[0],
-      },
-      async () => {
-        await this.getDataPatient();
-      }
-    );
-  };
-
-  handleBtnConfirm = (item) => {
-    let data = {
-      doctorId: item.doctorId,
-      patientId: item.patientId,
-      email: item.patientData.email,
-      timeType: item.timeType,
-      patientName: item.patientData.firstName,
-    };
-    this.setState({
-      isOpenRemedyModal: true,
-      dataModal: data,
+  handleConfirm = async (item) => {
+    let res = await updateBookingStatus({
+      bookingId: item.id,
+      status: "S2",
     });
-  };
 
-  closeRemedyModal = () => {
-    this.setState({
-      isOpenRemedyModal: false,
-      dataModal: {},
-    });
-  };
-
-  sendRemedy = async (dataChild) => {
-    let { dataModal } = this.state;
-    this.setState({ isShowLoading: true });
-
-    let res = await postSendRemedy({
-      email: dataChild.email,
-      imgBase64: dataChild.imgBase64,
-      doctorId: dataModal.doctorId,
-      patientId: dataModal.patientId,
-      timeType: dataModal.timeType,
-      patientName: dataModal.patientName,
-      language: this.props.language,
-    });
     if (res && res.errCode === 0) {
-      this.setState({ isShowLoading: false });
-      toast.success("Gửi đơn thuốc thành công!");
-      this.closeRemedyModal();
+      toast.success("Xác nhận lịch thành công!");
       await this.getDataPatient();
     } else {
-      this.setState({ isShowLoading: false });
-      toast.error("Gửi đơn thuốc thất bại!");
-      console.log("Lỗi gửi đơn thuốc:", res);
+      toast.error("Xác nhận thất bại!");
+    }
+  };
+
+  handleCancel = async (item) => {
+    let res = await updateBookingStatus({
+      bookingId: item.id,
+      status: "S5",
+    });
+
+    if (res && res.errCode === 0) {
+      toast.success("Hủy lịch thành công!");
+      await this.getDataPatient();
+    } else {
+      toast.error("Hủy lịch thất bại!");
     }
   };
 
@@ -106,25 +76,19 @@ class ManagePatient extends Component {
     return (
       <Spin spinning={isShowLoading} tip="Loading...">
         <div className="manage-patient-container">
-          <div className="m-p-title">Quản lý bệnh nhân khám bệnh</div>
+          <div className="m-p-title py-2">Quản lý lịch hẹn</div>
           <div className="manage-patient-body row">
-            <div className="col-4 form-group">
-              <label className="form-label">Chọn ngày khám</label>
-              <DatePicker
-                className="form-control"
-                onChange={this.handleOnChangeDatePicker}
-                value={this.state.currentDate}
-              />
-            </div>
             <div className="col-12 table-manage-patient">
               <table style={{ width: "100%" }}>
                 <tbody>
                   <tr>
                     <th>STT</th>
+                    <th>Ngày khám</th>
                     <th>Thời gian khám</th>
                     <th>Họ và tên</th>
                     <th>Giới tính</th>
                     <th>Địa chỉ</th>
+                    <th>Triệu chứng</th>
                     <th>Actions</th>
                   </tr>
                   {dataPatient && dataPatient.length > 0 ? (
@@ -137,9 +101,11 @@ class ManagePatient extends Component {
                         language === LANGUAGES.VI
                           ? item?.timeTypeDataPatient?.valueVi
                           : item?.timeTypeDataPatient?.valueEn;
+                      let formatDate = moment(+item.date).format("DD/MM/YYYY");
                       return (
                         <tr key={index}>
                           <td>{index + 1}</td>
+                          <td>{formatDate}</td>
                           <td>{time}</td>
                           <td>{item?.patientData?.fullName}</td>
                           <td>{gender}</td>
@@ -148,12 +114,19 @@ class ManagePatient extends Component {
                             {", "}
                             {item?.patientData?.provinceData?.name}
                           </td>
+                          <td>{item?.symptoms}</td>
                           <td>
                             <button
                               className="mp-btn-confirm"
-                              onClick={() => this.handleBtnConfirm(item)}
+                              onClick={() => this.handleConfirm(item)}
                             >
                               Xác nhận
+                            </button>
+                            <button
+                              className="mp-btn-cancel"
+                              onClick={() => this.handleCancel(item)}
+                            >
+                              Hủy lịch
                             </button>
                           </td>
                         </tr>
@@ -185,4 +158,4 @@ const mapStateToProps = (state) => ({
   user: state.user.userInfo,
 });
 
-export default connect(mapStateToProps)(ManagePatient);
+export default connect(mapStateToProps)(WaitingApproval);

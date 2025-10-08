@@ -113,8 +113,18 @@ const getAllDetailHospitalById = (data) => {
 
 const getAllPatientForDoctor = (data) => {
   return axios.get(
-    `/api/get-list-patient-for-doctor?doctorId=${data.doctorId}&date=${data.date}`
+    `/api/get-list-patient-for-doctor?doctorId=${data.doctorId}&date=${data.date}&status=${data.status}`
   );
+};
+
+export const getWaitingApprovalForDoctor = (data) => {
+  return axios.get(
+    `/api/get-list-patient-for-doctor?doctorId=${data.doctorId}&status=${data.status}`
+  );
+};
+
+export const updateBookingStatus = (data) => {
+  return axios.put("/api/update-booking-status", data);
 };
 
 const postSendRemedy = (data) => {

@@ -7,16 +7,97 @@ import { changeLanguageApp } from "../../store/actions";
 import { withRouter } from "react-router";
 import * as actions from "../../store/actions";
 import { injectIntl } from "react-intl";
-import { UserOutlined, LockOutlined, LogoutOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LockOutlined,
+  LogoutOutlined,
+  BellOutlined,
+} from "@ant-design/icons";
+import { Dropdown, Badge, message } from "antd";
+import { getNotifications, markAsRead } from "../../services/userService";
+import { io } from "socket.io-client";
 
 class HomeHeader extends Component {
+  socket = null;
   constructor(props) {
     super(props);
     this.state = {
       mobileMenu: false,
+      notifications: [],
     };
     this.toggleMenu = this.toggleMenu.bind(this);
   }
+
+  loadNotifications = async () => {
+    const { userInfo } = this.props;
+    if (userInfo && userInfo.id && userInfo.roleId) {
+      try {
+        const res = await getNotifications(userInfo.id, userInfo.roleId);
+        if (res && res.data && res.errCode === 0) {
+          this.setState({
+            notifications: res.data || [],
+          });
+        }
+      } catch (e) {
+        console.log("Lỗi load notification:", e);
+      }
+    }
+  };
+
+  componentDidMount() {
+    const { userInfo } = this.props;
+    this.loadNotifications();
+
+    if (userInfo?.id && userInfo?.roleId === "R3") {
+      this.socket = io(process.env.REACT_APP_BACKEND_URL, {
+        withCredentials: true,
+      });
+
+      this.socket.emit("joinCustomerRoom", userInfo.id);
+
+      this.socket.on("new-notification", (data) => {
+        message.info("Bạn có thông báo mới!");
+        this.setState((prevState) => {
+          const exists = prevState.notifications.some(
+            (notif) => notif.id === data.id
+          );
+          if (!exists) {
+            return {
+              notifications: [data, ...prevState.notifications],
+            };
+          }
+          return prevState;
+        });
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.socket && this.props.userInfo?.id) {
+      this.socket.emit("leaveCustomerRoom", this.props.userInfo.id);
+      this.socket.disconnect();
+    }
+  }
+
+  handleNotificationClick = async (url, notificationId) => {
+    try {
+      const res = await markAsRead(notificationId);
+      if (res && res.errCode === 0) {
+        this.setState((prevState) => ({
+          notifications: prevState.notifications.map((notif) =>
+            notif.id === notificationId ? { ...notif, isRead: true } : notif
+          ),
+        }));
+        await this.loadNotifications();
+      }
+      if (url) {
+        this.props.history.push(url);
+      }
+    } catch (e) {
+      console.log("Lỗi khi đánh dấu thông báo đã đọc:", e);
+    }
+  };
+
   changeLanguage = (language) => {
     // alert(language)
     // fire redux event : actions
@@ -197,6 +278,47 @@ class HomeHeader extends Component {
               </div>
             </div>
             <div className="right-content">
+              {isLoggedIn && this.state.notifications && (
+                <div className="notification-wrapper">
+                  <Dropdown
+                    trigger={["click"]}
+                    menu={{
+                      items: this.state.notifications.map((item) => ({
+                        key: item.id,
+                        label: (
+                          <div
+                            onClick={() =>
+                              this.handleNotificationClick(item.url, item.id)
+                            }
+                            style={{
+                              fontWeight: item.isRead ? "normal" : "bold",
+                            }}
+                          >
+                            {item.message}
+                          </div>
+                        ),
+                      })),
+                    }}
+                  >
+                    <Badge
+                      count={
+                        this.state.notifications.filter((n) => !n.isRead).length
+                      }
+                      offset={[-16, 2]}
+                    >
+                      <BellOutlined
+                        style={{
+                          fontSize: "22px",
+                          cursor: "pointer",
+                          marginRight: 20,
+                          color: "blue",
+                        }}
+                      />
+                    </Badge>
+                  </Dropdown>
+                </div>
+              )}
+
               {isLoggedIn ? (
                 <div className="sign-in-out-content">
                   <span className="text-nowrap">

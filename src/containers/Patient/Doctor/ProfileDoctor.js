@@ -107,6 +107,10 @@ class ProfileDoctor extends Component {
           <div className="content-right">
             <div className="up">
               {language === LANGUAGES.VI ? nameVi : nameEn}
+              <br />
+              <span>
+                Chuyên khoa: {dataProfile?.doctorInfor?.specialty?.name}
+              </span>
             </div>
             <div className="down">
               {isShowDescriptionDoctor === true ? (
