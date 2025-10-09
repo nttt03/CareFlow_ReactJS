@@ -180,7 +180,7 @@ class DetailHospital extends Component {
                 <div className="d-flex flex-column flex-md-row justify-content-between border-bottom">
                   <div className="d-flex gap-3 justify-content-center align-items-center my-3">
                     <img
-                      className="border border-primary p-2 rounded-4"
+                      className="border border-light shadow-sm p-2 rounded-pill"
                       alt={dataDetailHospital.name}
                       src={dataDetailHospital?.image}
                       style={{
@@ -228,7 +228,7 @@ class DetailHospital extends Component {
                   style={{
                     maxHeight: isShowFullDescription ? "1000px" : "200px",
                     overflow: "hidden",
-                    transition: "max-height 0.3s ease-in-out", // Smooth transition
+                    transition: "max-height 0.3s ease-in-out",
                   }}
                   dangerouslySetInnerHTML={{
                     __html: dataDetailHospital?.descriptionHTML,
@@ -252,47 +252,71 @@ class DetailHospital extends Component {
             )}
             {/* Chuyên khoa */}
             <div className="specialties-section mt-4">
-              <h2 className="specialties-title">
+              <h2 className="specialties-title text-primary">
                 {language === "vi"
                   ? "Chọn Chuyên khoa cần khám"
                   : "Select Specialties"}
               </h2>
               <div className="d-flex flex-nowrap overflow-x-auto pb-3">
-                {dataDetailHospital?.specialties &&
-                  dataDetailHospital.specialties.length > 0 &&
-                  dataDetailHospital.specialties.map((specialty, index) => (
-                    <div
-                      className="specialty-item p-2 flex-shrink-0"
-                      key={index}
-                    >
+                {(() => {
+                  const specialties = dataDetailHospital?.specialties || [];
+                  const doctors = dataDetailHospital?.doctors || [];
+
+                  // Lọc ra những chuyên khoa có ít nhất 1 bác sĩ
+                  const filteredSpecialties = specialties.filter((spec) =>
+                    doctors.some((doc) => doc.specialtyId === spec.specialtyId)
+                  );
+
+                  return filteredSpecialties.length > 0 ? (
+                    filteredSpecialties.map((specialty, index) => (
                       <div
-                        className={`card d-flex specialty-card h-100 ${
-                          selectedSpecialtyId === specialty.specialtyId
-                            ? "border-primary"
-                            : ""
-                        }`}
-                        onClick={() =>
-                          this.handleSpecialtyClick(specialty.specialtyId)
-                        }
-                        style={{ cursor: "pointer", minWidth: "200px" }}
+                        className="specialty-item p-2 flex-shrink-0"
+                        key={index}
                       >
-                        <div className="card-body d-flex gap-3 align-items-center px-3">
-                          <img
-                            style={{ width: "30px", height: "30px" }}
-                            alt={specialty?.specialty?.name}
-                            src={Buffer.from(
-                              specialty?.specialty?.image,
-                              "base64"
-                            ).toString("binary")}
-                            className="specialty-image"
-                          />
-                          <div className="specialty-info">
-                            <h5 className="card-title mb-2">
-                              {specialty?.specialty.name}
-                            </h5>
+                        <div
+                          className={`card specialty-card shadow-sm border-0 text-center ${
+                            selectedSpecialtyId === specialty.specialtyId
+                              ? "bg-light shadow"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            this.handleSpecialtyClick(specialty.specialtyId)
+                          }
+                          style={{
+                            cursor: "pointer",
+                            minWidth: "180px",
+                            transition: "all 0.25s ease-in-out",
+                          }}
+                        >
+                          <div className="card-body p-3 d-flex flex-column align-items-center">
+                            <img
+                              alt={specialty?.specialty?.name}
+                              src={Buffer.from(
+                                specialty?.specialty?.image,
+                                "base64"
+                              ).toString("binary")}
+                              className="img-fluid rounded-circle"
+                              style={{
+                                width: "40px",
+                                height: "40px",
+                                objectFit: "cover",
+                              }}
+                            />
+
+                            <h6
+                              className="fw-semibold text-dark text-truncate"
+                              style={{ maxWidth: "150px" }}
+                              title={specialty?.specialty?.name}
+                            >
+                              {specialty?.specialty?.name}
+                            </h6>
+
                             <span
-                              style={{ whiteSpace: "nowrap" }}
-                              className="specialty-price px-2 py-1 bg-success text-white rounded-pill"
+                              className="badge bg-success-subtle text-success fw-semibold mt-2 px-3 py-2"
+                              style={{
+                                borderRadius: "20px",
+                                fontSize: "0.9rem",
+                              }}
                             >
                               {language === "vi" ? "Giá: " : "Price: "}
                               {this.formatPrice(specialty.price)}
@@ -300,16 +324,24 @@ class DetailHospital extends Component {
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p className="text-muted text-center w-100">
+                      {language === "vi"
+                        ? "Không có chuyên khoa nào có bác sĩ."
+                        : "No specialties with doctors available."}
+                    </p>
+                  );
+                })()}
               </div>
             </div>
+
             <div className="list-doctor">
               {arrDoctorId &&
                 arrDoctorId.length > 0 &&
                 arrDoctorId.map((item, index) => {
                   return (
-                    <div className="each-doctor" key={index}>
+                    <div className="each-doctor bg-light" key={index}>
                       <div className="detail-content-left">
                         <div className="profile-doctor">
                           <ProfileDoctor

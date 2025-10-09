@@ -10,6 +10,7 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import _ from "lodash";
 import { saveBulkScheduleDoctor } from "../../../services/userService";
+import { message } from "antd";
 
 class ManageSchedule extends Component {
   constructor(props) {
@@ -29,10 +30,18 @@ class ManageSchedule extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+    const { userInfo } = this.props;
     if (prevProps.allDoctors !== this.props.allDoctors) {
       let dataSelect = this.buildDataInputSelect(this.props.allDoctors);
+      // Nếu role là R2 (bác sĩ) => tự động chọn bác sĩ đang đăng nhập
+      let selectedDoctor = {};
+      if (userInfo && userInfo.roleId === "R2") {
+        let doctor = dataSelect.find((item) => item.value === userInfo.id);
+        if (doctor) selectedDoctor = doctor;
+      }
       this.setState({
         listDoctors: dataSelect,
+        selectedDoctor: selectedDoctor,
       });
     }
     if (prevProps.language !== this.props.language) {
@@ -98,14 +107,23 @@ class ManageSchedule extends Component {
   };
 
   handleSaveShedule = async () => {
+    const { language } = this.props;
     let { rangeTime, selectedDoctor, currentDate } = this.state;
     let result = [];
     if (selectedDoctor && _.isEmpty(selectedDoctor)) {
-      toast.error("Invalid doctor. Please choose a doctor!");
+      message.warning(
+        language === "vi"
+          ? "Vui lòng chọn chọn bác sĩ!"
+          : "Invalid doctor. Please choose a doctor!"
+      );
       return;
     }
     if (!currentDate) {
-      toast.error("Invalid date. Please choose a date!");
+      message.warning(
+        language === "vi"
+          ? "Vui lòng chọn ngày khám!"
+          : "Invalid date. Please choose a date!"
+      );
       return;
     }
     // let formatedDate = moment(currentDate).format(dateFormat.SEND_TO_SERVER);
@@ -121,7 +139,11 @@ class ManageSchedule extends Component {
           result.push(object);
         });
       } else {
-        toast.error("Invalid time. Please choose a time!");
+        message.warning(
+          language === "vi"
+            ? "Vui lòng chọn thời gian lịch khám!"
+            : "Invalid time. Please choose a time!"
+        );
         return;
       }
     }
@@ -132,9 +154,17 @@ class ManageSchedule extends Component {
       formatedDate: formatedDate,
     });
     if (res && res.errCode === 0) {
-      toast.success("Save schedule successfully!");
+      message.success(
+        language === "vi"
+          ? "Lưu thông tin lịch khám thành công!"
+          : "Save schedule successfully!"
+      );
     } else {
-      toast.error("Error saveBulkScheduleDoctor");
+      message.error(
+        language === "vi"
+          ? "Lỗi khi lưu thông tin lịch khám!"
+          : "Save schedule failed!"
+      );
       console.log("Error saveBulkScheduleDoctor >>> res: ", res);
     }
 
@@ -146,8 +176,9 @@ class ManageSchedule extends Component {
   render() {
     // console.log('check prop: ', this.props);
     let rangeTime = this.state.rangeTime;
-    let { language } = this.props;
+    let { language, userInfo } = this.props;
     // console.log('check state rangeTime: ', rangeTime);
+    const isDoctor = userInfo?.roleId === "R2";
     return (
       <div className="manage-schedule-container">
         <div className="m-s-title">
@@ -163,6 +194,7 @@ class ManageSchedule extends Component {
                 value={this.state.selectedDoctor}
                 onChange={this.handleChangeSelect}
                 options={this.state.listDoctors}
+                isDisabled={isDoctor}
               />
             </div>
             <div className="col-6 form-group">
@@ -217,6 +249,7 @@ const mapStateToProps = (state) => {
     // lấy từ trong state redux của adminReducer
     allDoctors: state.admin.allDoctors,
     allScheduleTime: state.admin.allScheduleTime,
+    userInfo: state.user.userInfo,
   };
 };
 

@@ -7,6 +7,11 @@ export const adminMenu = [
         name: "menu.admin.dashboard",
         link: "/system/dashboard",
       },
+      {
+        // profile
+        name: "menu.admin.profile-user",
+        link: "/system/profile-user/:id",
+      },
     ],
   },
 
@@ -89,6 +94,11 @@ export const doctorMenu = [
         // quản lý bệnh nhân của bác sĩ
         name: "menu.doctor.manage-patient",
         link: "/doctor/manage-patient",
+      },
+      {
+        // profile bác sĩ
+        name: "menu.doctor.profile-user",
+        link: "/doctor/profile-user/:id",
       },
     ],
   },

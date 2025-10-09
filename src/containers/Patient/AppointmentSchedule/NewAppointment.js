@@ -21,6 +21,7 @@ class NewAppointment extends Component {
     console.log("UserInfo from props:", userInfo);
     if (userInfo && userInfo.id) {
       let data = await this.getNewAppointmentData(userInfo.id);
+      console.log("Fetched new appointment data:", data);
       this.setState({
         newAppointment: data,
         isDataFetched: true,
@@ -86,6 +87,7 @@ class NewAppointment extends Component {
     const upcomingAppointments = newAppointment.filter(
       (appointment) => parseInt(appointment.date) >= currentTimestamp
     );
+    console.log("Upcoming Appointments:", upcomingAppointments);
 
     return (
       <React.Fragment>

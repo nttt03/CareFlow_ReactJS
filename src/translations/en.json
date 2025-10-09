@@ -57,12 +57,14 @@
             "specialty": "Specialty",
             "manage-specialty": "Manage speciality",
             "handbook": "Handbook",
-            "manage-handbook": "Manage handbook"
+            "manage-handbook": "Manage handbook",
+            "profile-user": "User Profile"
         },
         "doctor": {
             "manage-schedule": "Manage Doctor's schedule",
             "manage-patient": "Manage Doctor's patient",
-            "waiting-approval": "Waiting approval"
+            "waiting-approval": "Waiting approval",
+            "profile-user": "User Profile"
         }
     },
     "manage-user": {

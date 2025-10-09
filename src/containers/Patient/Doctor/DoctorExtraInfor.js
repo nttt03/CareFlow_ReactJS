@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import "./DoctorExtraInfor.scss";
 import { LANGUAGES } from "../../../utils";
 import { getExtraInforDoctorById } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
-import NumberFormat, { NumericFormat } from "react-number-format";
+import NumberFormat from "react-number-format";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 class DoctorExtraInfor extends Component {
   constructor(props) {
@@ -19,145 +19,145 @@ class DoctorExtraInfor extends Component {
     if (this.props.doctorIdFromParent) {
       let res = await getExtraInforDoctorById(this.props.doctorIdFromParent);
       if (res && res.errCode === 0) {
-        this.setState({
-          extraInfor: res.data,
-        });
+        this.setState({ extraInfor: res.data });
       }
     }
   }
 
-  async componentDidUpdate(prevProps, prevState, snapshot) {
+  async componentDidUpdate(prevProps) {
     if (this.props.doctorIdFromParent !== prevProps.doctorIdFromParent) {
       let res = await getExtraInforDoctorById(this.props.doctorIdFromParent);
       if (res && res.errCode === 0) {
-        this.setState({
-          extraInfor: res.data,
-        });
+        this.setState({ extraInfor: res.data });
       }
-      // console.log('get res >>>: ', res);
     }
   }
 
   showHideDetailInfor = (status) => {
-    this.setState({
-      isShowDetailInfor: status,
-    });
+    this.setState({ isShowDetailInfor: status });
   };
 
   render() {
     let { isShowDetailInfor, extraInfor } = this.state;
     let { language } = this.props;
-    console.log("check state doctor-extra-infor >>>: ", this.state);
+
+    // Lấy thông tin cần hiển thị
+    const hospitalName = extraInfor?.hospital?.name || "";
+    const specialtyName =
+      extraInfor?.specialty?.name || "Thông tin đang được cập nhật...";
+    const address = `${extraInfor?.hospital?.addressDetail || ""}, ${
+      extraInfor?.hospital?.provinceData?.name || ""
+    }`;
+    const note = extraInfor?.note || "";
+
     return (
-      <div className="doctor-extra-infor-container">
-        <div className="content-up">
-          <div className="text-address">
-            <FormattedMessage id="patient.extra-infor-doctor.text-address" />
-          </div>
-          <div className="name-hospital">
-            {extraInfor && extraInfor.nameHospital
-              ? extraInfor.nameHospital
-              : ""}
-          </div>
-          <div className="detail-address">
-            {extraInfor && extraInfor.addressHospital
-              ? extraInfor.addressHospital
-              : ""}
-          </div>
+      <div className="doctor-extra-infor-container container p-4 rounded shadow-sm bg-light mt-3">
+        <h5 className="fw-bold text-primary mb-3">
+          <FormattedMessage
+            id="patient.extra-infor-doctor.clinic-info"
+            defaultMessage="Thông tin khám bệnh"
+          />
+        </h5>
+
+        {/* Thông tin địa điểm */}
+        <div className="mb-3">
+          <h6 className="mb-1 text-secondary">
+            <FormattedMessage
+              id="patient.extra-infor-doctor.text-address"
+              defaultMessage="Địa chỉ khám"
+            />
+          </h6>
+          <p className="mb-0 fw-semibold">{hospitalName}</p>
+          <p className="mb-0">{address}</p>
         </div>
+
+        {/* Chuyên khoa */}
+        <div className="mb-3">
+          <h6 className="text-secondary">
+            <FormattedMessage
+              id="patient.extra-infor-doctor.specialty"
+              defaultMessage="Chuyên khoa"
+            />
+          </h6>
+          <p className="fw-semibold">{specialtyName}</p>
+        </div>
+
+        {/* Ghi chú */}
+        {note && (
+          <div className="mb-3">
+            <h6 className="text-secondary">
+              <FormattedMessage
+                id="patient.extra-infor-doctor.note"
+                defaultMessage="Ghi chú"
+              />
+            </h6>
+            <p className="fst-italic">{note}</p>
+          </div>
+        )}
+
+        {/* Giá khám */}
         <div className="content-down">
-          {isShowDetailInfor === false && (
+          {!isShowDetailInfor ? (
             <div className="short-infor">
-              <span className="text-price">
-                <FormattedMessage id="patient.extra-infor-doctor.price" />
+              <span className="fw-semibold me-2 text-secondary">
+                <FormattedMessage
+                  id="patient.extra-infor-doctor.price"
+                  defaultMessage="Giá khám:"
+                />
               </span>
-              {extraInfor &&
-                extraInfor.priceTypeData &&
-                language === LANGUAGES.VI && (
+              {extraInfor?.price && (
+                <NumberFormat
+                  className="fw-bold text-success"
+                  value={extraInfor.price}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  suffix={" VNĐ"}
+                />
+              )}
+              <button
+                className="btn btn-link p-0 ms-2"
+                onClick={() => this.showHideDetailInfor(true)}
+              >
+                <FormattedMessage
+                  id="patient.extra-infor-doctor.detail"
+                  defaultMessage="Xem chi tiết"
+                />
+              </button>
+            </div>
+          ) : (
+            <div className="border-top pt-3">
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <span className="text-secondary fw-semibold">
+                  <FormattedMessage
+                    id="patient.extra-infor-doctor.price"
+                    defaultMessage="Giá khám"
+                  />
+                </span>
+                {extraInfor?.price ? (
                   <NumberFormat
-                    className="currency"
-                    value={extraInfor.priceTypeData.valueVi}
+                    value={extraInfor.price}
                     displayType={"text"}
                     thousandSeparator={true}
                     suffix={" VNĐ"}
+                    className="fw-bold text-success"
                   />
+                ) : (
+                  <span>Chưa cập nhật</span>
                 )}
-              {extraInfor &&
-                extraInfor.priceTypeData &&
-                language === LANGUAGES.EN && (
-                  <NumberFormat
-                    className="currency"
-                    value={extraInfor.priceTypeData.valueEn}
-                    displayType={"text"}
-                    thousandSeparator={true}
-                    suffix={"$"}
-                  />
-                )}
-              <span
-                className="view-detail"
-                onClick={() => this.showHideDetailInfor(true)}
-              >
-                <FormattedMessage id="patient.extra-infor-doctor.detail" />
-              </span>
-            </div>
-          )}
+              </div>
 
-          {isShowDetailInfor === true && (
-            <>
-              <div className="title-price">
-                <FormattedMessage id="patient.extra-infor-doctor.price" />
-              </div>
-              <div className="detail-infor">
-                <div className="price">
-                  <span className="left">
-                    <FormattedMessage id="patient.extra-infor-doctor.price" />
-                  </span>
-                  <span className="right">
-                    {extraInfor &&
-                      extraInfor.priceTypeData &&
-                      language === LANGUAGES.VI && (
-                        <NumberFormat
-                          value={extraInfor.priceTypeData.valueVi}
-                          displayType={"text"}
-                          thousandSeparator={true}
-                          suffix={" VNĐ"}
-                        />
-                      )}
-                    {extraInfor &&
-                      extraInfor.priceTypeData &&
-                      language === LANGUAGES.EN && (
-                        <NumberFormat
-                          value={extraInfor.priceTypeData.valueEn}
-                          displayType={"text"}
-                          thousandSeparator={true}
-                          suffix={"$"}
-                        />
-                      )}
-                  </span>
-                </div>
-                <div className="note">
-                  {extraInfor && extraInfor.note ? extraInfor.note : ""}
-                </div>
-              </div>
-              <div className="payment">
-                <FormattedMessage id="patient.extra-infor-doctor.payment" />
-                {extraInfor &&
-                extraInfor.paymentTypeData &&
-                language === LANGUAGES.VI
-                  ? extraInfor.paymentTypeData.valueVi
-                  : ""}
-                {extraInfor &&
-                extraInfor.paymentTypeData &&
-                language === LANGUAGES.EN
-                  ? extraInfor.paymentTypeData.valueEn
-                  : ""}
-              </div>
-              <div className="hide-price">
-                <span onClick={() => this.showHideDetailInfor(false)}>
-                  <FormattedMessage id="patient.extra-infor-doctor.hide" />
-                </span>
-              </div>
-            </>
+              {note && <div className="mb-2 text-muted small">{note}</div>}
+
+              <button
+                className="btn btn-outline-secondary btn-sm"
+                onClick={() => this.showHideDetailInfor(false)}
+              >
+                <FormattedMessage
+                  id="patient.extra-infor-doctor.hide"
+                  defaultMessage="Ẩn thông tin"
+                />
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -165,14 +165,8 @@ class DoctorExtraInfor extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    language: state.app.language,
-  };
-};
+const mapStateToProps = (state) => ({
+  language: state.app.language,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(DoctorExtraInfor);
+export default connect(mapStateToProps)(DoctorExtraInfor);

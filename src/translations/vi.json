@@ -57,12 +57,14 @@
             "specialty": "Chuyên khoa",
             "manage-specialty": "Quản lý chuyên khoa",
             "handbook": "Cẩm nang",
-            "manage-handbook": "Quản lý cẩm nang"
+            "manage-handbook": "Quản lý cẩm nang",
+            "profile-user": "Hồ sơ cá nhân"
         },
         "doctor": {
             "manage-schedule": "Quản lý kế hoạch khám bệnh",
             "manage-patient": "Quản lý bệnh nhân khám bệnh",
-            "waiting-approval": "Lịch hẹn chờ duyệt"
+            "waiting-approval": "Lịch hẹn chờ duyệt",
+            "profile-user": "Hồ sơ cá nhân"
         }
     },
     "manage-user": {

@@ -17,10 +17,23 @@ import EditSpecialty from "../containers/System/Specialty/EditSpecialty";
 import ManageAccount from "../containers/System/Admin/ManageAccount";
 import ManageSchedule from "../containers/System/Doctor/ManageSchedule";
 import AdminDashboard from "../containers/System/Admin/AdminDashboard";
+import ProfileUser from "../containers/System/Doctor/ProfileUser";
 
 class System extends Component {
   render() {
-    const { systemMenuPath, isLoggedIn } = this.props;
+    const { systemMenuPath, isLoggedIn, userInfo } = this.props;
+    const adminMenus = adminMenu.map((group) => ({
+      ...group,
+      menus: group.menus.map((item) => {
+        if (item.link.includes(":id")) {
+          return {
+            ...item,
+            link: item.link.replace(":id", userInfo?.id || ""),
+          };
+        }
+        return item;
+      }),
+    }));
     return (
       <Fragment>
         {isLoggedIn && <Header />}
@@ -28,13 +41,17 @@ class System extends Component {
           <div className="header-container">
             {/* thanh navigator */}
             <div className="header-tabs-container">
-              <Navigator menus={adminMenu} />
+              <Navigator menus={adminMenus} />
             </div>
           </div>
           <div className="system-container">
             <div className="system-list">
               <Switch>
                 <Route path="/system/dashboard" component={AdminDashboard} />
+                <Route
+                  path="/system/profile-user/:id"
+                  component={ProfileUser}
+                />
                 <Route
                   path="/system/manage-account"
                   component={ManageAccount}
@@ -93,6 +110,7 @@ const mapStateToProps = (state) => {
   return {
     systemMenuPath: state.app.systemMenuPath,
     isLoggedIn: state.user.isLoggedIn,
+    userInfo: state.user.userInfo,
   };
 };
 

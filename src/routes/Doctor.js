@@ -5,12 +5,27 @@ import Header from "../containers/Header/Header";
 import ManageSchedule from "../containers/System/Doctor/ManageSchedule";
 import ManagePatient from "../containers/System/Doctor/ManagePatient";
 import WaitingApproval from "../containers/System/Doctor/WaitingApproval";
+import ProfileUser from "../containers/System/Doctor/ProfileUser";
 import Navigator from "../components/Navigator";
 import { doctorMenu } from "../containers/Header/menuApp";
 
 class Doctor extends Component {
   render() {
-    const { systemMenuPath, isLoggedIn } = this.props;
+    const { systemMenuPath, isLoggedIn, userInfo } = this.props;
+
+    const doctorMenus = doctorMenu.map((group) => ({
+      ...group,
+      menus: group.menus.map((item) => {
+        if (item.link.includes(":id")) {
+          return {
+            ...item,
+            link: item.link.replace(":id", userInfo?.id || ""),
+          };
+        }
+        return item;
+      }),
+    }));
+
     return (
       <Fragment>
         {isLoggedIn && <Header history={this.props.history} />}
@@ -18,12 +33,17 @@ class Doctor extends Component {
           <div className="header-container">
             {/* thanh navigator */}
             <div className="header-tabs-container">
-              <Navigator menus={doctorMenu} />
+              {/* ✅ Truyền menu đã có id thật */}
+              <Navigator menus={doctorMenus} />
             </div>
           </div>
           <div className="system-container">
             <div className="system-list">
               <Switch>
+                <Route
+                  path="/doctor/profile-user/:id"
+                  component={ProfileUser}
+                />
                 <Route
                   path="/doctor/manage-schedule"
                   component={ManageSchedule}
@@ -49,11 +69,8 @@ const mapStateToProps = (state) => {
   return {
     systemMenuPath: state.app.systemMenuPath,
     isLoggedIn: state.user.isLoggedIn,
+    userInfo: state.user.userInfo,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Doctor);
+export default connect(mapStateToProps)(Doctor);
