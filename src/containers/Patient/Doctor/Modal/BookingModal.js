@@ -172,7 +172,7 @@ class BookingModal extends Component {
     let { isOpenModal, closeBookingModal, dataTime, hospitalId, userInfo } =
       this.props;
     let doctorId = dataTime && !_.isEmpty(dataTime) ? dataTime.doctorId : "";
-    console.log("userInfo", userInfo);
+    // console.log("userInfo", userInfo);
 
     return (
       <Spin spinning={this.state.isShowLoading} tip="Loading...">

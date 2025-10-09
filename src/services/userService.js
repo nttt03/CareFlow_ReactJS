@@ -226,6 +226,18 @@ export const markAsRead = (notificationId) => {
   return axios.put(`/api/notification/read`, { id: notificationId });
 };
 
+export const toggleFavorite = (userId, hospitalId, doctorId) => {
+  return axios.post(`/api/toggle-favorite`, {
+    userId,
+    hospitalId,
+    doctorId,
+  });
+};
+
+export const getFavorites = (userId) => {
+  return axios.get(`/api/get-favorites`, { params: { userId } });
+};
+
 export {
   handleLoginApi,
   registerNewUser,

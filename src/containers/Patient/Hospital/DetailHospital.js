@@ -6,14 +6,16 @@ import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
 import DoctorSchedule from "../Doctor/DoctorSchedule";
 import DoctorExtraInfor from "../Doctor/DoctorExtraInfor";
+import * as actions from "../../../store/actions";
 import ProfileDoctor from "../Doctor/ProfileDoctor";
 import {
   getAllDetailHospitalById,
+  toggleFavorite,
   getAllCodeService,
 } from "../../../services/userService";
 import _ from "lodash";
 import { EnvironmentOutlined, HeartFilled } from "@ant-design/icons";
-import { Tooltip, Carousel, Card } from "antd";
+import { Tooltip, message, Card } from "antd";
 import { Buffer } from "buffer";
 import BackButton from "../../../components/BackButton";
 
@@ -28,10 +30,13 @@ class DetailHospital extends Component {
       isShowFullDescription: false,
       selectedSpecialtyId: null,
       hospitalId: "",
+      isFavorite: false,
+      allFavorites: [],
     };
   }
 
   async componentDidMount() {
+    this.props.fetchUserFavorite(this.props.userInfo?.id);
     if (
       this.props.match &&
       this.props.match.params &&
@@ -68,6 +73,21 @@ class DetailHospital extends Component {
     if (prevState.selectedSpecialtyId !== this.state.selectedSpecialtyId) {
       // Nếu thay đổi specialtyId, gọi API hoặc lọc danh sách bác sĩ
       await this.filterDoctorsBySpecialty();
+    }
+    if (
+      prevProps.userInfo?.id !== this.props.userInfo?.id &&
+      this.props.userInfo?.id
+    ) {
+      this.props.fetchUserFavorite(this.props.userInfo.id);
+    }
+    if (
+      prevProps.allFavorites !== this.props.allFavorites &&
+      this.state.hospitalId
+    ) {
+      const isFavorite = this.props.allFavorites.some(
+        (fav) => fav.hospitalId === Number(this.state.hospitalId)
+      );
+      this.setState({ isFavorite });
     }
   }
 
@@ -110,6 +130,31 @@ class DetailHospital extends Component {
     return `${Number(price).toLocaleString("vi-VN")}đ`;
   };
 
+  handleToggleFavorite = async () => {
+    const { userInfo } = this.props;
+    const { hospitalId } = this.state;
+
+    if (!userInfo) {
+      return message.warning("Vui lòng đăng nhập để thêm vào yêu thích!");
+    }
+
+    try {
+      const res = await toggleFavorite(userInfo.id, hospitalId, null);
+
+      if (res && res.errCode === 0) {
+        this.setState({ isFavorite: res.isFavorite });
+        if (res.isFavorite) {
+          message.success("Đã thêm vào danh sách yêu thích ❤️");
+        } else {
+          message.info("Đã xóa khỏi danh sách yêu thích 💔");
+        }
+      }
+    } catch (error) {
+      console.error("Error in toggleFavorite:", error);
+      message.error("Đã có lỗi xảy ra!");
+    }
+  };
+
   render() {
     let {
       arrDoctorId,
@@ -118,6 +163,7 @@ class DetailHospital extends Component {
       selectedSpecialtyId,
     } = this.state;
     let { language } = this.props;
+    // console.log("allFavorites: ", this.props.allFavorites);
 
     return (
       <div className="detail-specialty-container">
@@ -152,24 +198,28 @@ class DetailHospital extends Component {
                       {dataDetailHospital?.provinceData?.name}
                     </div>
                   </div>
-                  <Tooltip
-                    color="magenta"
-                    title={
-                      language === "vi"
-                        ? "Thêm vào danh sách yêu thích"
-                        : "Add to favorites"
-                    }
-                    placement="top"
+                  <div
+                    className={`d-flex gap-2 align-items-center p-3 rounded-pill ${
+                      this.state.isFavorite ? "bg-light" : ""
+                    }`}
+                    style={{ cursor: "pointer", height: "20px" }}
+                    onClick={this.handleToggleFavorite}
                   >
-                    <div
-                      className="d-flex gap-2 align-items-center border border-primary p-3 rounded-pill"
-                      style={{ cursor: "pointer", height: "20px" }}
-                    >
-                      <HeartFilled className="text-secondary fs-4" />
-
-                      <span>{language === "vi" ? "Yêu thích" : "Like"}</span>
-                    </div>
-                  </Tooltip>
+                    <HeartFilled
+                      className={`fs-4 ${
+                        this.state.isFavorite ? "text-danger" : "text-secondary"
+                      }`}
+                    />
+                    <span>
+                      {this.state.isFavorite
+                        ? language === "vi"
+                          ? "Yêu thích"
+                          : "Liked"
+                        : language === "vi"
+                        ? "Yêu thích"
+                        : "Like"}
+                    </span>
+                  </div>
                 </div>
                 <div
                   className={`description-content mt-3 ${
@@ -293,11 +343,16 @@ class DetailHospital extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
+    userInfo: state.user.userInfo,
+    allFavorites: state.admin.allFavorites,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    fetchUserFavorite: (userId) =>
+      dispatch(actions.fetchAllUserFavoriteStart(userId)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DetailHospital);

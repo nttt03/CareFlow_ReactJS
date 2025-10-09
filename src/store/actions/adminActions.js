@@ -10,6 +10,7 @@ import {
   saveDetailDoctorService,
   getAllSpecialty,
   getAllHospital,
+  getFavorites,
 } from "../../services/userService";
 import { toast } from "react-toastify";
 import { dispatch } from "../../redux";
@@ -361,4 +362,29 @@ export const fetchRequiredDoctorInforSuccess = (allRequiredData) => ({
 
 export const fetchRequiredDoctorInforFailed = () => ({
   type: actionTypes.FETCH_REQUIRED_DOCTOR_INFOR_FAILED,
+});
+
+export const fetchAllUserFavoriteStart = (userId) => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await getFavorites(userId);
+      if (res && res.errCode === 0) {
+        dispatch(fetchAllUserFavoriteSuccess(res.data.reverse()));
+      } else {
+        dispatch(fetchAllUserFavoriteFailed());
+      }
+    } catch (e) {
+      dispatch(fetchAllUserFavoriteFailed());
+      console.log("fetchAllUserFavoriteFailed error: ", e);
+    }
+  };
+};
+
+export const fetchAllUserFavoriteSuccess = (data) => ({
+  type: actionTypes.FETCH_ALL_FAVORITE_SUCCESS,
+  favorites: data,
+});
+
+export const fetchAllUserFavoriteFailed = () => ({
+  type: actionTypes.FETCH_ALL_FAVORITE_FAILED,
 });
