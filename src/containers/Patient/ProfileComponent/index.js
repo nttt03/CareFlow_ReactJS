@@ -1,10 +1,16 @@
 import React from "react";
 import { Layout, Menu, Avatar, Empty } from "antd";
-import { UserOutlined, LockOutlined, LogoutOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LockOutlined,
+  LogoutOutlined,
+  HeartOutlined,
+} from "@ant-design/icons";
 import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
 import Profile from "./components/Profile";
 import ChangePassword from "../../../components/ChangePassword";
+import Favorites from "./components/Favorites";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../../store/actions";
 import { useHistory, useLocation } from "react-router-dom";
@@ -40,6 +46,12 @@ const ProfileComponent = () => {
       icon: <UserOutlined />,
     },
     {
+      key: "favorites",
+      label: "Danh sách yêu thích",
+      path: `profile-user/${userInfo.id}?tab=favorites`,
+      icon: <HeartOutlined />,
+    },
+    {
       key: "changePassword",
       label: "Đổi mật khẩu",
       path: `profile-user/${userInfo.id}?tab=changePassword`,
@@ -57,6 +69,8 @@ const ProfileComponent = () => {
     switch (currentTab) {
       case "info":
         return <Profile />;
+      case "favorites":
+        return <Favorites />;
       case "changePassword":
         return <ChangePassword />;
       default:

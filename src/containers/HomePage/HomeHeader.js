@@ -167,6 +167,12 @@ class HomeHeader extends Component {
         icon: <UserOutlined />,
       },
       {
+        key: "favorites",
+        label: "Danh sách yêu thích",
+        path: null,
+        icon: <UserOutlined />,
+      },
+      {
         key: "changePassword",
         label: "Đổi mật khẩu",
         path: null,
@@ -176,7 +182,8 @@ class HomeHeader extends Component {
     const sideBarTabs = [...baseTabs];
     if (isLoggedIn && userInfo) {
       sideBarTabs[0].path = `profile-user/${userInfo.id}?tab=info`;
-      sideBarTabs[1].path = `profile-user/${userInfo.id}?tab=changePassword`;
+      sideBarTabs[1].path = `profile-user/${userInfo.id}?tab=favorites`;
+      sideBarTabs[2].path = `profile-user/${userInfo.id}?tab=changePassword`;
       sideBarTabs.push({
         key: "logout",
         label: "Đăng xuất",
@@ -184,7 +191,7 @@ class HomeHeader extends Component {
         icon: <LogoutOutlined />,
       });
     }
-    console.log("check userInfo: ", userInfo);
+    // console.log("check userInfo: ", userInfo);
     return (
       <React.Fragment>
         <div className="home-header-container">
