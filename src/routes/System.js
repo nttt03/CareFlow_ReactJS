@@ -18,6 +18,7 @@ import ManageAccount from "../containers/System/Admin/ManageAccount";
 import ManageSchedule from "../containers/System/Doctor/ManageSchedule";
 import AdminDashboard from "../containers/System/Admin/AdminDashboard";
 import ProfileUser from "../containers/System/Doctor/ProfileUser";
+import ChangePassword from "../components/ChangePassword";
 
 class System extends Component {
   render() {
@@ -51,6 +52,10 @@ class System extends Component {
                 <Route
                   path="/system/profile-user/:id"
                   component={ProfileUser}
+                />
+                <Route
+                  path="/system/change-password/:id"
+                  component={ChangePassword}
                 />
                 <Route
                   path="/system/manage-account"

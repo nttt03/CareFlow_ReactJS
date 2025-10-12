@@ -12,6 +12,11 @@ export const adminMenu = [
         name: "menu.admin.profile-user",
         link: "/system/profile-user/:id",
       },
+      {
+        // change password
+        name: "menu.admin.change-password",
+        link: "/system/change-password/:id",
+      },
     ],
   },
 
@@ -79,7 +84,26 @@ export const adminMenu = [
 
 export const doctorMenu = [
   {
-    name: "menu.admin.manage-user",
+    name: "menu.doctor.system",
+    menus: [
+      {
+        name: "menu.doctor.dashboard",
+        link: "/doctor/dashboard",
+      },
+      {
+        // profile bác sĩ
+        name: "menu.doctor.profile-user",
+        link: "/doctor/profile-user/:id",
+      },
+      {
+        // change password
+        name: "menu.doctor.change-password",
+        link: "/doctor/change-password/:id",
+      },
+    ],
+  },
+  {
+    name: "menu.doctor.manage",
     menus: [
       {
         // quản lý kế hoạch khám bệnh của bác sĩ
@@ -95,10 +119,42 @@ export const doctorMenu = [
         name: "menu.doctor.manage-patient",
         link: "/doctor/manage-patient",
       },
+    ],
+  },
+];
+
+export const leaderHospitalMenu = [
+  {
+    name: "menu.leader-hospital.system",
+    menus: [
       {
-        // profile bác sĩ
-        name: "menu.doctor.profile-user",
-        link: "/doctor/profile-user/:id",
+        name: "menu.leader-hospital.dashboard",
+        link: "/leader-hospital/dashboard",
+      },
+      {
+        // profile
+        name: "menu.leader-hospital.profile-user",
+        link: "/leader-hospital/profile-user/:id",
+      },
+      {
+        // change password
+        name: "menu.leader-hospital.change-password",
+        link: "/leader-hospital/change-password/:id",
+      },
+    ],
+  },
+  {
+    name: "menu.leader-hospital.manage",
+    menus: [
+      {
+        // quản lý kế hoạch khám bệnh của bác sĩ
+        name: "menu.leader-hospital.manage-schedule",
+        link: "/leader-hospital/manage-schedule",
+      },
+      {
+        // quản lý bệnh nhân của bác sĩ
+        name: "menu.leader-hospital.manage-patient",
+        link: "/leader-hospital/manage-patient",
       },
     ],
   },

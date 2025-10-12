@@ -58,13 +58,27 @@
             "manage-specialty": "Manage speciality",
             "handbook": "Handbook",
             "manage-handbook": "Manage handbook",
-            "profile-user": "User Profile"
+            "profile-user": "User Profile",
+            "change-password": "Change Password"
         },
         "doctor": {
+            "system": "System",
+            "dashboard": "Overview",
+            "manage": "Manage",
             "manage-schedule": "Manage Doctor's schedule",
             "manage-patient": "Manage Doctor's patient",
             "waiting-approval": "Waiting approval",
-            "profile-user": "User Profile"
+            "profile-user": "User Profile",
+            "change-password": "Change Password"
+        },
+        "leader-hospital": {
+            "system": "System",
+            "manage": "Manage",
+            "dashboard": "Overview",
+            "manage-schedule": "Manage Doctor's schedule",
+            "manage-patient": "Manage Doctor's patient",
+            "profile-user": "User Profile",
+            "change-password": "Change Password"
         }
     },
     "manage-user": {

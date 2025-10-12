@@ -55,8 +55,8 @@ class ListDoctor extends Component {
             {arrDoctors && arrDoctors.length > 0 ? (
               arrDoctors.map((item, index) => {
                 let imageBase64 = "";
-                if (item.image) {
-                  imageBase64 = Buffer.from(item.image, "base64").toString(
+                if (item.avatar) {
+                  imageBase64 = Buffer.from(item.avatar, "base64").toString(
                     "binary"
                   );
                 }

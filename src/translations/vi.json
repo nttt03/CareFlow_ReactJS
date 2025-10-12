@@ -58,13 +58,27 @@
             "manage-specialty": "Quản lý chuyên khoa",
             "handbook": "Cẩm nang",
             "manage-handbook": "Quản lý cẩm nang",
-            "profile-user": "Hồ sơ cá nhân"
+            "profile-user": "Hồ sơ cá nhân",
+            "change-password": "Đổi mật khẩu"
         },
         "doctor": {
-            "manage-schedule": "Quản lý kế hoạch khám bệnh",
-            "manage-patient": "Quản lý bệnh nhân khám bệnh",
+            "system": "Hệ thống",
+            "dashboard": "Tổng quan",
+            "manage": "Quản lý",
+            "manage-schedule": "Kế hoạch khám bệnh",
+            "manage-patient": "Bệnh nhân khám bệnh",
             "waiting-approval": "Lịch hẹn chờ duyệt",
-            "profile-user": "Hồ sơ cá nhân"
+            "profile-user": "Hồ sơ cá nhân",
+            "change-password": "Đổi mật khẩu"
+        },
+        "leader-hospital": {
+            "system": "Hệ thống",
+            "manage": "Quản lý",
+            "dashboard": "Tổng quan",
+            "manage-schedule": "Kế hoạch khám bệnh",
+            "manage-patient": "Bệnh nhân khám bệnh",
+            "profile-user": "Hồ sơ cá nhân",
+            "change-password": "Đổi mật khẩu"
         }
     },
     "manage-user": {

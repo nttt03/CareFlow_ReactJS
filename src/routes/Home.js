@@ -19,9 +19,11 @@ class Home extends Component {
       case "R1":
         return <Redirect to="/system/dashboard" />;
       case "R2":
-        return <Redirect to="/doctor/manage-schedule" />;
+        return <Redirect to="/doctor/dashboard" />;
       case "R3":
         return <Redirect to="/home" />;
+      case "R4":
+        return <Redirect to="/leader-hospital/dashboard" />;
       default:
         return <Redirect to="/login" />;
     }

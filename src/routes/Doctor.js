@@ -6,6 +6,8 @@ import ManageSchedule from "../containers/System/Doctor/ManageSchedule";
 import ManagePatient from "../containers/System/Doctor/ManagePatient";
 import WaitingApproval from "../containers/System/Doctor/WaitingApproval";
 import ProfileUser from "../containers/System/Doctor/ProfileUser";
+import ChangePassword from "../components/ChangePassword";
+import DoctorDashboard from "../containers/System/Doctor/DoctorDashboard";
 import Navigator from "../components/Navigator";
 import { doctorMenu } from "../containers/Header/menuApp";
 
@@ -40,9 +42,14 @@ class Doctor extends Component {
           <div className="system-container">
             <div className="system-list">
               <Switch>
+                <Route path="/doctor/dashboard" component={DoctorDashboard} />
                 <Route
                   path="/doctor/profile-user/:id"
                   component={ProfileUser}
+                />
+                <Route
+                  path="/doctor/change-password/:id"
+                  component={ChangePassword}
                 />
                 <Route
                   path="/doctor/manage-schedule"
