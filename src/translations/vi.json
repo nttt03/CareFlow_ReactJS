@@ -69,7 +69,8 @@
             "manage-patient": "Bệnh nhân khám bệnh",
             "waiting-approval": "Lịch hẹn chờ duyệt",
             "profile-user": "Hồ sơ cá nhân",
-            "change-password": "Đổi mật khẩu"
+            "change-password": "Đổi mật khẩu",
+            "manage-medical-record": "Quản lý hồ sơ bệnh án"
         },
         "leader-hospital": {
             "system": "Hệ thống",
@@ -143,7 +144,8 @@
             "new-appointment": "Lịch hẹn mới",
             "done-appointment": "Đã khám",
             "title": "Thông tin lịch hẹn",
-            "title-none": "Hiện bạn chưa có lịch hẹn khám bệnh nào trên trang này!",
+            "title-none-new": "Hiện bạn chưa có lịch hẹn mới nào trên trang này!",
+            "title-none-done": "Hiện bạn chưa có lịch sử khám bệnh nào!",
             "date": "Ngày khám:",
             "time": "Giờ khám:",
             "address": "Địa chỉ:",

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import "./NewAppointment.scss";
 import HomeHeader from "../../HomePage/HomeHeader";
@@ -6,6 +7,7 @@ import HomeFooter from "../../HomePage/HomeFooter";
 import { FormattedMessage } from "react-intl";
 import { getNewAppointment } from "../../../services/userService";
 import emptyImg from "../../../assets/empty.png";
+import { message } from "antd";
 
 class NewAppointment extends Component {
   constructor(props) {
@@ -13,6 +15,7 @@ class NewAppointment extends Component {
     this.state = {
       newAppointment: [],
       isDataFetched: false,
+      isActive: "new",
     };
   }
 
@@ -21,7 +24,7 @@ class NewAppointment extends Component {
     console.log("UserInfo from props:", userInfo);
     if (userInfo && userInfo.id) {
       let data = await this.getNewAppointmentData(userInfo.id);
-      console.log("Fetched new appointment data:", data);
+      // console.log("Fetched new appointment data:", data);
       this.setState({
         newAppointment: data,
         isDataFetched: true,
@@ -69,12 +72,14 @@ class NewAppointment extends Component {
       if (userInfo && userInfo.id) {
         this.props.history.push(`/done-appointment/${userInfo.id}`);
       } else {
-        alert("Bạn cần đăng nhập để xem lịch hẹn đã khám!");
+        message.warning("Bạn cần đăng nhập để xem lịch hẹn đã khám!");
       }
     }
   };
 
   render() {
+    const currentPath = this.props.location?.pathname;
+    const { userInfo } = this.props;
     let { newAppointment } = this.state;
     const isVietnamese = this.props.language === "vi";
 
@@ -87,7 +92,7 @@ class NewAppointment extends Component {
     const upcomingAppointments = newAppointment.filter(
       (appointment) => parseInt(appointment.date) >= currentTimestamp
     );
-    console.log("Upcoming Appointments:", upcomingAppointments);
+    console.log("currentPath:", currentPath);
 
     return (
       <React.Fragment>
@@ -95,11 +100,21 @@ class NewAppointment extends Component {
         <div className="container">
           <div className="appointment-schedule-container">
             <div className="appointment-schedule-navigation">
-              <button className="new-appointment actived">
+              <button
+                className={`new-appointment ${
+                  currentPath.includes("new-appointment") ? "actived" : ""
+                }`}
+                onClick={() =>
+                  this.props.history.push(`/new-appointment/${userInfo.id}`)
+                }
+              >
                 <FormattedMessage id="patient.appointment-patient.new-appointment" />
               </button>
+
               <button
-                className="old-appointment"
+                className={`old-appointment ${
+                  currentPath.includes("done-appointment") ? "actived" : ""
+                }`}
                 onClick={() => this.handleViewDoneAppointment()}
               >
                 <FormattedMessage id="patient.appointment-patient.done-appointment" />
@@ -154,7 +169,7 @@ class NewAppointment extends Component {
                             : ""}
                         </span>
                       </div>
-                      <div className="appointment-item">
+                      {/* <div className="appointment-item">
                         <span className="label">
                           <FormattedMessage id="patient.appointment-patient.price" />
                         </span>
@@ -169,7 +184,7 @@ class NewAppointment extends Component {
                               } ${isVietnamese ? "VNĐ" : "USD"}`
                             : "-"}
                         </span>
-                      </div>
+                      </div> */}
                       <div className="appointment-item">
                         <span className="label">
                           <FormattedMessage id="patient.appointment-patient.doctor" />
@@ -190,7 +205,7 @@ class NewAppointment extends Component {
               ) : (
                 <div className="appointment-schedule-content">
                   <div className="title py-3">
-                    <FormattedMessage id="patient.appointment-patient.title-none" />
+                    <FormattedMessage id="patient.appointment-patient.title-none-new" />
                   </div>
                   <div className="empty-image">
                     <img src={emptyImg} alt="empty" />
@@ -217,4 +232,6 @@ const mapDispatchToProps = (dispatch) => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewAppointment);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(NewAppointment)
+);

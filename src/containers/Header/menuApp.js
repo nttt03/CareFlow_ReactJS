@@ -119,6 +119,11 @@ export const doctorMenu = [
         name: "menu.doctor.manage-patient",
         link: "/doctor/manage-patient",
       },
+      {
+        // quản lý hồ sơ bệnh án
+        name: "menu.doctor.manage-medical-record",
+        link: "/doctor/manage-medical-record",
+      },
     ],
   },
 ];

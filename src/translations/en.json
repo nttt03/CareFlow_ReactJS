@@ -69,7 +69,8 @@
             "manage-patient": "Manage Doctor's patient",
             "waiting-approval": "Waiting approval",
             "profile-user": "User Profile",
-            "change-password": "Change Password"
+            "change-password": "Change Password",
+            "manage-medical-record": "Manage Medical Record"
         },
         "leader-hospital": {
             "system": "System",
@@ -143,7 +144,8 @@
             "new-appointment": "New appointment",
             "done-appointment": "History",
             "title": "Appointment information",
-            "title-none": "You currently do not have any appointments scheduled on this page!",
+            "title-none-new": "You currently do not have any new appointments scheduled on this page!",
+            "title-none-done": "You currently have no medical history!",
             "date": "Date:",
             "time": "Time:",
             "address": "Address:",

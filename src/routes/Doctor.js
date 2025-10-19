@@ -8,6 +8,7 @@ import WaitingApproval from "../containers/System/Doctor/WaitingApproval";
 import ProfileUser from "../containers/System/Doctor/ProfileUser";
 import ChangePassword from "../components/ChangePassword";
 import DoctorDashboard from "../containers/System/Doctor/DoctorDashboard";
+import MedicalRecord from "../containers/System/Doctor/MedicalRecord";
 import Navigator from "../components/Navigator";
 import { doctorMenu } from "../containers/Header/menuApp";
 
@@ -62,6 +63,10 @@ class Doctor extends Component {
                 <Route
                   path="/doctor/manage-patient"
                   component={ManagePatient}
+                />
+                <Route
+                  path="/doctor/manage-medical-record"
+                  component={MedicalRecord}
                 />
               </Switch>
             </div>

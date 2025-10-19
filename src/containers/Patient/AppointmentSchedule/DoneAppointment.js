@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { getDoneAppointment } from "../../../services/userService";
 import HomeHeader from "../../HomePage/HomeHeader";
@@ -54,9 +55,9 @@ class DoneAppointment extends Component {
 
   render() {
     let { doneAppointment } = this.state;
-    console.log("doneAppointment: ", doneAppointment);
-    let { language } = this.props;
-
+    const currentPath = this.props.location?.pathname;
+    let { language, userInfo } = this.props;
+    // console.log("currentPathdone", currentPath);
     return (
       <React.Fragment>
         <HomeHeader />
@@ -65,11 +66,17 @@ class DoneAppointment extends Component {
             <div className="appointment-schedule-navigation">
               <button
                 onClick={() => this.handleViewNewAppointment()}
-                className="new-appointment actived"
+                className={`new-appointment ${
+                  currentPath.includes("new-appointment") ? "actived" : ""
+                }`}
               >
                 <FormattedMessage id="patient.appointment-patient.new-appointment" />
               </button>
-              <button className="old-appointment">
+              <button
+                className={`old-appointment ${
+                  currentPath.includes("done-appointment") ? "actived" : ""
+                }`}
+              >
                 <FormattedMessage id="patient.appointment-patient.done-appointment" />
               </button>
             </div>
@@ -80,8 +87,8 @@ class DoneAppointment extends Component {
                 let nameVi = "";
                 let nameEn = "";
                 if (item.infoDataDoctor && item.infoDataDoctor.positionData) {
-                  nameVi = `${item.infoDataDoctor.positionData.valueVi}, ${item.infoDataDoctor.lastName} ${item.infoDataDoctor.firstName}`;
-                  nameEn = `${item.infoDataDoctor.positionData.valueEn}, ${item.infoDataDoctor.firstName} ${item.infoDataDoctor.lastName}`;
+                  nameVi = `${item.infoDataDoctor.positionData.valueVi}, ${item.infoDataDoctor.fullName}`;
+                  nameEn = `${item.infoDataDoctor.positionData.valueEn}, ${item.infoDataDoctor.fullName}`;
                 }
 
                 return (
@@ -121,11 +128,13 @@ class DoneAppointment extends Component {
                           <FormattedMessage id="patient.appointment-patient.address" />
                         </span>
                         <span className="value">
-                          {item.doctorInfoData?.addressHospital ||
-                            "123 Đường Công Nghệ, Quận 1, TP. HCM"}
+                          {item.doctorInfoData?.hospital?.addressDetail || "-"}
+                          {item.doctorInfoData?.hospital?.provinceData?.name
+                            ? `, ${item.doctorInfoData.hospital.provinceData.name}`
+                            : ""}
                         </span>
                       </div>
-                      <div className="appointment-item">
+                      {/* <div className="appointment-item">
                         <span className="label">
                           <FormattedMessage id="patient.appointment-patient.price" />
                         </span>
@@ -136,17 +145,15 @@ class DoneAppointment extends Component {
                                   ? item.doctorInfoData.priceTypeData.valueVi
                                   : item.doctorInfoData.priceTypeData.valueEn
                               } ${language === LANGUAGES.VI ? "VNĐ" : "USD"}`
-                            : "500.000 VNĐ"}
+                            : "VNĐ"}
                         </span>
-                      </div>
+                      </div> */}
                       <div className="appointment-item">
                         <span className="label">
                           <FormattedMessage id="patient.appointment-patient.doctor" />
                         </span>
                         <span className="value">
-                          {language === LANGUAGES.VI
-                            ? nameVi
-                            : nameEn || "TS. BS. Nguyễn Văn A"}
+                          {language === LANGUAGES.VI ? nameVi : nameEn || "-"}
                         </span>
                       </div>
                     </div>
@@ -156,7 +163,7 @@ class DoneAppointment extends Component {
             ) : (
               <div className="appointment-schedule-content">
                 <div className="title py-3">
-                  <FormattedMessage id="patient.appointment-patient.title-none" />
+                  <FormattedMessage id="patient.appointment-patient.title-none-done" />
                 </div>
                 <div className="empty-image">
                   <img src={emptyImg} alt="empty" />
@@ -174,6 +181,7 @@ class DoneAppointment extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
+    userInfo: state.user.userInfo,
   };
 };
 
@@ -181,4 +189,6 @@ const mapDispatchToProps = (dispatch) => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DoneAppointment);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(DoneAppointment)
+);

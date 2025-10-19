@@ -6,6 +6,17 @@ div._loading_overlay_wrapper {
     }
 }
 
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE và Edge */
+    scrollbar-width   : none;
+    /* Firefox */
+}
+
 .manage-patient-container {
     .m-p-title {
         font-size     : 22px;

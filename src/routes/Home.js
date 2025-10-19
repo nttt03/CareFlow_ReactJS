@@ -12,7 +12,7 @@ class Home extends Component {
     }
 
     if (!isLoggedIn) {
-      return <Redirect to="/home" />;
+      return <Redirect to="/login" />;
     }
 
     switch (roleId) {

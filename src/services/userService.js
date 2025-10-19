@@ -113,7 +113,9 @@ const getAllDetailHospitalById = (data) => {
 
 const getAllPatientForDoctor = (data) => {
   return axios.get(
-    `/api/get-list-patient-for-doctor?doctorId=${data.doctorId}&date=${data.date}&status=${data.status}`
+    `/api/get-list-patient-for-doctor?doctorId=${data.doctorId}&date=${
+      data.date || ""
+    }&status=${data.status}`
   );
 };
 
@@ -236,6 +238,23 @@ export const toggleFavorite = (userId, hospitalId, doctorId) => {
 
 export const getFavorites = (userId) => {
   return axios.get(`/api/get-favorites`, { params: { userId } });
+};
+
+// export const postMedicalRecord = (formData) => {
+//   return axios.post(`api/create-medical-record`, formData);
+// };
+export const postMedicalRecord = (formData) => {
+  return axios.post("api/create-medical-record", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
+
+export const deleteMedicalRecord = (medicalRecordId) => {
+  return axios.delete("/api/delete-medical-record", {
+    data: {
+      id: medicalRecordId,
+    },
+  });
 };
 
 export {

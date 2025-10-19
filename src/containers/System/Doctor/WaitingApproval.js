@@ -76,7 +76,7 @@ class WaitingApproval extends Component {
     return (
       <Spin spinning={isShowLoading} tip="Loading...">
         <div className="manage-patient-container">
-          <div className="m-p-title py-2">Quản lý lịch hẹn</div>
+          <div className="m-p-title py-2">Lịch hẹn chờ duyệt</div>
           <div className="manage-patient-body row">
             <div className="col-12 table-manage-patient">
               <table style={{ width: "100%" }}>

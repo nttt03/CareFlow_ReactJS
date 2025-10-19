@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import { Spin } from "antd";
 import { Modal } from "reactstrap";
+import { message } from "antd";
 
 class BookingModal extends Component {
   constructor(props) {
@@ -135,6 +136,23 @@ class BookingModal extends Component {
   };
 
   handleConfirmBooking = async () => {
+    const { language } = this.props;
+    const { fullName, phoneNumber, email, birthday, symptoms } = this.state;
+    if (!fullName || !phoneNumber || !email || !birthday || !symptoms) {
+      message.warning("Vui lòng nhập đầy đủ thông tin trước khi đặt lịch!");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      message.error("Email không hợp lệ!");
+      return;
+    }
+    const phoneRegex = /^[0-9]{9,11}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      message.error("Số điện thoại không hợp lệ!");
+      return;
+    }
+
     this.setState({ isShowLoading: true });
 
     let date = new Date(this.state.birthday).getTime();
@@ -161,10 +179,18 @@ class BookingModal extends Component {
     this.setState({ isShowLoading: false });
 
     if (res && res.errCode === 0) {
-      toast.success("Booking a new appointment succeed");
+      message.success(
+        language === "vi"
+          ? "Đặt lịch hẹn thành công"
+          : "Booking a new appointment succeed"
+      );
       this.props.closeBookingModal();
     } else {
-      toast.error("Booking a new appointment error!");
+      message.error(
+        language === "vi"
+          ? "Đặt lịch hẹn không thành công. Vui lòng thử lại!"
+          : "Booking a new appointment error!"
+      );
     }
   };
 
@@ -232,7 +258,7 @@ class BookingModal extends Component {
                             <FormattedMessage id="patient.booking-modal.phoneNumber" />
                           </label>
                           <input
-                            type="text"
+                            type="number"
                             className="form-control"
                             value={this.state.phoneNumber}
                             onChange={(e) =>
