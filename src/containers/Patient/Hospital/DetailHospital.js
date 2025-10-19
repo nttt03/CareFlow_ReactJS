@@ -168,7 +168,12 @@ class DetailHospital extends Component {
     return (
       <div className="detail-specialty-container">
         <HomeHeader />
-        <div className="detail-specialty-body">
+        <div
+          className="detail-specialty-body"
+          style={{
+            minHeight: "90vh",
+          }}
+        >
           <div className="description-specialty container px-3 px-md-5">
             <BackButton
               to="/home"

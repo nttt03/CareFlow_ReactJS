@@ -111,7 +111,10 @@ class DetailDoctor extends Component {
     return (
       <Fragment>
         <HomeHeader isShowBanner={false} />
-        <div className="container px-0 px-lg-5" style={{ paddingTop: "5%" }}>
+        <div
+          className="container px-0 px-lg-5"
+          style={{ paddingTop: "5%", minHeight: "100vh" }}
+        >
           <div className="container my-4">
             <div className="bg-white p-4 rounded-3 shadow-sm intro-doctor">
               <div className="row align-items-center g-3">

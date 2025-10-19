@@ -31,37 +31,53 @@ class ManageSchedule extends Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     const { userInfo } = this.props;
+
     if (prevProps.allDoctors !== this.props.allDoctors) {
-      let dataSelect = this.buildDataInputSelect(this.props.allDoctors);
-      // Nếu role là R2 (bác sĩ) => tự động chọn bác sĩ đang đăng nhập
+      let doctors = this.props.allDoctors;
+
+      // Nếu là role R4 (quản lý bệnh viện) → lọc bác sĩ theo hospitalId
+      if (userInfo && userInfo.roleId === "R4" && userInfo.hospitalId) {
+        doctors = doctors.filter(
+          (doctor) => doctor.hospitalId === userInfo.hospitalId
+        );
+      }
+
+      let dataSelect = this.buildDataInputSelect(doctors);
+
+      // Nếu role là R2 (bác sĩ) → tự động chọn chính họ
       let selectedDoctor = {};
       if (userInfo && userInfo.roleId === "R2") {
         let doctor = dataSelect.find((item) => item.value === userInfo.id);
         if (doctor) selectedDoctor = doctor;
       }
+
       this.setState({
         listDoctors: dataSelect,
         selectedDoctor: selectedDoctor,
       });
     }
+
     if (prevProps.language !== this.props.language) {
-      let dataSelect = this.buildDataInputSelect(this.props.allDoctors);
+      let doctors = this.props.allDoctors;
+
+      // Lặp lại logic lọc khi đổi ngôn ngữ
+      if (userInfo && userInfo.roleId === "R4" && userInfo.hospitalId) {
+        doctors = doctors.filter(
+          (doctor) => doctor.hospitalId === userInfo.hospitalId
+        );
+      }
+
+      let dataSelect = this.buildDataInputSelect(doctors);
       this.setState({
         listDoctors: dataSelect,
       });
     }
+
     if (prevProps.allScheduleTime !== this.props.allScheduleTime) {
       let data = this.props.allScheduleTime;
       if (data && data.length > 0) {
-        // Cách 1
-        // data.map(item => {
-        //     item.isSelected = false;
-        //     return item;
-        // })
-        // Cách 2
         data = data.map((item) => ({ ...item, isSelected: false }));
       }
-      //console.log('check range time data: ', data)
       this.setState({
         rangeTime: data,
       });
@@ -174,11 +190,11 @@ class ManageSchedule extends Component {
   };
 
   render() {
-    // console.log('check prop: ', this.props);
     let rangeTime = this.state.rangeTime;
     let { language, userInfo } = this.props;
     // console.log('check state rangeTime: ', rangeTime);
     const isDoctor = userInfo?.roleId === "R2";
+    console.log("userInfohospitalId: ", userInfo.hospitalId);
     return (
       <div className="manage-schedule-container">
         <div className="m-s-title">

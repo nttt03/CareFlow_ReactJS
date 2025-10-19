@@ -12,10 +12,12 @@ import {
   Col,
   Tag,
   Popconfirm,
+  Tooltip,
+  Typography,
 } from "antd";
 import {
   EditOutlined,
-  EyeOutlined,
+  CopyOutlined,
   PlusOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
@@ -27,6 +29,7 @@ import * as actions from "../../../../store/actions";
 import ModalAccount from "./ModalAccount";
 
 const { Option } = Select;
+const { Text } = Typography;
 
 function ManageAccount({
   language,
@@ -172,6 +175,11 @@ function ManageAccount({
       dataIndex: "email",
       key: "email",
       width: 200,
+      render: (email) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Text copyable>{email}</Text>
+        </div>
+      ),
     },
     {
       title: language === "vi" ? "Số điện thoại" : "Phone",
