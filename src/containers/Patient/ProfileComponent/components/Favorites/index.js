@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { Card, Row, Col, Spin, Empty, Button, message, Tabs } from "antd";
 import { HeartFilled } from "@ant-design/icons";
 import { fetchAllUserFavoriteStart } from "../../../../../store/actions";
@@ -15,6 +15,7 @@ const Favorites = ({ userInfo, allFavorites, fetchUserFavorite }) => {
   const [doctorFavorites, setDoctorFavorites] = useState([]);
   const [hospitalFavorites, setHospitalFavorites] = useState([]);
   const history = useHistory();
+  const language = useSelector((state) => state.app.language);
 
   useEffect(() => {
     const loadFavorites = async () => {
@@ -41,12 +42,20 @@ const Favorites = ({ userInfo, allFavorites, fetchUserFavorite }) => {
         fav.doctorId
       );
       if (res && res.errCode === 0) {
-        message.success("Đã xóa khỏi danh sách yêu thích 💔");
+        message.success(
+          language === "vi"
+            ? "Đã xóa khỏi danh sách yêu thích 💔"
+            : "Removed from favorites list 💔"
+        );
         fetchUserFavorite(userInfo.id);
       }
     } catch (error) {
       console.error(error);
-      message.error("Lỗi khi xóa yêu thích!");
+      message.error(
+        language === "vi"
+          ? "Lỗi khi xóa yêu thích!"
+          : "Error deleting favorite!"
+      );
     }
   };
 
@@ -60,7 +69,15 @@ const Favorites = ({ userInfo, allFavorites, fetchUserFavorite }) => {
 
   const renderFavoriteList = (list, emptyLabel) => {
     if (list.length === 0)
-      return <Empty description={`Chưa có ${emptyLabel} yêu thích`} />;
+      return (
+        <Empty
+          description={
+            language === "vi"
+              ? `Chưa có ${emptyLabel} yêu thích`
+              : `No favorite ${emptyLabel} yet`
+          }
+        />
+      );
 
     return (
       <Row gutter={[16, 16]}>
@@ -127,7 +144,7 @@ const Favorites = ({ userInfo, allFavorites, fetchUserFavorite }) => {
                     }}
                     onClick={() => handleViewDetail(fav)}
                   >
-                    Xem chi tiết
+                    {language === "vi" ? "Xem chi tiết" : "See details"}
                   </Button>
 
                   <Button
@@ -141,7 +158,7 @@ const Favorites = ({ userInfo, allFavorites, fetchUserFavorite }) => {
                     icon={<HeartFilled />}
                     onClick={() => handleRemoveFavorite(fav)}
                   >
-                    Bỏ yêu thích
+                    {language === "vi" ? "Bỏ yêu thích" : "Unfavourite"}
                   </Button>
                 </div>
               </Card>
@@ -154,7 +171,9 @@ const Favorites = ({ userInfo, allFavorites, fetchUserFavorite }) => {
 
   return (
     <div className="container py-4">
-      <h3 className="fw-bold mb-4 text-primary">Danh sách yêu thích</h3>
+      <h3 className="fw-bold mb-4 text-primary">
+        {language === "vi" ? "Danh sách yêu thích" : "Favorites list"}
+      </h3>
 
       {loading ? (
         <div className="text-center my-5">
@@ -169,17 +188,35 @@ const Favorites = ({ userInfo, allFavorites, fetchUserFavorite }) => {
           className="rounded-3 bg-white p-3"
         >
           <TabPane
-            tab={<span>Bác sĩ yêu thích ({doctorFavorites.length})</span>}
+            tab={
+              <span>
+                {language === "vi" ? "Bác sĩ yêu thích" : "Favorite doctor"} (
+                {doctorFavorites.length})
+              </span>
+            }
             key="1"
           >
-            {renderFavoriteList(doctorFavorites, "bác sĩ")}
+            {renderFavoriteList(
+              doctorFavorites,
+              language === "vi" ? "bác sĩ" : "doctor"
+            )}
           </TabPane>
 
           <TabPane
-            tab={<span>Bệnh viện yêu thích ({hospitalFavorites.length})</span>}
+            tab={
+              <span>
+                {language === "vi"
+                  ? "Bệnh viện yêu thích"
+                  : "Favorite hospital"}{" "}
+                ({hospitalFavorites.length})
+              </span>
+            }
             key="2"
           >
-            {renderFavoriteList(hospitalFavorites, "bệnh viện")}
+            {renderFavoriteList(
+              hospitalFavorites,
+              language === "vi" ? "bệnh viện" : "hospital"
+            )}
           </TabPane>
         </Tabs>
       )}

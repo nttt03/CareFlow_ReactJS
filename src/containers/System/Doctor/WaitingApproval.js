@@ -42,30 +42,44 @@ class WaitingApproval extends Component {
   };
 
   handleConfirm = async (item) => {
+    const { language } = this.props;
     let res = await updateBookingStatus({
       bookingId: item.id,
       status: "S2",
     });
 
     if (res && res.errCode === 0) {
-      toast.success("Xác nhận lịch thành công!");
+      toast.success(
+        language === "vi"
+          ? "Xác nhận lịch thành công!"
+          : "Appointment confirmed successfully!"
+      );
       await this.getDataPatient();
     } else {
-      toast.error("Xác nhận thất bại!");
+      toast.error(
+        language === "vi" ? "Xác nhận thất bại!" : "Confirmation failed!"
+      );
     }
   };
 
   handleCancel = async (item) => {
+    const { language } = this.props;
     let res = await updateBookingStatus({
       bookingId: item.id,
       status: "S5",
     });
 
     if (res && res.errCode === 0) {
-      toast.success("Hủy lịch thành công!");
+      toast.success(
+        language === "vi"
+          ? "Hủy lịch thành công!"
+          : "Appointment cancelled successfully!"
+      );
       await this.getDataPatient();
     } else {
-      toast.error("Hủy lịch thất bại!");
+      toast.error(
+        language === "vi" ? "Hủy lịch thất bại!" : "Cancellation failed!"
+      );
     }
   };
 
@@ -76,20 +90,30 @@ class WaitingApproval extends Component {
     return (
       <Spin spinning={isShowLoading} tip="Loading...">
         <div className="manage-patient-container">
-          <div className="m-p-title py-2">Lịch hẹn chờ duyệt</div>
+          <div className="m-p-title py-2">
+            {language === "vi"
+              ? "Lịch hẹn chờ duyệt"
+              : "Appointment schedule pending approval"}
+          </div>
           <div className="manage-patient-body row">
             <div className="col-12 table-manage-patient">
               <table style={{ width: "100%" }}>
                 <tbody>
                   <tr>
-                    <th>STT</th>
-                    <th>Ngày khám</th>
-                    <th>Thời gian khám</th>
-                    <th>Họ và tên</th>
-                    <th>Giới tính</th>
-                    <th>Địa chỉ</th>
-                    <th>Triệu chứng</th>
-                    <th>Actions</th>
+                    <th>{language === "vi" ? "STT" : "No."}</th>
+                    <th>
+                      {language === "vi" ? "Ngày khám" : "Examination Date"}
+                    </th>
+                    <th>
+                      {language === "vi"
+                        ? "Thời gian khám"
+                        : "Examination Time"}
+                    </th>
+                    <th>{language === "vi" ? "Họ và tên" : "Full Name"}</th>
+                    <th>{language === "vi" ? "Giới tính" : "Gender"}</th>
+                    <th>{language === "vi" ? "Địa chỉ" : "Address"}</th>
+                    <th>{language === "vi" ? "Triệu chứng" : "Symptoms"}</th>
+                    <th>{language === "vi" ? "Thao tác" : "Actions"}</th>
                   </tr>
                   {dataPatient && dataPatient.length > 0 ? (
                     dataPatient.map((item, index) => {
@@ -120,22 +144,25 @@ class WaitingApproval extends Component {
                               className="mp-btn-confirm"
                               onClick={() => this.handleConfirm(item)}
                             >
-                              Xác nhận
+                              {language === "vi" ? "Xác nhận" : "Approve"}
                             </button>
+
                             <button
                               className="mp-btn-cancel"
                               onClick={() => this.handleCancel(item)}
                             >
-                              Hủy lịch
+                              {language === "vi" ? "Hủy lịch" : "Cancel"}
                             </button>
                           </td>
                         </tr>
                       );
                     })
                   ) : (
-                    <tr>
-                      <td colSpan="6">Không có dữ liệu</td>
-                    </tr>
+                    <td colSpan="6">
+                      {language === "vi"
+                        ? "Không có dữ liệu"
+                        : "No data available"}
+                    </td>
                   )}
                 </tbody>
               </table>

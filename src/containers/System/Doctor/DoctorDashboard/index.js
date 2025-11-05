@@ -45,13 +45,14 @@ const DoctorDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [filterRange, setFilterRange] = useState("7days");
   const userInfo = useSelector((state) => state.user.userInfo);
+  const language = useSelector((state) => state.app.language);
 
   const statusMap = {
-    S1: "Chờ xác nhận",
-    S2: "Đã xác nhận",
-    S3: "Đang khám",
-    S4: "Hoàn thành",
-    S5: "Đã hủy",
+    S1: language === "vi" ? "Chờ xác nhận" : "Waitting",
+    S2: language === "vi" ? "Đã xác nhận" : "Confirmed",
+    S3: language === "vi" ? "Đang khám" : "Examining",
+    S4: language === "vi" ? "Hoàn thành" : "Complete",
+    S5: language === "vi" ? "Đã hủy" : "Canceled",
   };
 
   useEffect(() => {
@@ -103,7 +104,7 @@ const DoctorDashboard = () => {
     labels: filteredBookings.map((item) => dayjs(item.date).format("DD/MM")),
     datasets: [
       {
-        label: "Số lịch hẹn",
+        label: language === "vi" ? "Số lịch hẹn" : "Total",
         data: filteredBookings.map((item) => item.count),
         backgroundColor: [
           "#4f46e5",
@@ -257,7 +258,7 @@ const DoctorDashboard = () => {
 
               <div style={{ flex: 1, textAlign: "right" }}>
                 <div style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>
-                  Tổng bệnh nhân
+                  {language === "vi" ? "Tổng bệnh nhân" : "Total patient"}
                 </div>
                 <div style={{ fontSize: 26, fontWeight: 700, color: "#fff" }}>
                   {stats.totalPatients}
@@ -292,7 +293,7 @@ const DoctorDashboard = () => {
 
               <div style={{ flex: 1, textAlign: "right" }}>
                 <div style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>
-                  Bệnh nhân mới
+                  {language === "vi" ? "Bệnh nhân mới" : "New patient"}
                 </div>
                 <div style={{ fontSize: 26, fontWeight: 700, color: "#fff" }}>
                   {stats.newPatients}
@@ -327,7 +328,7 @@ const DoctorDashboard = () => {
 
               <div style={{ flex: 1, textAlign: "right" }}>
                 <div style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>
-                  Lượt yêu thích
+                  {language === "vi" ? "Lượt yêu thích" : "Favorites"}
                 </div>
                 <div style={{ fontSize: 26, fontWeight: 700, color: "#fff" }}>
                   {stats.totalFavorites}
@@ -362,7 +363,9 @@ const DoctorDashboard = () => {
 
               <div style={{ flex: 1, textAlign: "right" }}>
                 <div style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>
-                  Tổng lịch hẹn
+                  {language === "vi"
+                    ? "Tổng lịch hẹn"
+                    : "Total appointment schedule"}
                 </div>
                 <div style={{ fontSize: 26, fontWeight: 700, color: "#fff" }}>
                   {totalBookings}
@@ -402,7 +405,9 @@ const DoctorDashboard = () => {
                 <ClockCircleOutlined />
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 15, color: "black" }}>Chờ xác nhận</div>
+                <div style={{ fontSize: 15, color: "black" }}>
+                  {language === "vi" ? "Chờ xác nhận" : "Waitting"}
+                </div>
                 <div style={{ fontSize: 22, fontWeight: 700 }}>
                   {statusCounts.S1}
                 </div>
@@ -439,7 +444,9 @@ const DoctorDashboard = () => {
                 <CheckCircleOutlined />
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 15, color: "black" }}>Đã xác nhận</div>
+                <div style={{ fontSize: 15, color: "black" }}>
+                  {language === "vi" ? "Đã xác nhận" : "Confirmed"}
+                </div>
                 <div style={{ fontSize: 22, fontWeight: 700 }}>
                   {statusCounts.S2}
                 </div>
@@ -476,7 +483,9 @@ const DoctorDashboard = () => {
                 <FlagOutlined />
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 15, color: "black" }}>Hoàn thành</div>
+                <div style={{ fontSize: 15, color: "black" }}>
+                  {language === "vi" ? "Hoàn thành" : "Complete"}
+                </div>
                 <div style={{ fontSize: 22, fontWeight: 700 }}>
                   {statusCounts.S4}
                 </div>
@@ -513,7 +522,9 @@ const DoctorDashboard = () => {
                 <CloseCircleOutlined />
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 15, color: "black" }}>Đã hủy</div>
+                <div style={{ fontSize: 15, color: "black" }}>
+                  {language === "vi" ? "Đã hủy" : "Canceled"}
+                </div>
                 <div style={{ fontSize: 22, fontWeight: 700 }}>
                   {statusCounts.S5}
                 </div>
@@ -529,15 +540,25 @@ const DoctorDashboard = () => {
           <Card
             title={
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span>Lịch hẹn theo ngày</span>
+                <span>
+                  {language === "vi"
+                    ? "Lịch hẹn theo ngày"
+                    : "Appointment schedule by day"}
+                </span>
                 <Select
                   value={filterRange}
                   onChange={setFilterRange}
                   style={{ width: 120 }}
                 >
-                  <Option value="7days">7 ngày</Option>
-                  <Option value="14days">14 ngày</Option>
-                  <Option value="all">Tất cả</Option>
+                  <Option value="7days">
+                    {language === "vi" ? "7 ngày" : "7 days"}
+                  </Option>
+                  <Option value="14days">
+                    {language === "vi" ? "14 ngày" : "14 days"}
+                  </Option>
+                  <Option value="all">
+                    {language === "vi" ? "Tất cả" : "All"}
+                  </Option>
                 </Select>
               </div>
             }
@@ -548,7 +569,13 @@ const DoctorDashboard = () => {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="Tỷ lệ lịch hẹn theo trạng thái">
+          <Card
+            title={
+              language === "vi"
+                ? "Tỷ lệ lịch hẹn theo trạng thái"
+                : "Appointment Rate by Status"
+            }
+          >
             <div style={{ width: "100%", height: "400px" }}>
               <Doughnut data={pieData} options={pieOptions} />
             </div>

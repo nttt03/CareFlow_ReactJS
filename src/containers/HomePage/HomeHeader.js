@@ -162,19 +162,19 @@ class HomeHeader extends Component {
     const baseTabs = [
       {
         key: "info",
-        label: "Hồ sơ cá nhân",
+        label: language === "vi" ? "Hồ sơ cá nhân" : "Personal profile",
         path: null,
         icon: <UserOutlined />,
       },
       {
         key: "favorites",
-        label: "Danh sách yêu thích",
+        label: language === "vi" ? "Danh sách yêu thích" : "Favorites list",
         path: null,
         icon: <UserOutlined />,
       },
       {
         key: "changePassword",
-        label: "Đổi mật khẩu",
+        label: language === "vi" ? "Đổi mật khẩu" : "Change password",
         path: null,
         icon: <LockOutlined />,
       },
@@ -186,7 +186,7 @@ class HomeHeader extends Component {
       sideBarTabs[2].path = `profile-user/${userInfo.id}?tab=changePassword`;
       sideBarTabs.push({
         key: "logout",
-        label: "Đăng xuất",
+        label: language === "vi" ? "Đăng xuất" : "Logout",
         onClick: handleLogout,
         icon: <LogoutOutlined />,
       });

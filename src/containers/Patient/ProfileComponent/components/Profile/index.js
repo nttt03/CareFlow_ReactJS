@@ -25,6 +25,8 @@ import { showLoading, hideLoading } from "../../../../../store/actions";
 import { useParams } from "react-router-dom";
 import { PlusOutlined, UserOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
+import { FormattedMessage } from "react-intl";
 
 const { Option } = Select;
 
@@ -39,6 +41,7 @@ const Profile = () => {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [avatarBase64, setAvatarBase64] = useState(null);
   const [fileList, setFileList] = useState([]);
+  const language = useSelector((state) => state.app.language);
 
   const fetchUserInfo = async () => {
     if (!patientId) return;
@@ -127,17 +130,27 @@ const Profile = () => {
       const res = await updateInfoByUser(updatedData);
 
       if (res && res.errCode === 0) {
-        message.success("Cập nhật thông tin thành công!");
+        message.success(
+          language === "vi"
+            ? "Cập nhật thông tin thành công!"
+            : "Information updated successfully!"
+        );
         setFormData({ ...res.data, avatar: res.data.avatar });
         setAvatarPreview(res.data.avatar); // Cập nhật preview từ server
         setAvatarBase64(null); // Reset base64
         setIsEditing(false);
       } else {
-        message.error(res.errMessage || "Cập nhật thất bại!");
+        message.error(
+          language === "vi" ? "Cập nhật thất bại!" : "Update failed!"
+        );
       }
     } catch (error) {
       console.error("Lỗi cập nhật thông tin:", error);
-      message.error("Có lỗi xảy ra khi cập nhật thông tin!");
+      message.error(
+        language === "vi"
+          ? "Có lỗi xảy ra khi cập nhật thông tin!"
+          : "An error occurred while updating information!"
+      );
     } finally {
       dispatch(hideLoading());
     }
@@ -156,14 +169,23 @@ const Profile = () => {
     );
   };
 
-  if (!formData) return <p>Không có dữ liệu người dùng</p>;
+  if (!formData)
+    return (
+      <p>{language === "vi" ? "Không có dữ liệu người dùng" : "No data"}</p>
+    );
 
   return (
     <>
       <div className="d-flex flex-column flex-md-row align-items-center justify-content-between">
         <div>
           <h4 className="text-uppercase px-3 py-2 border border-primary rounded-3 d-inline-block">
-            {isEditing ? "Cập nhật hồ sơ" : "Hồ sơ cá nhân"}
+            {isEditing
+              ? language === "vi"
+                ? "Cập nhật hồ sơ"
+                : "Update profile"
+              : language === "vi"
+              ? "Hồ sơ cá nhân"
+              : "Personal profile"}
           </h4>
           <h5 className="text-primary text-uppercase px-3">
             {formData?.fullName || "---"}
@@ -171,7 +193,11 @@ const Profile = () => {
         </div>
         {isInfoIncomplete() && (
           <Alert
-            message="Hoàn thiện thông tin để đặt khám và quản lý hồ sơ tốt hơn"
+            message={
+              language === "vi"
+                ? "Hoàn thiện thông tin để đặt khám và quản lý hồ sơ tốt hơn"
+                : "Complete information to book appointments and manage records better"
+            }
             type="warning"
             showIcon
             style={{ marginBottom: "16px" }}
@@ -187,7 +213,7 @@ const Profile = () => {
               borderRadius: "50%",
             }}
             preview={{
-              mask: "Xem trước",
+              mask: language === "vi" ? "Xem trước" : "Preview",
               maskClassName: "rounded-circle",
             }}
             src={
@@ -205,19 +231,27 @@ const Profile = () => {
         <>
           {/* Thông tin cơ bản */}
           <div className="p-3">
-            <h5 className="mb-3 fw-bold text-warning">Thông tin cơ bản</h5>
+            <h5 className="mb-3 fw-bold text-warning">
+              {language === "vi" ? "Thông tin cơ bản" : "Basic information"}
+            </h5>
             <div className="row mb-2 border-bottom py-2">
-              <div className="col-4 fw-semibold">Họ và tên</div>
+              <div className="col-4 fw-semibold">
+                <FormattedMessage id="profile.person-profile.fullName" />
+              </div>
               <div className="col-8 text-uppercase">
                 {formData?.fullName || "---"}
               </div>
             </div>
             <div className="row mb-2 border-bottom py-2">
-              <div className="col-4 fw-semibold">Điện thoại</div>
+              <div className="col-4 fw-semibold">
+                <FormattedMessage id="profile.person-profile.phone" />
+              </div>
               <div className="col-8">{formData?.phoneNumber || "---"}</div>
             </div>
             <div className="row mb-2 border-bottom py-2">
-              <div className="col-4 fw-semibold">Ngày sinh</div>
+              <div className="col-4 fw-semibold">
+                <FormattedMessage id="profile.person-profile.dob" />
+              </div>
               <div className="col-8">
                 {formData?.dateOfBirth
                   ? dayjs(formData.dateOfBirth).format("DD-MM-YYYY")
@@ -225,17 +259,23 @@ const Profile = () => {
               </div>
             </div>
             <div className="row mb-2 border-bottom py-2">
-              <div className="col-4 fw-semibold">Giới tính</div>
+              <div className="col-4 fw-semibold">
+                <FormattedMessage id="profile.person-profile.gender" />
+              </div>
               <div className="col-8">
                 {formData?.genderData?.valueVi || "---"}
               </div>
             </div>
             <div className="row mb-2 border-bottom py-2">
-              <div className="col-4 fw-semibold">Địa chỉ cụ thể</div>
+              <div className="col-4 fw-semibold">
+                <FormattedMessage id="profile.person-profile.address" />
+              </div>
               <div className="col-8">{formData?.addressDetail || "---"}</div>
             </div>
             <div className="row mb-2 border-bottom py-2">
-              <div className="col-4 fw-semibold">Tỉnh/Thành</div>
+              <div className="col-4 fw-semibold">
+                <FormattedMessage id="profile.person-profile.city" />
+              </div>
               <div className="col-8">
                 {formData?.provinceData?.name || "---"}
               </div>
@@ -244,13 +284,19 @@ const Profile = () => {
 
           {/* Thông tin bổ sung */}
           <div className="p-3">
-            <h5 className="mb-3 fw-bold text-warning">Thông tin bổ sung</h5>
+            <h5 className="mb-3 fw-bold text-warning">
+              <FormattedMessage id="profile.person-profile.title2" />
+            </h5>
             <div className="row mb-2 border-bottom py-2">
-              <div className="col-4 fw-semibold">Email</div>
+              <div className="col-4 fw-semibold">
+                <FormattedMessage id="profile.person-profile.email" />
+              </div>
               <div className="col-8">{formData?.email || "---"}</div>
             </div>
             <div className="row mb-2 border-bottom py-2">
-              <div className="col-4 fw-semibold">Số CCCD</div>
+              <div className="col-4 fw-semibold">
+                <FormattedMessage id="profile.person-profile.cccd" />
+              </div>
               <div className="col-8">{formData?.CCCD || "---"}</div>
             </div>
           </div>
@@ -260,12 +306,14 @@ const Profile = () => {
             type="primary"
             onClick={() => setIsEditing(true)}
           >
-            Cập nhật thông tin
+            <FormattedMessage id="profile.person-profile.btn-update" />
           </Button>
         </>
       ) : (
         <>
-          <Divider orientation="left">Điều chỉnh thông tin</Divider>
+          <Divider orientation="left">
+            <FormattedMessage id="profile.person-profile.title3" />
+          </Divider>
           <Form
             form={form}
             layout="vertical"
@@ -276,7 +324,7 @@ const Profile = () => {
           >
             <Row gutter={16}>
               <Col span={6} className="d-flex justify-content-center">
-                <Form.Item label="Ảnh đại diện" name="avatar">
+                <Form.Item name="avatar">
                   <Upload
                     listType="picture-circle"
                     showUploadList={false}
@@ -302,7 +350,9 @@ const Profile = () => {
                     ) : (
                       <div>
                         <PlusOutlined />
-                        <div style={{ marginTop: 8 }}>Tải ảnh</div>
+                        <div style={{ marginTop: 8 }}>
+                          <FormattedMessage id="profile.person-profile.loadimg" />
+                        </div>
                       </div>
                     )}
                   </Upload>
@@ -313,10 +363,17 @@ const Profile = () => {
                 <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item
-                      label="Họ và tên"
+                      label={
+                        <FormattedMessage id="profile.person-profile.fullName" />
+                      }
                       name="fullName"
                       rules={[
-                        { required: true, message: "Vui lòng nhập họ và tên" },
+                        {
+                          required: true,
+                          message: (
+                            <FormattedMessage id="profile.person-profile.requiredName" />
+                          ),
+                        },
                       ]}
                     >
                       <Input />
@@ -324,12 +381,16 @@ const Profile = () => {
                   </Col>
                   <Col span={12}>
                     <Form.Item
-                      label="Số điện thoại"
+                      label={
+                        <FormattedMessage id="profile.person-profile.phone" />
+                      }
                       name="phoneNumber"
                       rules={[
                         {
                           required: true,
-                          message: "Vui lòng nhập số điện thoại",
+                          message: (
+                            <FormattedMessage id="profile.person-profile.requiredPhone" />
+                          ),
                         },
                       ]}
                     >
@@ -341,10 +402,17 @@ const Profile = () => {
                 <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item
-                      label="Ngày sinh"
+                      label={
+                        <FormattedMessage id="profile.person-profile.dob" />
+                      }
                       name="dateOfBirth"
                       rules={[
-                        { required: true, message: "Vui lòng chọn ngày sinh" },
+                        {
+                          required: true,
+                          message: (
+                            <FormattedMessage id="profile.person-profile.requiredDob" />
+                          ),
+                        },
                       ]}
                     >
                       <DatePicker
@@ -355,15 +423,26 @@ const Profile = () => {
                   </Col>
                   <Col span={12}>
                     <Form.Item
-                      label="Giới tính"
+                      label={
+                        <FormattedMessage id="profile.person-profile.gender" />
+                      }
                       name="gender"
                       rules={[
-                        { required: true, message: "Vui lòng chọn giới tính" },
+                        {
+                          required: true,
+                          message: (
+                            <FormattedMessage id="profile.person-profile.requiredGender" />
+                          ),
+                        },
                       ]}
                     >
                       <Radio.Group>
-                        <Radio value="male">Nam</Radio>
-                        <Radio value="female">Nữ</Radio>
+                        <Radio value="male">
+                          {language === "vi" ? "Nam" : "Male"}
+                        </Radio>
+                        <Radio value="female">
+                          {language === "vi" ? "Nữ" : "Female"}
+                        </Radio>
                       </Radio.Group>
                     </Form.Item>
                   </Col>
@@ -372,10 +451,17 @@ const Profile = () => {
                 <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item
-                      label="Email"
+                      label={
+                        <FormattedMessage id="profile.person-profile.email" />
+                      }
                       name="email"
                       rules={[
-                        { required: true, message: "Vui lòng nhập email" },
+                        {
+                          required: true,
+                          message: (
+                            <FormattedMessage id="profile.person-profile.requireEmail" />
+                          ),
+                        },
                       ]}
                     >
                       <Input />
@@ -383,10 +469,17 @@ const Profile = () => {
                   </Col>
                   <Col span={12}>
                     <Form.Item
-                      label="Số CCCD"
+                      label={
+                        <FormattedMessage id="profile.person-profile.cccd" />
+                      }
                       name="CCCD"
                       rules={[
-                        { required: true, message: "Vui lòng nhập CCCD" },
+                        {
+                          required: true,
+                          message: (
+                            <FormattedMessage id="profile.person-profile.requiredCccd" />
+                          ),
+                        },
                       ]}
                     >
                       <Input />
@@ -397,12 +490,16 @@ const Profile = () => {
                 <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item
-                      label="Địa chỉ cụ thể"
+                      label={
+                        <FormattedMessage id="profile.person-profile.address" />
+                      }
                       name="addressDetail"
                       rules={[
                         {
                           required: true,
-                          message: "Vui lòng nhập địa chỉ cụ thể",
+                          message: (
+                            <FormattedMessage id="profile.person-profile.requiredAddress" />
+                          ),
                         },
                       ]}
                     >
@@ -411,15 +508,24 @@ const Profile = () => {
                   </Col>
                   <Col span={12}>
                     <Form.Item
-                      label="Tỉnh/Thành"
+                      label={
+                        <FormattedMessage id="profile.person-profile.city" />
+                      }
                       name="provinceId"
                       rules={[
-                        { required: true, message: "Vui lòng chọn tỉnh/thành" },
+                        {
+                          required: true,
+                          message: (
+                            <FormattedMessage id="profile.person-profile.requiredCity" />
+                          ),
+                        },
                       ]}
                     >
                       <Select
                         showSearch
-                        placeholder="Chọn tỉnh/thành"
+                        placeholder={
+                          <FormattedMessage id="profile.person-profile.placeholder" />
+                        }
                         optionFilterProp="children"
                         filterOption={(input, option) =>
                           option?.children
@@ -439,16 +545,22 @@ const Profile = () => {
 
                 <div className="d-flex justify-content-end gap-2">
                   <Popconfirm
-                    title="Hủy cập nhật"
-                    description="Bạn có chắc muốn hủy cập nhật hồ sơ?"
+                    title={
+                      <FormattedMessage id="profile.person-profile.popTitle" />
+                    }
+                    description={
+                      <FormattedMessage id="profile.person-profile.popDes" />
+                    }
                     okText="Yes"
                     cancelText="No"
                     onConfirm={() => setIsEditing(false)}
                   >
-                    <Button danger>Hủy</Button>
+                    <Button danger>
+                      {<FormattedMessage id="profile.person-profile.cancel" />}
+                    </Button>
                   </Popconfirm>
                   <Button type="primary" htmlType="submit">
-                    Lưu thay đổi
+                    {<FormattedMessage id="profile.person-profile.save" />}
                   </Button>
                 </div>
               </Col>

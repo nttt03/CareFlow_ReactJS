@@ -34,7 +34,6 @@ import {
 const MedicalRecord = () => {
   const user = useSelector((state) => state.user.userInfo);
   const language = useSelector((state) => state.app.language);
-
   const [dataPatient, setDataPatient] = useState([]);
   const [uniquePatients, setUniquePatients] = useState([]);
   const [isShowLoading, setIsShowLoading] = useState(false);
@@ -57,16 +56,13 @@ const MedicalRecord = () => {
 
   const getDataPatient = useCallback(async () => {
     if (!user?.id) return;
-
     let params = {
       doctorId: user.id,
       status: "S4",
     };
-
     if (filterDate) {
       params.date = moment(filterDate).startOf("day").valueOf();
     }
-
     let res = await getAllPatientForDoctor(params);
     if (res && res.errCode === 0) {
       setDataPatient(res.data);
@@ -100,20 +96,23 @@ const MedicalRecord = () => {
 
   const handleSaveMedicalRecord = async () => {
     try {
-      // Kiểm tra dữ liệu đầu vào
       if (!selectedPatient?.id || !selectedBooking?.id || !user?.id) {
-        message.error("Dữ liệu bệnh nhân, lịch hẹn hoặc bác sĩ không hợp lệ!");
+        message.error(
+          language === LANGUAGES.VI
+            ? "Dữ liệu bệnh nhân, lịch hẹn hoặc bác sĩ không hợp lệ!"
+            : "Invalid patient, appointment, or doctor data!"
+        );
         return;
       }
-
-      // Kiểm tra file size (nếu có)
       if (recordForm.file && recordForm.file.size > 5 * 1024 * 1024) {
-        message.error("File đính kèm quá lớn, vui lòng chọn file dưới 5MB!");
+        message.error(
+          language === LANGUAGES.VI
+            ? "File đính kèm quá lớn, vui lòng chọn file dưới 5MB!"
+            : "Attachment too large, please select a file under 5MB!"
+        );
         return;
       }
-
       setIsShowLoading(true);
-
       const formData = new FormData();
       if (recordForm.id) formData.append("id", recordForm.id);
       formData.append("patientId", selectedPatient.id);
@@ -130,21 +129,30 @@ const MedicalRecord = () => {
       formData.append("medical_history", recordForm.medical_history || "");
       if (recordForm.file) formData.append("file", recordForm.file);
       formData.append("updateBy", user.id);
-
       let res = await postMedicalRecord(formData);
-
       if (res && res.errCode === 0) {
-        message.success("Lưu hồ sơ bệnh án thành công!");
-        // setScreen("PATIENT_DETAIL");
+        message.success(
+          language === LANGUAGES.VI
+            ? "Lưu hồ sơ bệnh án thành công!"
+            : "Medical record saved successfully!"
+        );
         setScreen("LIST");
-
         await getDataPatient();
       } else {
-        message.error(res?.errMessage || "Lưu hồ sơ bệnh án thất bại!");
+        message.error(
+          res?.errMessage ||
+            (language === LANGUAGES.VI
+              ? "Lưu hồ sơ bệnh án thất bại!"
+              : "Failed to save medical record!")
+        );
       }
     } catch (error) {
       console.error("Lỗi khi lưu hồ sơ bệnh án:", error);
-      message.error("Đã có lỗi xảy ra, vui lòng thử lại!");
+      message.error(
+        language === LANGUAGES.VI
+          ? "Đã có lỗi xảy ra, vui lòng thử lại!"
+          : "An error occurred, please try again!"
+      );
     } finally {
       setIsShowLoading(false);
     }
@@ -155,9 +163,12 @@ const MedicalRecord = () => {
       setIsShowLoading(true);
       let res = await deleteMedicalRecord(recordId);
       if (res && res.errCode === 0) {
-        message.success("Xóa hồ sơ bệnh án thành công!");
-        await getDataPatient(); // Gọi API để làm mới dữ liệu
-        // Cập nhật selectedPatient nếu cần
+        message.success(
+          language === LANGUAGES.VI
+            ? "Xóa hồ sơ bệnh án thành công!"
+            : "Medical record deleted successfully!"
+        );
+        await getDataPatient();
         const updatedPatient = uniquePatients.find(
           (item) => item.id === selectedPatient?.id
         );
@@ -166,11 +177,20 @@ const MedicalRecord = () => {
         }
         setScreen("LIST");
       } else {
-        message.error(res?.errMessage || "Xóa hồ sơ bệnh án thất bại!");
+        message.error(
+          res?.errMessage ||
+            (language === LANGUAGES.VI
+              ? "Xóa hồ sơ bệnh án thất bại!"
+              : "Failed to delete medical record!")
+        );
       }
     } catch (error) {
       console.error("Lỗi khi xóa hồ sơ bệnh án:", error);
-      message.error("Đã có lỗi xảy ra, vui lòng thử lại!");
+      message.error(
+        language === LANGUAGES.VI
+          ? "Đã có lỗi xảy ra, vui lòng thử lại!"
+          : "An error occurred, please try again!"
+      );
     } finally {
       setIsShowLoading(false);
     }
@@ -231,11 +251,6 @@ const MedicalRecord = () => {
     return URL.createObjectURL(blob);
   };
 
-  // console.log("selectedPatient", screen, selectedPatient);
-  // console.log("selectedBooking", selectedBooking);
-  // console.log("selectedRecord", selectedRecord);
-  // console.log("recordForm", recordForm);
-
   const renderScreen = () => {
     switch (screen) {
       case "CREATE":
@@ -251,29 +266,52 @@ const MedicalRecord = () => {
               }}
               onClick={() => setScreen("PATIENT_DETAIL")}
             >
-              <LeftOutlined style={{ marginRight: 6 }} /> Quay lại chi tiết bệnh
-              nhân
+              <LeftOutlined style={{ marginRight: 6 }} />{" "}
+              {language === LANGUAGES.VI
+                ? "Quay lại chi tiết bệnh nhân"
+                : "Back to patient details"}
             </span>
             <h2 className="mb-4 title">
               {screen === "EDIT"
-                ? "Chỉnh sửa hồ sơ bệnh án"
-                : "Tạo hồ sơ bệnh án mới"}
+                ? language === LANGUAGES.VI
+                  ? "Chỉnh sửa hồ sơ bệnh án"
+                  : "Edit Medical Record"
+                : language === LANGUAGES.VI
+                ? "Tạo hồ sơ bệnh án mới"
+                : "Create New Medical Record"}
             </h2>
-            {/* Thông tin bệnh nhân */}
-            <Card type="inner" title="Thông tin bệnh nhân" className="mb-4">
+
+            <Card
+              type="inner"
+              title={
+                language === LANGUAGES.VI
+                  ? "Thông tin bệnh nhân"
+                  : "Patient Information"
+              }
+              className="mb-4"
+            >
               <Row gutter={[16, 8]}>
                 <Col xs={24} sm={12}>
                   <p>
-                    <b>Họ và tên:</b> {selectedPatient?.fullName}
+                    <b>
+                      {language === LANGUAGES.VI ? "Họ và tên:" : "Full name:"}
+                    </b>{" "}
+                    {selectedPatient?.fullName}
                   </p>
                   <p>
-                    <b>Giới tính:</b>{" "}
+                    <b>
+                      {language === LANGUAGES.VI ? "Giới tính:" : "Gender:"}
+                    </b>{" "}
                     {language === LANGUAGES.VI
                       ? selectedPatient?.genderData?.valueVi
                       : selectedPatient?.genderData?.valueEn}
                   </p>
                   <p>
-                    <b>Ngày sinh:</b>{" "}
+                    <b>
+                      {language === LANGUAGES.VI
+                        ? "Ngày sinh:"
+                        : "Date of birth:"}
+                    </b>{" "}
                     {selectedPatient?.dateOfBirth
                       ? new Date(
                           selectedPatient.dateOfBirth
@@ -283,14 +321,16 @@ const MedicalRecord = () => {
                 </Col>
                 <Col xs={24} sm={12}>
                   <p>
-                    <b>SĐT:</b> {selectedPatient?.phoneNumber}
+                    <b>{language === LANGUAGES.VI ? "SĐT:" : "Phone:"}</b>{" "}
+                    {selectedPatient?.phoneNumber}
                   </p>
                   <p>
-                    <b>Địa chỉ:</b> {selectedPatient?.addressDetail},{" "}
+                    <b>{language === LANGUAGES.VI ? "Địa chỉ:" : "Address:"}</b>{" "}
+                    {selectedPatient?.addressDetail},{" "}
                     {selectedPatient?.provinceData?.name}
                   </p>
                   <p>
-                    <b>Thời gian:</b>{" "}
+                    <b>{language === LANGUAGES.VI ? "Thời gian:" : "Time:"}</b>{" "}
                     {selectedBooking?.date
                       ? moment(Number(selectedBooking.date)).format(
                           "DD/MM/YYYY"
@@ -301,8 +341,14 @@ const MedicalRecord = () => {
               </Row>
             </Card>
 
-            {/* Form nhập hồ sơ bệnh án */}
-            <Card type="inner" title="Thông tin bệnh án">
+            <Card
+              type="inner"
+              title={
+                language === LANGUAGES.VI
+                  ? "Thông tin bệnh án"
+                  : "Medical Record Information"
+              }
+            >
               <Form
                 layout="vertical"
                 onFinish={handleSaveMedicalRecord}
@@ -310,7 +356,14 @@ const MedicalRecord = () => {
               >
                 <Row gutter={16}>
                   <Col xs={24} sm={12}>
-                    <Form.Item label="Chiều cao (cm)" name="height">
+                    <Form.Item
+                      label={
+                        language === LANGUAGES.VI
+                          ? "Chiều cao (cm)"
+                          : "Height (cm)"
+                      }
+                      name="height"
+                    >
                       <Input
                         value={recordForm.height}
                         onChange={(e) =>
@@ -323,7 +376,14 @@ const MedicalRecord = () => {
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={12}>
-                    <Form.Item label="Cân nặng (kg)" name="weight">
+                    <Form.Item
+                      label={
+                        language === LANGUAGES.VI
+                          ? "Cân nặng (kg)"
+                          : "Weight (kg)"
+                      }
+                      name="weight"
+                    >
                       <Input
                         value={recordForm.weight}
                         onChange={(e) =>
@@ -336,10 +396,16 @@ const MedicalRecord = () => {
                     </Form.Item>
                   </Col>
                 </Row>
-
                 <Row gutter={16}>
                   <Col xs={24} sm={12}>
-                    <Form.Item label="Bệnh nền" name="underlying_diseases">
+                    <Form.Item
+                      label={
+                        language === LANGUAGES.VI
+                          ? "Bệnh nền"
+                          : "Underlying diseases"
+                      }
+                      name="underlying_diseases"
+                    >
                       <Input
                         value={recordForm.underlying_diseases}
                         onChange={(e) =>
@@ -352,7 +418,10 @@ const MedicalRecord = () => {
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={12}>
-                    <Form.Item label="Dị ứng" name="allergies">
+                    <Form.Item
+                      label={language === LANGUAGES.VI ? "Dị ứng" : "Allergies"}
+                      name="allergies"
+                    >
                       <Input
                         value={recordForm.allergies}
                         onChange={(e) =>
@@ -365,8 +434,14 @@ const MedicalRecord = () => {
                     </Form.Item>
                   </Col>
                 </Row>
-
-                <Form.Item label="Lịch sử bệnh" name="medical_history">
+                <Form.Item
+                  label={
+                    language === LANGUAGES.VI
+                      ? "Lịch sử bệnh"
+                      : "Medical history"
+                  }
+                  name="medical_history"
+                >
                   <Input.TextArea
                     rows={3}
                     value={recordForm.medical_history}
@@ -378,8 +453,14 @@ const MedicalRecord = () => {
                     }
                   />
                 </Form.Item>
-
-                <Form.Item label="Kết luận khám bệnh" name="description">
+                <Form.Item
+                  label={
+                    language === LANGUAGES.VI
+                      ? "Kết luận khám bệnh"
+                      : "Diagnosis & Conclusion"
+                  }
+                  name="description"
+                >
                   <Input.TextArea
                     rows={4}
                     value={recordForm.description}
@@ -391,88 +472,140 @@ const MedicalRecord = () => {
                     }
                   />
                 </Form.Item>
-
-                <Form.Item label="Tệp đính kèm (nếu có)" name="file">
+                <Form.Item
+                  label={
+                    language === LANGUAGES.VI
+                      ? "Tệp đính kèm (nếu có)"
+                      : "Attachment (if any)"
+                  }
+                  name="file"
+                >
                   <Upload
                     beforeUpload={(file) => {
                       setRecordForm({ ...recordForm, file });
                       return false; // không upload ngay
                     }}
                   >
-                    <Button icon={<UploadOutlined />}>Chọn tệp</Button>
+                    <Button icon={<UploadOutlined />}>
+                      {language === LANGUAGES.VI ? "Chọn tệp" : "Select file"}
+                    </Button>
                   </Upload>
                 </Form.Item>
-
                 <Form.Item>
                   <Button type="primary" htmlType="submit">
-                    Lưu hồ sơ bệnh án
+                    {language === LANGUAGES.VI
+                      ? "Lưu hồ sơ bệnh án"
+                      : "Save Medical Record"}
                   </Button>
                 </Form.Item>
               </Form>
             </Card>
           </div>
         );
+
       case "VIEW":
         return (
-          <div className="patient-detail-container vh-100 overflow-auto bg-light p-4 rounded-3 shadow-sm .no-scrollbar">
+          <div className="patient-detail-container vh-100 overflow-auto bg-light p-4 rounded-3 shadow-sm no-scrollbar">
             <span
               className="text-primary d-inline-flex align-items-center"
               style={{ cursor: "pointer" }}
               onClick={() => setScreen("PATIENT_DETAIL")}
             >
-              <LeftOutlined style={{ marginRight: 6 }} /> Quay lại chi tiết bệnh
-              nhân
+              <LeftOutlined style={{ marginRight: 6 }} />{" "}
+              {language === LANGUAGES.VI
+                ? "Quay lại chi tiết bệnh nhân"
+                : "Back to patient details"}
             </span>
-
-            <h2 className="mb-4 title">Hồ sơ bệnh án chi tiết</h2>
+            <h2 className="mb-4 title">
+              {language === LANGUAGES.VI
+                ? "Hồ sơ bệnh án chi tiết"
+                : "Medical Record Details"}
+            </h2>
 
             <Card
-              title={<b className="text-primary">Thông tin bệnh nhân</b>}
+              title={
+                <b className="text-primary">
+                  {language === LANGUAGES.VI
+                    ? "Thông tin bệnh nhân"
+                    : "Patient Information"}
+                </b>
+              }
               className="mb-4 border-0 shadow-sm rounded-4"
             >
               <div className="row">
                 <div className="col-md-6 mb-2">
-                  <b>Họ và tên:</b>{" "}
+                  <b>
+                    {language === LANGUAGES.VI ? "Họ và tên:" : "Full name:"}
+                  </b>{" "}
                   <b className="text-primary">{selectedPatient?.fullName}</b>
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Giới tính:</b> {selectedPatient?.genderData?.valueVi}
+                  <b>{language === LANGUAGES.VI ? "Giới tính:" : "Gender:"}</b>{" "}
+                  {selectedPatient?.genderData?.valueVi}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Ngày sinh:</b> {formatDate(selectedPatient?.dateOfBirth)}
+                  <b>
+                    {language === LANGUAGES.VI
+                      ? "Ngày sinh:"
+                      : "Date of birth:"}
+                  </b>{" "}
+                  {formatDate(selectedPatient?.dateOfBirth)}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>CCCD:</b> {selectedPatient?.CCCD}
+                  <b>{language === LANGUAGES.VI ? "CCCD:" : "ID Card:"}</b>{" "}
+                  {selectedPatient?.CCCD}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Địa chỉ:</b> {selectedPatient?.addressDetail},{" "}
+                  <b>{language === LANGUAGES.VI ? "Địa chỉ:" : "Address:"}</b>{" "}
+                  {selectedPatient?.addressDetail},{" "}
                   {selectedPatient?.provinceData?.name}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Email:</b> {selectedPatient?.email}
+                  <b>{language === LANGUAGES.VI ? "Email:" : "Email:"}</b>{" "}
+                  {selectedPatient?.email}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Số điện thoại:</b> {selectedPatient?.phoneNumber}
+                  <b>
+                    {language === LANGUAGES.VI ? "Số điện thoại:" : "Phone:"}
+                  </b>{" "}
+                  {selectedPatient?.phoneNumber}
                 </div>
               </div>
             </Card>
 
             <Card
-              title={<b className="text-primary">Thông tin khám bệnh</b>}
+              title={
+                <b className="text-primary">
+                  {language === LANGUAGES.VI
+                    ? "Thông tin khám bệnh"
+                    : "Examination Information"}
+                </b>
+              }
               className="mb-4 border-0 shadow-sm rounded-4"
             >
               <div className="row">
                 <div className="col-md-6 mb-2">
-                  <b>Triệu chứng:</b> {selectedBooking?.symptoms}
+                  <b>
+                    {language === LANGUAGES.VI ? "Triệu chứng:" : "Symptoms:"}
+                  </b>{" "}
+                  {selectedBooking?.symptoms}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Ngày khám:</b> {formatDate(selectedBooking?.date)}
+                  <b>
+                    {language === LANGUAGES.VI
+                      ? "Ngày khám:"
+                      : "Examination date:"}
+                  </b>{" "}
+                  {formatDate(selectedBooking?.date)}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Bác sĩ khám:</b> {user?.fullName}
+                  <b>
+                    {language === LANGUAGES.VI ? "Bác sĩ khám:" : "Doctor:"}
+                  </b>{" "}
+                  {user?.fullName}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Giờ khám:</b>{" "}
+                  <b>{language === LANGUAGES.VI ? "Giờ khám:" : "Time:"}</b>{" "}
                   {selectedBooking?.timeTypeDataPatient?.valueVi}
                 </div>
               </div>
@@ -480,36 +613,54 @@ const MedicalRecord = () => {
 
             <Card
               title={
-                <b className="text-primary">Kết quả và thông tin sức khỏe</b>
+                <b className="text-primary">
+                  {language === LANGUAGES.VI
+                    ? "Kết quả và thông tin sức khỏe"
+                    : "Results & Health Information"}
+                </b>
               }
               className="border-0 shadow-sm rounded-4"
             >
               <div className="row">
                 <div className="col-md-6 mb-2">
-                  <b>Chiều cao:</b> {selectedPatient?.patientProfile?.height} m
+                  <b>{language === LANGUAGES.VI ? "Chiều cao:" : "Height:"}</b>{" "}
+                  {selectedPatient?.patientProfile?.height} m
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Cân nặng:</b> {selectedPatient?.patientProfile?.weight} kg
+                  <b>{language === LANGUAGES.VI ? "Cân nặng:" : "Weight:"}</b>{" "}
+                  {selectedPatient?.patientProfile?.weight} kg
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Bệnh nền:</b>{" "}
+                  <b>
+                    {language === LANGUAGES.VI
+                      ? "Bệnh nền:"
+                      : "Underlying diseases:"}
+                  </b>{" "}
                   {selectedPatient?.patientProfile?.underlying_diseases}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Dị ứng:</b> {selectedPatient?.patientProfile?.allergies}
+                  <b>{language === LANGUAGES.VI ? "Dị ứng:" : "Allergies:"}</b>{" "}
+                  {selectedPatient?.patientProfile?.allergies}
                 </div>
                 <div className="col-12 mb-2">
-                  <b>Lịch sử bệnh:</b>{" "}
+                  <b>
+                    {language === LANGUAGES.VI
+                      ? "Lịch sử bệnh:"
+                      : "Medical history:"}
+                  </b>{" "}
                   {selectedPatient?.patientProfile?.medical_history}
                 </div>
                 <div className="col-12 mb-2">
-                  <b>Kết luận:</b>{" "}
+                  <b>
+                    {language === LANGUAGES.VI ? "Kết luận:" : "Conclusion:"}
+                  </b>{" "}
                   <span className="text-danger">
-                    {selectedRecord?.description || "Chưa có"}
+                    {selectedRecord?.description ||
+                      (language === LANGUAGES.VI ? "Chưa có" : "Not available")}
                   </span>
                 </div>
                 <div className="col-12 mb-2">
-                  <b>File PDF:</b>{" "}
+                  <b>{language === LANGUAGES.VI ? "File PDF:" : "PDF File:"}</b>{" "}
                   {selectedRecord?.file?.data ? (
                     <div className="mt-2">
                       {(() => {
@@ -525,30 +676,35 @@ const MedicalRecord = () => {
                               src={pdfUrl}
                               width="100%"
                               height="500px"
-                              title="Hồ sơ bệnh án PDF"
+                              title="Medical Record PDF"
                               style={{
                                 border: "1px solid #ccc",
                                 borderRadius: "8px",
                               }}
                             ></iframe>
-
                             <button
                               className="btn btn-sm btn-outline-primary mt-2"
                               onClick={() => {
                                 const link = document.createElement("a");
                                 link.href = pdfUrl;
-                                link.download = "ho-so-benh-an.pdf";
+                                link.download = "medical-record.pdf";
                                 link.click();
                               }}
                             >
-                              Tải PDF
+                              {language === LANGUAGES.VI
+                                ? "Tải PDF"
+                                : "Download PDF"}
                             </button>
                           </>
                         );
                       })()}
                     </div>
                   ) : (
-                    <span className="text-muted">Chưa có file</span>
+                    <span className="text-muted">
+                      {language === LANGUAGES.VI
+                        ? "Chưa có file"
+                        : "No file available"}
+                    </span>
                   )}
                 </div>
               </div>
@@ -558,47 +714,70 @@ const MedicalRecord = () => {
 
       case "PATIENT_DETAIL":
         return (
-          <div className="patient-detail-container vh-100 overflow-auto bg-light p-4 rounded-3 shadow-sm .no-scrollbar">
+          <div className="patient-detail-container vh-100 overflow-auto bg-light p-4 rounded-3 shadow-sm no-scrollbar">
             <span
               className="text-primary d-inline-flex align-items-center"
               style={{ cursor: "pointer" }}
               onClick={() => setScreen("LIST")}
             >
-              <LeftOutlined style={{ marginRight: 6 }} /> Quay lại danh sách
-              bệnh nhân
+              <LeftOutlined style={{ marginRight: 6 }} />{" "}
+              {language === LANGUAGES.VI
+                ? "Quay lại danh sách bệnh nhân"
+                : "Back to patient list"}
             </span>
-
             <h2 className="mb-4 title">
-              Chi tiết hồ sơ bệnh án của {selectedPatient?.fullName}
+              {language === LANGUAGES.VI
+                ? `Chi tiết hồ sơ bệnh án của ${selectedPatient?.fullName}`
+                : `Medical records of ${selectedPatient?.fullName}`}
             </h2>
 
             <Card
-              title={<b className="text-primary">Thông tin bệnh nhân</b>}
+              title={
+                <b className="text-primary">
+                  {language === LANGUAGES.VI
+                    ? "Thông tin bệnh nhân"
+                    : "Patient Information"}
+                </b>
+              }
               className="mb-4 border-0 shadow-sm rounded-4"
             >
               <div className="row">
                 <div className="col-md-6 mb-2">
-                  <b>Họ và tên:</b>{" "}
+                  <b>
+                    {language === LANGUAGES.VI ? "Họ và tên:" : "Full name:"}
+                  </b>{" "}
                   <b className="text-primary">{selectedPatient?.fullName}</b>
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Giới tính:</b> {selectedPatient?.genderData?.valueVi}
+                  <b>{language === LANGUAGES.VI ? "Giới tính:" : "Gender:"}</b>{" "}
+                  {selectedPatient?.genderData?.valueVi}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Ngày sinh:</b> {formatDate(selectedPatient?.dateOfBirth)}
+                  <b>
+                    {language === LANGUAGES.VI
+                      ? "Ngày sinh:"
+                      : "Date of birth:"}
+                  </b>{" "}
+                  {formatDate(selectedPatient?.dateOfBirth)}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>CCCD:</b> {selectedPatient?.CCCD}
+                  <b>{language === LANGUAGES.VI ? "CCCD:" : "ID Card:"}</b>{" "}
+                  {selectedPatient?.CCCD}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Địa chỉ:</b> {selectedPatient?.addressDetail},{" "}
+                  <b>{language === LANGUAGES.VI ? "Địa chỉ:" : "Address:"}</b>{" "}
+                  {selectedPatient?.addressDetail},{" "}
                   {selectedPatient?.provinceData?.name}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Email:</b> {selectedPatient?.email}
+                  <b>{language === LANGUAGES.VI ? "Email:" : "Email:"}</b>{" "}
+                  {selectedPatient?.email}
                 </div>
                 <div className="col-md-6 mb-2">
-                  <b>Số điện thoại:</b> {selectedPatient?.phoneNumber}
+                  <b>
+                    {language === LANGUAGES.VI ? "Số điện thoại:" : "Phone:"}
+                  </b>{" "}
+                  {selectedPatient?.phoneNumber}
                 </div>
               </div>
             </Card>
@@ -606,7 +785,9 @@ const MedicalRecord = () => {
             <Card
               title={
                 <b className="text-primary">
-                  Danh sách lịch hẹn và hồ sơ bệnh án
+                  {language === LANGUAGES.VI
+                    ? "Danh sách lịch hẹn và hồ sơ bệnh án"
+                    : "Appointments & Medical Records"}
                 </b>
               }
               className="mb-4 border-0 shadow-sm rounded-4"
@@ -614,12 +795,18 @@ const MedicalRecord = () => {
               <table style={{ width: "100%" }}>
                 <tbody>
                   <tr>
-                    <th>STT</th>
-                    <th>Ngày khám</th>
-                    <th>Giờ khám</th>
-                    <th>Triệu chứng</th>
-                    <th>Kết luận</th>
-                    <th>Actions</th>
+                    <th>{language === LANGUAGES.VI ? "STT" : "No."}</th>
+                    <th>
+                      {language === LANGUAGES.VI ? "Ngày khám" : "Exam date"}
+                    </th>
+                    <th>{language === LANGUAGES.VI ? "Giờ khám" : "Time"}</th>
+                    <th>
+                      {language === LANGUAGES.VI ? "Triệu chứng" : "Symptoms"}
+                    </th>
+                    <th>
+                      {language === LANGUAGES.VI ? "Kết luận" : "Conclusion"}
+                    </th>
+                    <th>{language === LANGUAGES.VI ? "Actions" : "Actions"}</th>
                   </tr>
                   {selectedPatient?.bookings &&
                   selectedPatient.bookings.length > 0 ? (
@@ -645,7 +832,9 @@ const MedicalRecord = () => {
                               {record
                                 ? record.description?.slice(0, 50) +
                                   (record.description?.length > 50 ? "..." : "")
-                                : "Chưa có"}
+                                : language === LANGUAGES.VI
+                                ? "Chưa có"
+                                : "Not available"}
                             </td>
                             <td className="d-flex gap-2">
                               {record ? (
@@ -654,6 +843,9 @@ const MedicalRecord = () => {
                                     style={{ color: "blue", cursor: "pointer" }}
                                     onClick={() =>
                                       handleViewRecord(record, booking)
+                                    }
+                                    title={
+                                      language === LANGUAGES.VI ? "Xem" : "View"
                                     }
                                   />
                                   <EditOutlined
@@ -664,20 +856,39 @@ const MedicalRecord = () => {
                                     onClick={() =>
                                       handleEditRecord(record, booking)
                                     }
+                                    title={
+                                      language === LANGUAGES.VI ? "Sửa" : "Edit"
+                                    }
                                   />
                                   <DeleteOutlined
                                     style={{ color: "red", cursor: "pointer" }}
                                     onClick={() =>
                                       Modal.confirm({
-                                        title: "Xác nhận xóa",
+                                        title:
+                                          language === LANGUAGES.VI
+                                            ? "Xác nhận xóa"
+                                            : "Confirm deletion",
                                         content:
-                                          "Bạn có chắc chắn muốn xóa hồ sơ bệnh án này?",
-                                        okText: "Xóa",
+                                          language === LANGUAGES.VI
+                                            ? "Bạn có chắc chắn muốn xóa hồ sơ bệnh án này?"
+                                            : "Are you sure you want to delete this medical record?",
+                                        okText:
+                                          language === LANGUAGES.VI
+                                            ? "Xóa"
+                                            : "Delete",
                                         okType: "danger",
-                                        cancelText: "Hủy",
+                                        cancelText:
+                                          language === LANGUAGES.VI
+                                            ? "Hủy"
+                                            : "Cancel",
                                         onOk: () =>
                                           handleDeleteRecord(record.id),
                                       })
+                                    }
+                                    title={
+                                      language === LANGUAGES.VI
+                                        ? "Xóa"
+                                        : "Delete"
                                     }
                                   />
                                 </>
@@ -689,7 +900,7 @@ const MedicalRecord = () => {
                                     handleCreateRecord();
                                   }}
                                 >
-                                  Tạo
+                                  {language === LANGUAGES.VI ? "Tạo" : "Create"}
                                 </Button>
                               )}
                             </td>
@@ -698,7 +909,11 @@ const MedicalRecord = () => {
                       })
                   ) : (
                     <tr>
-                      <td colSpan="6">Không có dữ liệu</td>
+                      <td colSpan="6">
+                        {language === LANGUAGES.VI
+                          ? "Không có dữ liệu"
+                          : "No data available"}
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -711,10 +926,11 @@ const MedicalRecord = () => {
       default:
         return (
           <div className="manage-patient-container">
-            <div className="m-p-title">Hồ sơ bệnh án</div>
+            <div className="m-p-title">
+              {language === LANGUAGES.VI ? "Hồ sơ bệnh án" : "Medical Records"}
+            </div>
             <div className="manage-patient-body row">
               <div className="d-flex gap-3 mb-3">
-                {/* Chọn ngày */}
                 <input
                   type="date"
                   className="form-control"
@@ -727,27 +943,40 @@ const MedicalRecord = () => {
                     )
                   }
                 />
-
-                {/* Tìm tên */}
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Tìm theo tên bệnh nhân..."
+                  placeholder={
+                    language === LANGUAGES.VI
+                      ? "Tìm theo tên bệnh nhân..."
+                      : "Search by patient name..."
+                  }
                   value={searchName}
                   onChange={(e) => setSearchName(e.target.value)}
                 />
               </div>
-
               <div className="col-12 table-manage-patient">
                 <table style={{ width: "100%" }}>
                   <tbody>
                     <tr>
-                      <th>STT</th>
-                      <th>Họ và tên</th>
-                      <th>Giới tính</th>
-                      <th>Địa chỉ</th>
-                      <th>Hồ sơ bệnh án</th>
-                      <th>Actions</th>
+                      <th>{language === LANGUAGES.VI ? "STT" : "No."}</th>
+                      <th>
+                        {language === LANGUAGES.VI ? "Họ và tên" : "Full name"}
+                      </th>
+                      <th>
+                        {language === LANGUAGES.VI ? "Giới tính" : "Gender"}
+                      </th>
+                      <th>
+                        {language === LANGUAGES.VI ? "Địa chỉ" : "Address"}
+                      </th>
+                      <th>
+                        {language === LANGUAGES.VI
+                          ? "Hồ sơ bệnh án"
+                          : "Medical records"}
+                      </th>
+                      <th>
+                        {language === LANGUAGES.VI ? "Actions" : "Actions"}
+                      </th>
                     </tr>
                     {uniquePatients && uniquePatients.length > 0 ? (
                       uniquePatients
@@ -763,7 +992,6 @@ const MedicalRecord = () => {
                             language === LANGUAGES.VI
                               ? item?.genderData?.valueVi
                               : item?.genderData?.valueEn;
-
                           return (
                             <tr key={index}>
                               <td>{index + 1}</td>
@@ -779,7 +1007,9 @@ const MedicalRecord = () => {
                                   icon={<EyeOutlined />}
                                   onClick={() => handleViewPatient(item)}
                                 >
-                                  Quản lý hồ sơ
+                                  {language === LANGUAGES.VI
+                                    ? "Quản lý hồ sơ"
+                                    : "Manage records"}
                                 </Button>
                               </td>
                             </tr>
@@ -787,7 +1017,11 @@ const MedicalRecord = () => {
                         })
                     ) : (
                       <tr>
-                        <td colSpan="6">Không có dữ liệu</td>
+                        <td colSpan="6">
+                          {language === LANGUAGES.VI
+                            ? "Không có dữ liệu"
+                            : "No data available"}
+                        </td>
                       </tr>
                     )}
                   </tbody>

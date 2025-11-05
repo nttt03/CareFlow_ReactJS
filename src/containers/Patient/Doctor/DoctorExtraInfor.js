@@ -44,7 +44,9 @@ class DoctorExtraInfor extends Component {
     // Lấy thông tin cần hiển thị
     const hospitalName = extraInfor?.hospital?.name || "";
     const specialtyName =
-      extraInfor?.specialty?.name || "Thông tin đang được cập nhật...";
+      extraInfor?.specialty?.name || language === "vi"
+        ? "Thông tin đang được cập nhật..."
+        : "Information is being updated...";
     const address = `${extraInfor?.hospital?.addressDetail || ""}, ${
       extraInfor?.hospital?.provinceData?.name || ""
     }`;
@@ -55,7 +57,11 @@ class DoctorExtraInfor extends Component {
         <h5 className="fw-bold text-primary mb-3">
           <FormattedMessage
             id="patient.extra-infor-doctor.clinic-info"
-            defaultMessage="Thông tin khám bệnh"
+            defaultMessage={
+              language === "vi"
+                ? "Thông tin khám bệnh"
+                : "Medical examination information"
+            }
           />
         </h5>
 
@@ -64,7 +70,9 @@ class DoctorExtraInfor extends Component {
           <h6 className="mb-1 text-secondary">
             <FormattedMessage
               id="patient.extra-infor-doctor.text-address"
-              defaultMessage="Địa chỉ khám"
+              defaultMessage={
+                language === "vi" ? "Địa chỉ khám" : "Examination address"
+              }
             />
           </h6>
           <p className="mb-0 fw-semibold">{hospitalName}</p>
@@ -76,7 +84,7 @@ class DoctorExtraInfor extends Component {
           <h6 className="text-secondary">
             <FormattedMessage
               id="patient.extra-infor-doctor.specialty"
-              defaultMessage="Chuyên khoa"
+              defaultMessage={language === "vi" ? "Chuyên khoa" : "Specialty"}
             />
           </h6>
           <p className="fw-semibold">{specialtyName}</p>
@@ -88,7 +96,7 @@ class DoctorExtraInfor extends Component {
             <h6 className="text-secondary">
               <FormattedMessage
                 id="patient.extra-infor-doctor.note"
-                defaultMessage="Ghi chú"
+                defaultMessage={language === "vi" ? "Ghi chú" : "Note"}
               />
             </h6>
             <p className="fst-italic">{note}</p>
@@ -102,7 +110,7 @@ class DoctorExtraInfor extends Component {
               <span className="fw-semibold me-2 text-secondary">
                 <FormattedMessage
                   id="patient.extra-infor-doctor.price"
-                  defaultMessage="Giá khám:"
+                  defaultMessage={language === "vi" ? "Giá khám:" : "Price:"}
                 />
               </span>
               {extraInfor?.price && (
@@ -120,7 +128,9 @@ class DoctorExtraInfor extends Component {
               >
                 <FormattedMessage
                   id="patient.extra-infor-doctor.detail"
-                  defaultMessage="Xem chi tiết"
+                  defaultMessage={
+                    language === "vi" ? "Xem chi tiết" : "See details"
+                  }
                 />
               </button>
             </div>
@@ -130,7 +140,7 @@ class DoctorExtraInfor extends Component {
                 <span className="text-secondary fw-semibold">
                   <FormattedMessage
                     id="patient.extra-infor-doctor.price"
-                    defaultMessage="Giá khám"
+                    defaultMessage={language === "vi" ? "Giá khám:" : "Price:"}
                   />
                 </span>
                 {extraInfor?.price ? (
@@ -142,7 +152,9 @@ class DoctorExtraInfor extends Component {
                     className="fw-bold text-success"
                   />
                 ) : (
-                  <span>Chưa cập nhật</span>
+                  <span>
+                    {language === "vi" ? "Chưa cập nhật" : "Not updated yet"}
+                  </span>
                 )}
               </div>
 
@@ -154,7 +166,9 @@ class DoctorExtraInfor extends Component {
               >
                 <FormattedMessage
                   id="patient.extra-infor-doctor.hide"
-                  defaultMessage="Ẩn thông tin"
+                  defaultMessage={
+                    language === "vi" ? "Ẩn thông tin" : "Hide information"
+                  }
                 />
               </button>
             </div>

@@ -109,7 +109,8 @@ class ProfileDoctor extends Component {
               {language === LANGUAGES.VI ? nameVi : nameEn}
               <br />
               <span>
-                Chuyên khoa: {dataProfile?.doctorInfor?.specialty?.name}
+                {language === "vi" ? "Chuyên khoa:" : "Specialty:"}{" "}
+                {dataProfile?.doctorInfor?.specialty?.name}
               </span>
             </div>
             <div className="down">

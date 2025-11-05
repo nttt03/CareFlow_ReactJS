@@ -200,5 +200,43 @@
             "title": "Quản lý tài khoản",
             "title-add": "Thêm tài khoản"
         }
+    },
+    "profile": {
+        "person-profile": {
+            "update-success": "Cập nhật thông tin thành công!",
+            "update-fail": "Cập nhật thất bại!",
+            "error": "Có lỗi xảy ra khi cập nhật thông tin!",
+            "no-data": "Không có dữ liệu người dùng",
+            "update": "Cập nhật hồ sơ",
+            "profile": "Hồ sơ cá nhân",
+            "text": "Hoàn thiện thông tin để đặt khám và quản lý hồ sơ tốt hơn",
+            "preview": "Xem trước",
+            "title": "Thông tin cơ bản",
+            "fullName": "Họ tên",
+            "phone": "Điện thoại",
+            "dob": "Ngày sinh",
+            "gender": "Giới tính",
+            "address": "Địa chỉ cụ thể",
+            "city": "Tỉnh/Thành",
+            "title2": "Thông tin bổ sung",
+            "email": "Email",
+            "cccd": "Số CCCD",
+            "btn-update": "Cập nhật thông tin",
+            "title3": "Điều chỉnh thông tin",
+            "loadimg": "Tải ảnh",
+            "requiredName": "Vui lòng nhập họ và tên",
+            "requiredPhone": "Vui lòng nhập số điện thoại",
+            "requiredDob": "Vui lòng chọn ngày sinh",
+            "requiredGender": "Vui lòng chọn giới tính",
+            "requireEmail": "Vui lòng nhập email",
+            "requiredCccd": "Vui lòng nhập CCCD",
+            "requiredAddress": "Vui lòng nhập địa chỉ cụ thể",
+            "requiredCity": "Vui lòng chọn tỉnh/thành",
+            "placeholder": "Chọn tỉnh/thành",
+            "popTitle": "Hủy cập nhật",
+            "popDes": "Bạn có chắc muốn hủy cập nhật hồ sơ?",
+            "cancel": "Hủy",
+            "save": "Lưu thay đổi"
+        }
     }
 }

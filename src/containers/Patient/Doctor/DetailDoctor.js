@@ -101,7 +101,9 @@ class DetailDoctor extends Component {
     nameEn = `${positionEn}, ${detailDoctor?.fullName || ""}`;
 
     const description =
-      detailDoctor?.Markdown?.description || "Thông tin đang được cập nhật...";
+      detailDoctor?.Markdown?.description || language === "vi"
+        ? "Thông tin đang được cập nhật..."
+        : "Information is being updated...";
 
     const currentURL =
       +process.env.REACT_APP_IS_LOCALHOST === 1

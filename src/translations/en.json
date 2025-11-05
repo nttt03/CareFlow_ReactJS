@@ -202,5 +202,43 @@
             "title": "Manage account",
             "title-add": "Add account"
         }
+    },
+    "profile": {
+        "person-profile": {
+            "update-success": "Information updated successfully!",
+            "update-fail": "Update failed!",
+            "error": "An error occurred while updating information!",
+            "no-data": "No data",
+            "update": "Update profile",
+            "profile": "Personal profile",
+            "text": "Complete information to book appointments and manage records better",
+            "preview": "Preview",
+            "title": "Basic information",
+            "fullName": "Full name",
+            "phone": "Phone",
+            "dob": "Date of birth",
+            "gender": "Gender",
+            "address": "Address",
+            "city": "Province/city",
+            "title2": "Additional Information",
+            "email": "Email",
+            "cccd": "Citizen ID Number",
+            "btn-update": "Update Information",
+            "title3": "Edit Profile",
+            "loadimg": "Upload Image",
+            "requiredName": "Please enter your full name",
+            "requiredPhone": "Please enter your phone number",
+            "requiredDob": "Please select your date of birth",
+            "requiredGender": "Please select your gender",
+            "requireEmail": "Please enter your email",
+            "requiredCccd": "Please enter your Citizen ID",
+            "requiredAddress": "Please enter your detailed address",
+            "requiredCity": "Please select your city/province",
+            "placeholder": "Select city/province",
+            "popTitle": "Cancel Update",
+            "popDes": "Are you sure you want to cancel updating your profile?",
+            "cancel": "Cancel",
+            "save": "Save Changes"
+        }
     }
 }

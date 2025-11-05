@@ -136,22 +136,36 @@ class BookingModal extends Component {
   handleConfirmBooking = async () => {
     const { language, userInfo } = this.props;
     if (!userInfo) {
-      message.warning("Vui lòng đăng nhập để sử dụng chức năng này");
+      message.warning(
+        language === "vi"
+          ? "Vui lòng đăng nhập để sử dụng chức năng này"
+          : "Please login to use this function"
+      );
       return;
     }
     const { fullName, phoneNumber, email, birthday, symptoms } = this.state;
     if (!fullName || !phoneNumber || !email || !birthday || !symptoms) {
-      message.warning("Vui lòng nhập đầy đủ thông tin trước khi đặt lịch!");
+      message.warning(
+        language === "vi"
+          ? "Vui lòng nhập đầy đủ thông tin trước khi đặt lịch!"
+          : "Please fill in all information before making an appointment!"
+      );
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      message.error("Email không hợp lệ!");
+      message.error(
+        language === "vi" ? "Email không hợp lệ!" : "Invalid email!"
+      );
       return;
     }
     const phoneRegex = /^[0-9]{9,11}$/;
     if (!phoneRegex.test(phoneNumber)) {
-      message.error("Số điện thoại không hợp lệ!");
+      message.error(
+        language === "vi"
+          ? "Số điện thoại không hợp lệ!"
+          : "Invalid phone number!"
+      );
       return;
     }
 
@@ -197,8 +211,14 @@ class BookingModal extends Component {
   };
 
   render() {
-    let { isOpenModal, closeBookingModal, dataTime, hospitalId, userInfo } =
-      this.props;
+    let {
+      language,
+      isOpenModal,
+      closeBookingModal,
+      dataTime,
+      hospitalId,
+      userInfo,
+    } = this.props;
     let doctorId = dataTime && !_.isEmpty(dataTime) ? dataTime.doctorId : "";
     // console.log("userInfo", userInfo);
 
@@ -241,7 +261,11 @@ class BookingModal extends Component {
                 <div className="col-md-6 booking-form">
                   <div className="card h-100">
                     <Alert
-                      message="Vui lòng nhập đúng thông tin và email để nhận được thông báo nhắc nhở"
+                      message={
+                        language === "vi"
+                          ? "Vui lòng nhập đúng thông tin và email để nhận được thông báo nhắc nhở"
+                          : "Please enter correct information and email to receive reminder notification"
+                      }
                       type="warning"
                       showIcon
                     />

@@ -2,10 +2,13 @@ import React, { useState, useRef } from "react";
 import { Form, Input, Button, message, Card } from "antd";
 import ReCAPTCHA from "react-google-recaptcha";
 import { changePassword } from "../../services/userService";
+import { useSelector } from "react-redux";
+
 const ChangePassword = () => {
   const [loading, setLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const recaptchaRef = useRef(null);
+  const language = useSelector((state) => state.app.language);
 
   const handleCaptchaChange = (token) => {
     setCaptchaToken(token);
@@ -13,7 +16,11 @@ const ChangePassword = () => {
 
   const onFinish = async (values) => {
     if (!captchaToken) {
-      message.error("Vui lòng xác thực Captcha!");
+      message.error(
+        language === "vi"
+          ? "Vui lòng xác thực Captcha!"
+          : "Please verify Captcha!"
+      );
       return;
     }
 
@@ -26,14 +33,21 @@ const ChangePassword = () => {
       });
 
       if (res.errCode === 0) {
-        message.success("Đổi mật khẩu thành công!");
+        message.success(
+          language === "vi"
+            ? "Đổi mật khẩu thành công!"
+            : "Password changed successfully!"
+        );
       } else {
-        message.error(res.errMessage || "Đổi mật khẩu thất bại!");
+        message.error(
+          language === "vi"
+            ? "Đổi mật khẩu thất bại!"
+            : "Password change failed!"
+        );
       }
-      // message.success("Chức năng đang được phát triển!");
     } catch (err) {
       console.error(err);
-      message.error("Lỗi server!");
+      message.error(language === "vi" ? "Lỗi server!" : "Server error!");
     } finally {
       setLoading(false);
       recaptchaRef.current?.reset(); // reset captcha
@@ -47,39 +61,74 @@ const ChangePassword = () => {
         <div className="col-12 col-md-8">
           <Card
             variant="borderless"
-            title="Đổi mật khẩu"
+            title={language === "vi" ? "Đổi mật khẩu" : "Change password"}
             className="shadow-none"
           >
             <Form layout="vertical" onFinish={onFinish}>
               <Form.Item
-                label="Mật khẩu cũ"
+                label={language === "vi" ? "Mật khẩu cũ" : "Old password"}
                 name="oldPassword"
                 rules={[
-                  { required: true, message: "Vui lòng nhập mật khẩu cũ!" },
+                  {
+                    required: true,
+                    message:
+                      language === "vi"
+                        ? "Vui lòng nhập mật khẩu cũ!"
+                        : "Please enter old password!",
+                  },
                 ]}
               >
-                <Input.Password placeholder="Nhập mật khẩu cũ" />
+                <Input.Password
+                  placeholder={
+                    language === "vi"
+                      ? "Nhập mật khẩu cũ"
+                      : "Enter old password"
+                  }
+                />
               </Form.Item>
 
               <Form.Item
-                label="Mật khẩu mới"
+                label={language === "vi" ? "Mật khẩu mới" : "New password"}
                 name="newPassword"
                 rules={[
-                  { required: true, message: "Vui lòng nhập mật khẩu mới!" },
-                  { min: 6, message: "Mật khẩu phải ít nhất 6 ký tự!" },
+                  {
+                    required: true,
+                    message:
+                      language === "vi"
+                        ? "Vui lòng nhập mật khẩu mới!"
+                        : "Please enter new password!",
+                  },
+                  {
+                    min: 6,
+                    message:
+                      language === "vi"
+                        ? "Mật khẩu phải ít nhất 6 ký tự!"
+                        : "Password must be at least 6 characters!",
+                  },
                 ]}
               >
-                <Input.Password placeholder="Nhập mật khẩu mới" />
+                <Input.Password
+                  placeholder={
+                    language === "vi"
+                      ? "Nhập mật khẩu mới"
+                      : "Enter a new password"
+                  }
+                />
               </Form.Item>
 
               <Form.Item
-                label="Xác nhận mật khẩu"
+                label={
+                  language === "vi" ? "Xác nhận mật khẩu" : "Confirm password"
+                }
                 name="confirmPassword"
                 dependencies={["newPassword"]}
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng nhập lại mật khẩu mới!",
+                    message:
+                      language === "vi"
+                        ? "Vui lòng nhập lại mật khẩu mới!"
+                        : "Please re-enter new password!",
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
@@ -87,13 +136,23 @@ const ChangePassword = () => {
                         return Promise.resolve();
                       }
                       return Promise.reject(
-                        new Error("Mật khẩu xác nhận không khớp!")
+                        new Error(
+                          language === "vi"
+                            ? "Mật khẩu xác nhận không khớp!"
+                            : "Confirmation password does not match!"
+                        )
                       );
                     },
                   }),
                 ]}
               >
-                <Input.Password placeholder="Nhập lại mật khẩu mới" />
+                <Input.Password
+                  placeholder={
+                    language === "vi"
+                      ? "Nhập lại mật khẩu mới"
+                      : "Re-enter new password"
+                  }
+                />
               </Form.Item>
 
               {/* reCAPTCHA */}
@@ -102,7 +161,13 @@ const ChangePassword = () => {
                   sitekey={process.env.REACT_APP_SITE_KEY_CAPTCHA}
                   onChange={handleCaptchaChange}
                   onExpired={() => setCaptchaToken("")}
-                  onErrored={() => message.error("Lỗi khi tải reCAPTCHA!")}
+                  onErrored={() =>
+                    message.error(
+                      language === "vi"
+                        ? "Lỗi khi tải reCAPTCHA!"
+                        : "Error loading reCAPTCHA!"
+                    )
+                  }
                   ref={recaptchaRef}
                 />
               </div>
@@ -115,7 +180,7 @@ const ChangePassword = () => {
                   loading={loading}
                   disabled={!captchaToken}
                 >
-                  Đổi mật khẩu
+                  {language === "vi" ? "Đổi mật khẩu" : "Change password"}
                 </Button>
               </Form.Item>
             </Form>

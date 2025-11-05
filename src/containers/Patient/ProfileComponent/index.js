@@ -26,6 +26,7 @@ const ProfileComponent = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const currentTab = queryParams.get("tab") || "info";
+  const language = useSelector((state) => state.app.language);
 
   if (!userInfo) {
     dispatch(showLoading());
@@ -41,25 +42,25 @@ const ProfileComponent = () => {
   const sideBarTabs = [
     {
       key: "info",
-      label: "Hồ sơ cá nhân",
+      label: language === "vi" ? "Hồ sơ cá nhân" : "Personal profile",
       path: `profile-user/${userInfo.id}?tab=info`,
       icon: <UserOutlined />,
     },
     {
       key: "favorites",
-      label: "Danh sách yêu thích",
+      label: language === "vi" ? "Danh sách yêu thích" : "Favorites list",
       path: `profile-user/${userInfo.id}?tab=favorites`,
       icon: <HeartOutlined />,
     },
     {
       key: "changePassword",
-      label: "Đổi mật khẩu",
+      label: language === "vi" ? "Đổi mật khẩu" : "Change password",
       path: `profile-user/${userInfo.id}?tab=changePassword`,
       icon: <LockOutlined />,
     },
     {
       key: "logout",
-      label: "Đăng xuất",
+      label: language === "vi" ? "Đăng xuất" : "Logout",
       onClick: handleLogout,
       icon: <LogoutOutlined />,
     },
