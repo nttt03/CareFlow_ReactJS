@@ -257,6 +257,14 @@ export const deleteMedicalRecord = (medicalRecordId) => {
   });
 };
 
+export const getDoctorStatistics = (doctorId) => {
+  return axios.get(`/api/doctor/${doctorId}/statistics`);
+};
+
+export const getHospitalStatistics = (hospitalId) => {
+  return axios.get(`/api/hospital/${hospitalId}/statistics`);
+};
+
 export {
   handleLoginApi,
   registerNewUser,

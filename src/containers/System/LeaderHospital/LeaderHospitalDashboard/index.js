@@ -1,151 +1,388 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Row, Statistic, Table } from "antd";
+import { Card, Col, Row, Statistic, Table, Spin, message } from "antd";
 import {
   CalendarOutlined,
   UserAddOutlined,
   CloseCircleOutlined,
   CheckCircleOutlined,
+  StarOutlined,
+  TeamOutlined,
+  TrophyOutlined,
 } from "@ant-design/icons";
-import { Column, Pie } from "@ant-design/plots";
+
+import { getHospitalStatistics } from "../../../../services/userService";
+import { useSelector } from "react-redux";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Title,
+} from "chart.js";
+import { Buffer } from "buffer";
+import DoctorImg from "../../../../assets/specialty/doctor.jpg";
+import "./LeaderHospitalDashboard.scss";
+import { formatDate } from "../../../../utils";
+
+import { Bar, Pie } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Title
+);
 
 const LeaderHospitalDashboard = () => {
-  const [stats, setStats] = useState({
-    totalAppointments: 120,
-    todayAppointments: 15,
-    cancelledAppointments: 5,
-    newPatients: 8,
-  });
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [appointmentsData, setAppointmentsData] = useState([]);
+  const [specialtyData, setSpecialtyData] = useState([]);
+  const [topDoctors, setTopDoctors] = useState([]);
+  const userInfo = useSelector((state) => state.user.userInfo);
 
-  const [appointmentsData, setAppointmentsData] = useState([
-    { date: "2025-09-01", value: 10 },
-    { date: "2025-09-02", value: 20 },
-    { date: "2025-09-03", value: 15 },
-    { date: "2025-09-04", value: 25 },
-    { date: "2025-09-05", value: 30 },
-  ]);
+  useEffect(() => {
+    fetchHospitalStats();
+  }, []);
 
-  const [specialtyData, setSpecialtyData] = useState([
-    { type: "Nội tổng quát", value: 40 },
-    { type: "Nhi khoa", value: 25 },
-    { type: "Tai - Mũi - Họng", value: 20 },
-    { type: "Da liễu", value: 15 },
-  ]);
+  const fetchHospitalStats = async () => {
+    try {
+      setLoading(true);
+      const hospitalId = userInfo?.hospitalId;
+      const res = await getHospitalStatistics(hospitalId);
 
-  const [recentAppointments, setRecentAppointments] = useState([
-    {
-      key: 1,
-      patient: "Nguyễn Văn A",
-      doctor: "BS. Minh",
-      time: "09:00 20/09/2025",
-      status: "Đã xác nhận",
+      if (res?.data) {
+        const data = res.data;
+
+        // Tổng hợp số liệu
+        setStats({
+          totalAppointments: data.bookingsByStatus?.reduce(
+            (sum, s) => sum + Number(s.count),
+            0
+          ),
+          ConfirmedAppointments:
+            data.bookingsByStatus?.find((s) => s.statusId === "S2")?.count || 0,
+          DoneAppointments:
+            data.bookingsByStatus?.find((s) => s.statusId === "S4")?.count || 0,
+          CanceledAppointments:
+            data.bookingsByStatus?.find((s) => s.statusId === "S5")?.count || 0,
+          totalPatients: data.totalPatients || 0,
+          totalDoctors: data.totalDoctors || 0,
+          totalSpecialties: data.totalSpecialties || 0,
+          todayAppointments: data.todayAppointments || 0,
+        });
+
+        // Biểu đồ cột: lịch hẹn theo ngày
+        setAppointmentsData(
+          data.bookingsByDate?.map((item) => ({
+            date: formatDate(item.date),
+            value: Number(item.count),
+          })) || []
+        );
+
+        // Biểu đồ tròn: top chuyên khoa
+        setSpecialtyData(
+          data.topSpecialties?.map((item) => ({
+            type: item.doctorInfoData?.specialty?.name || "Không rõ",
+            value: item.totalBookings || 0,
+          })) || []
+        );
+
+        // Bảng: top bác sĩ
+        setTopDoctors(
+          data.topDoctors?.map((doc, i) => ({
+            key: i + 1,
+            doctorName: doc.infoDataDoctor?.fullName || "---",
+            doctorAvatar: doc.infoDataDoctor?.avatar,
+            totalBookings: doc.totalBookings,
+          })) || []
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Không thể tải thống kê bệnh viện!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 🔹 Biểu đồ cột: Lịch hẹn theo ngày
+  const barData = {
+    labels: appointmentsData.map((item) => item.date),
+    datasets: [
+      {
+        label: "Số lịch hẹn",
+        data: appointmentsData.map((item) => item.value),
+        backgroundColor: "rgba(24, 144, 255, 0.7)",
+      },
+    ],
+  };
+
+  const barOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
     },
-    {
-      key: 2,
-      patient: "Trần Thị B",
-      doctor: "BS. Lan",
-      time: "10:30 20/09/2025",
-      status: "Chờ xác nhận",
-    },
-    {
-      key: 3,
-      patient: "Lê Văn C",
-      doctor: "BS. Hùng",
-      time: "14:00 20/09/2025",
-      status: "Đã hủy",
-    },
-  ]);
+  };
 
+  const pieData = {
+    labels: specialtyData.map((item) => item.type),
+    datasets: [
+      {
+        label: "Lịch hẹn",
+        data: specialtyData.map((item) => item.value),
+        backgroundColor: [
+          "#1890ff",
+          "#52c41a",
+          "#faad14",
+          "#f5222d",
+          "#722ed1",
+          "#eb2f96",
+        ],
+      },
+    ],
+  };
+
+  const pieOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "bottom",
+      },
+    },
+  };
+
+  // 🔹 Bảng: Top bác sĩ có nhiều lịch hẹn
   const columns = [
-    { title: "Bệnh nhân", dataIndex: "patient", key: "patient" },
-    { title: "Bác sĩ", dataIndex: "doctor", key: "doctor" },
-    { title: "Thời gian", dataIndex: "time", key: "time" },
-    { title: "Trạng thái", dataIndex: "status", key: "status" },
+    { title: "STT", dataIndex: "key", key: "key", width: 70 },
+    { title: "Bác sĩ", dataIndex: "doctorName", key: "doctorName" },
+    {
+      title: "Tổng lịch hẹn",
+      dataIndex: "totalBookings",
+      key: "totalBookings",
+    },
   ];
 
-  const columnConfig = {
-    data: appointmentsData,
-    xField: "date",
-    yField: "value",
-    label: { position: "top" },
-    color: "#1677ff",
-  };
-
-  const pieConfig = {
-    data: specialtyData,
-    angleField: "value",
-    colorField: "type",
-    radius: 0.9,
-    label: {
-      content: ({ type, value }) => `${type}: ${value}`,
-      style: { fontSize: 12 },
-    },
-  };
+  if (loading) {
+    return (
+      <div style={{ textAlign: "center", padding: 80 }}>
+        <Spin size="large" tip="Đang tải thống kê..." />
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="vh-100 overflow-auto p-4 no-scrollbar">
       {/* KPIs */}
-      <Row gutter={16}>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="Tổng số lịch hẹn"
-              value={stats.totalAppointments}
-              prefix={<CalendarOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="Lịch hẹn hôm nay"
-              value={stats.todayAppointments}
-              prefix={<CheckCircleOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="Đã hủy"
-              value={stats.cancelledAppointments}
-              prefix={<CloseCircleOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="Bệnh nhân mới"
-              value={stats.newPatients}
-              prefix={<UserAddOutlined />}
-            />
-          </Card>
-        </Col>
+      <Row gutter={[16, 16]}>
+        {[
+          {
+            title: "Tổng lịch hẹn",
+            value: stats?.totalAppointments,
+            icon: (
+              <CalendarOutlined style={{ fontSize: 28, color: "#1677ff" }} />
+            ),
+          },
+          {
+            title: "Đã xác nhận",
+            value: stats?.ConfirmedAppointments,
+            icon: (
+              <CheckCircleOutlined style={{ fontSize: 28, color: "#52c41a" }} />
+            ),
+          },
+          {
+            title: "Đã hoàn thành",
+            value: stats?.DoneAppointments,
+            icon: (
+              <CheckCircleOutlined style={{ fontSize: 28, color: "#13c2c2" }} />
+            ),
+          },
+          {
+            title: "Đã hủy",
+            value: stats?.CanceledAppointments,
+            icon: (
+              <CloseCircleOutlined style={{ fontSize: 28, color: "#ff4d4f" }} />
+            ),
+          },
+          {
+            title: "Tổng lịch hẹn hôm nay",
+            value: stats?.todayAppointments,
+            icon: (
+              <CalendarOutlined style={{ fontSize: 28, color: "#faad14" }} />
+            ),
+          },
+          {
+            title: "Tổng bệnh nhân",
+            value: stats?.totalPatients,
+            icon: (
+              <UserAddOutlined style={{ fontSize: 28, color: "#722ed1" }} />
+            ),
+          },
+          {
+            title: "Tổng bác sĩ",
+            value: stats?.totalDoctors,
+            icon: <TeamOutlined style={{ fontSize: 28, color: "#1677ff" }} />,
+          },
+          {
+            title: "Tổng chuyên khoa",
+            value: stats?.totalSpecialties,
+            icon: <StarOutlined style={{ fontSize: 28, color: "#eb2f96" }} />,
+          },
+        ].map((item, i) => (
+          <Col span={6} key={i}>
+            <Card
+              hoverable
+              style={{
+                borderRadius: 10,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              }}
+              bodyStyle={{ padding: 18 }}
+            >
+              <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>
+                {item.title}
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  justifyContent: "space-between",
+                }}
+              >
+                <div>{item.icon}</div>
+                <div style={{ fontSize: 24, fontWeight: 700 }}>
+                  {item.value}
+                </div>
+              </div>
+            </Card>
+          </Col>
+        ))}
       </Row>
 
-      {/* Charts */}
-      <Row gutter={16} style={{ marginTop: 20 }}>
+      {/* Content */}
+      <Row gutter={16} style={{ marginTop: 24 }}>
+        {/* Left side: Top doctor & table */}
         <Col span={12}>
-          <Card title="Lịch hẹn theo ngày">
-            <Column {...columnConfig} />
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card title="Tỷ lệ chuyên khoa">
-            <Pie {...pieConfig} />
-          </Card>
-        </Col>
-      </Row>
+          <Card
+            title={
+              <span style={{ fontWeight: 600, fontSize: 18 }}>
+                Top bác sĩ có nhiều lịch hẹn nhất
+              </span>
+            }
+            style={{
+              height: "100%",
+              marginBottom: 16,
+              border: "1px solid #74d8fd",
+              borderRadius: 10,
+            }}
+          >
+            {topDoctors.length > 0 && (
+              <div
+                style={{
+                  marginBottom: 16,
+                  padding: "16px",
+                  borderRadius: 12,
+                  background: "#fff7e6",
+                  border: "1px solid #ffd591",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
+                }}
+              >
+                <img
+                  src={
+                    topDoctors[0]?.doctorAvatar
+                      ? Buffer.from(
+                          topDoctors[0]?.doctorAvatar,
+                          "base64"
+                        ).toString("binary")
+                      : DoctorImg
+                  }
+                  alt="doctor"
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "3px solid #faad14",
+                  }}
+                />
 
-      {/* Recent appointments */}
-      <Row style={{ marginTop: 20 }}>
-        <Col span={24}>
-          <Card title="Lịch hẹn gần đây">
-            <Table
-              columns={columns}
-              dataSource={recentAppointments}
-              pagination={false}
-            />
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                    }}
+                  >
+                    🏆 {topDoctors[0].doctorName}
+                  </div>
+                  <div
+                    style={{ fontSize: 15, color: "#d46b08", fontWeight: 600 }}
+                  >
+                    {topDoctors[0].totalBookings} lịch hẹn
+                  </div>
+                </div>
+
+                <TrophyOutlined
+                  style={{ fontSize: 32, color: "#fa8c16", marginRight: 10 }}
+                />
+              </div>
+            )}
+
+            <div style={{ height: "calc(100% - 120px)" }}>
+              <Table
+                columns={columns}
+                dataSource={topDoctors}
+                pagination={false}
+              />
+            </div>
+          </Card>
+        </Col>
+
+        {/* Right side: Charts */}
+        <Col span={12}>
+          <Card
+            title="Thống kê lịch hẹn theo ngày"
+            style={{
+              height: 300,
+              marginBottom: 16,
+              border: "1px solid #74d8fd",
+              borderRadius: 10,
+            }}
+          >
+            <div style={{ width: "100%", height: "100%" }}>
+              <Bar
+                data={barData}
+                options={{ ...barOptions, maintainAspectRatio: false }}
+              />
+            </div>
+          </Card>
+
+          <Card
+            title="Top chuyên khoa có nhiều lịch hẹn"
+            style={{
+              height: 300,
+              border: "1px solid #74d8fd",
+              borderRadius: 10,
+            }}
+          >
+            <div style={{ width: "100%", height: "100%" }}>
+              <Pie
+                data={pieData}
+                options={{ ...pieOptions, maintainAspectRatio: false }}
+              />
+            </div>
           </Card>
         </Col>
       </Row>

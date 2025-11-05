@@ -7,11 +7,9 @@ import ProfileDoctor from "../ProfileDoctor";
 import _ from "lodash";
 import DatePicker from "../../../../components/Input/DatePicker";
 import * as actions from "../../../../store/actions";
-import Select from "react-select";
 import { postPatientBookingAppointment } from "../../../../services/userService";
-import { toast } from "react-toastify";
 import moment from "moment";
-import { Spin } from "antd";
+import { Spin, Alert } from "antd";
 import { Modal } from "reactstrap";
 import { message } from "antd";
 
@@ -136,7 +134,11 @@ class BookingModal extends Component {
   };
 
   handleConfirmBooking = async () => {
-    const { language } = this.props;
+    const { language, userInfo } = this.props;
+    if (!userInfo) {
+      message.warning("Vui lòng đăng nhập để sử dụng chức năng này");
+      return;
+    }
     const { fullName, phoneNumber, email, birthday, symptoms } = this.state;
     if (!fullName || !phoneNumber || !email || !birthday || !symptoms) {
       message.warning("Vui lòng nhập đầy đủ thông tin trước khi đặt lịch!");
@@ -173,7 +175,7 @@ class BookingModal extends Component {
       language: this.props.language,
       timeString: timeString,
       doctorName: this.props.dataTime.doctorData.fullName,
-      hospitalId: this.props.hospitalId,
+      hospitalId: this.props.hospitalId || userInfo?.hospitalId,
     });
 
     this.setState({ isShowLoading: false });
@@ -238,6 +240,11 @@ class BookingModal extends Component {
                 {/* Cột phải: Form thông tin */}
                 <div className="col-md-6 booking-form">
                   <div className="card h-100">
+                    <Alert
+                      message="Vui lòng nhập đúng thông tin và email để nhận được thông báo nhắc nhở"
+                      type="warning"
+                      showIcon
+                    />
                     <div className="card-body">
                       <div className="row">
                         <div className="col-12 form-group mb-3">

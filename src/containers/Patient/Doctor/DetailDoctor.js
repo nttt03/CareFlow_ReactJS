@@ -203,7 +203,10 @@ class DetailDoctor extends Component {
             </div>
 
             <div className="col-12 col-md-7">
-              <DoctorSchedule doctorIdFromParent={this.state.currentDoctorId} />
+              <DoctorSchedule
+                doctorIdFromParent={this.state.currentDoctorId}
+                hospitalId={detailDoctor?.hospitalId}
+              />
             </div>
           </div>
 
