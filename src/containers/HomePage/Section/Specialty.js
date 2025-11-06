@@ -31,7 +31,7 @@ class Specialty extends Component {
 
   render() {
     const { dataSpecialty, showAll } = this.state;
-
+    const { language } = this.props;
     const displayData = showAll ? dataSpecialty : dataSpecialty.slice(0, 6);
 
     return (
@@ -62,12 +62,17 @@ class Specialty extends Component {
               ))}
           </div>
 
-          {/* Nút xem thêm */}
           <button
             className="btn btn-light shadow-sm mt-4 px-4 py-2 rounded-pill"
             onClick={() => this.setState({ showAll: !showAll })}
           >
-            {showAll ? "Thu gọn" : "Xem thêm"}
+            {showAll
+              ? language === "vi"
+                ? "Thu gọn"
+                : "Collapse"
+              : language === "vi"
+              ? "Xem thêm"
+              : "See more"}
           </button>
         </div>
       </div>
@@ -75,4 +80,8 @@ class Specialty extends Component {
   }
 }
 
-export default withRouter(connect(null, null)(Specialty));
+const mapStateToProps = (state) => ({
+  language: state.app.language,
+});
+
+export default withRouter(connect(mapStateToProps)(Specialty));

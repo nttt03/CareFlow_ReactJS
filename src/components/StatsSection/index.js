@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { getAdminStatistics } from "../../services/userService";
+import { useSelector } from "react-redux";
 
 import {
   CalendarOutlined,
@@ -7,12 +8,14 @@ import {
   HomeOutlined,
   TeamOutlined,
   StarFilled,
+  MedicineBoxOutlined,
 } from "@ant-design/icons";
 
 export default function StatsSection() {
   const [stats, setStats] = useState(null);
   const [counts, setCounts] = useState([]);
   const sectionRef = useRef(null);
+  const language = useSelector((state) => state.app.language);
 
   const fetchAdminStats = async () => {
     try {
@@ -23,25 +26,29 @@ export default function StatsSection() {
         const formattedStats = [
           {
             to: data.totalBookings,
-            label: "Lượt đặt lịch",
+            label: language === "vi" ? "Lượt đặt lịch" : "Appointments",
             icon: <CalendarOutlined />,
           },
           {
             to: data.totalHospitals,
-            label: "Bệnh viện",
+            label: language === "vi" ? "Bệnh viện" : "Hospitals",
             icon: <HomeOutlined />,
           },
           {
             to: data.totalDoctors,
-            label: "Bác sĩ hợp tác",
+            label: language === "vi" ? "Bác sĩ hợp tác" : "Doctors",
             icon: <UserOutlined />,
           },
           {
             to: data.totalPatients,
-            label: "Khách hàng",
+            label: language === "vi" ? "Khách hàng" : "Patients",
             icon: <TeamOutlined />,
           },
-          { to: 4.9, label: "Mức độ hài lòng", icon: <StarFilled /> },
+          {
+            to: 4.9,
+            label: language === "vi" ? "Mức độ hài lòng" : "Rating",
+            icon: <StarFilled />,
+          },
         ];
 
         setStats(formattedStats);
@@ -76,39 +83,36 @@ export default function StatsSection() {
 
   useEffect(() => {
     fetchAdminStats();
-  }, []);
+  }, [language]);
 
   useEffect(() => {
     if (!stats) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => entry.isIntersecting && startCounter(),
       { threshold: 0.4 }
     );
-
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, [stats]);
 
   if (!stats) return null;
 
+  const formatNumber = (num) =>
+    num >= 1000 ? num.toLocaleString("en-US") : num;
+
   return (
     <div
       ref={sectionRef}
       className="container text-center pt-5"
-      style={{ maxWidth: "60%" }}
+      style={{ maxWidth: "65%" }}
     >
       <div className="row g-4 justify-content-center">
         {stats.map((item, i) => (
           <div className="col-6 col-md-2" key={i}>
             <div className="d-flex flex-column align-items-center">
-              {/* <div style={{ fontSize: "30px", color: "#f0ad4e" }}>
-                {item.icon}
-              </div> */}
-
               <h3
                 className="fw-bold text-warning"
-                style={{ fontSize: "40px", margin: "10px 0" }}
+                style={{ fontSize: "36px", margin: "10px 0" }}
               >
                 {Math.ceil(counts[i])}
                 {item.to !== 4.9 ? "+" : ""}
