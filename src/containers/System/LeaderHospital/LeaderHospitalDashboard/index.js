@@ -26,6 +26,7 @@ import { Buffer } from "buffer";
 import DoctorImg from "../../../../assets/specialty/doctor.jpg";
 import "./LeaderHospitalDashboard.scss";
 import { formatDate } from "../../../../utils";
+import { LANGUAGES } from "../../../../utils";
 
 import { Bar, Pie } from "react-chartjs-2";
 
@@ -46,6 +47,7 @@ const LeaderHospitalDashboard = () => {
   const [specialtyData, setSpecialtyData] = useState([]);
   const [topDoctors, setTopDoctors] = useState([]);
   const userInfo = useSelector((state) => state.user.userInfo);
+  const language = useSelector((state) => state.app.language);
 
   useEffect(() => {
     fetchHospitalStats();
@@ -60,7 +62,6 @@ const LeaderHospitalDashboard = () => {
       if (res?.data) {
         const data = res.data;
 
-        // Tổng hợp số liệu
         setStats({
           totalAppointments: data.bookingsByStatus?.reduce(
             (sum, s) => sum + Number(s.count),
@@ -89,7 +90,9 @@ const LeaderHospitalDashboard = () => {
         // Biểu đồ tròn: top chuyên khoa
         setSpecialtyData(
           data.topSpecialties?.map((item) => ({
-            type: item.doctorInfoData?.specialty?.name || "Không rõ",
+            type:
+              item.doctorInfoData?.specialty?.name ||
+              (language === LANGUAGES.VI ? "Không rõ" : "Unknown"),
             value: item.totalBookings || 0,
           })) || []
         );
@@ -106,18 +109,21 @@ const LeaderHospitalDashboard = () => {
       }
     } catch (error) {
       console.error(error);
-      message.error("Không thể tải thống kê bệnh viện!");
+      message.error(
+        language === LANGUAGES.VI
+          ? "Không thể tải thống kê bệnh viện!"
+          : "Failed to load hospital statistics!"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // 🔹 Biểu đồ cột: Lịch hẹn theo ngày
   const barData = {
     labels: appointmentsData.map((item) => item.date),
     datasets: [
       {
-        label: "Số lịch hẹn",
+        label: language === LANGUAGES.VI ? "Số lịch hẹn" : "Appointments",
         data: appointmentsData.map((item) => item.value),
         backgroundColor: "rgba(24, 144, 255, 0.7)",
       },
@@ -135,7 +141,7 @@ const LeaderHospitalDashboard = () => {
     labels: specialtyData.map((item) => item.type),
     datasets: [
       {
-        label: "Lịch hẹn",
+        label: language === LANGUAGES.VI ? "Lịch hẹn" : "Bookings",
         data: specialtyData.map((item) => item.value),
         backgroundColor: [
           "#1890ff",
@@ -158,12 +164,20 @@ const LeaderHospitalDashboard = () => {
     },
   };
 
-  // 🔹 Bảng: Top bác sĩ có nhiều lịch hẹn
   const columns = [
-    { title: "STT", dataIndex: "key", key: "key", width: 70 },
-    { title: "Bác sĩ", dataIndex: "doctorName", key: "doctorName" },
     {
-      title: "Tổng lịch hẹn",
+      title: language === LANGUAGES.VI ? "STT" : "No.",
+      dataIndex: "key",
+      key: "key",
+      width: 70,
+    },
+    {
+      title: language === LANGUAGES.VI ? "Bác sĩ" : "Doctor",
+      dataIndex: "doctorName",
+      key: "doctorName",
+    },
+    {
+      title: language === LANGUAGES.VI ? "Tổng lịch hẹn" : "Total Bookings",
       dataIndex: "totalBookings",
       key: "totalBookings",
     },
@@ -172,7 +186,14 @@ const LeaderHospitalDashboard = () => {
   if (loading) {
     return (
       <div style={{ textAlign: "center", padding: 80 }}>
-        <Spin size="large" tip="Đang tải thống kê..." />
+        <Spin
+          size="large"
+          tip={
+            language === LANGUAGES.VI
+              ? "Đang tải thống kê..."
+              : "Loading statistics..."
+          }
+        />
       </div>
     );
   }
@@ -183,54 +204,64 @@ const LeaderHospitalDashboard = () => {
       <Row gutter={[16, 16]}>
         {[
           {
-            title: "Tổng lịch hẹn",
+            title:
+              language === LANGUAGES.VI
+                ? "Tổng lịch hẹn"
+                : "Total Appointments",
             value: stats?.totalAppointments,
             icon: (
               <CalendarOutlined style={{ fontSize: 28, color: "#1677ff" }} />
             ),
           },
           {
-            title: "Đã xác nhận",
+            title: language === LANGUAGES.VI ? "Đã xác nhận" : "Confirmed",
             value: stats?.ConfirmedAppointments,
             icon: (
               <CheckCircleOutlined style={{ fontSize: 28, color: "#52c41a" }} />
             ),
           },
           {
-            title: "Đã hoàn thành",
+            title: language === LANGUAGES.VI ? "Đã hoàn thành" : "Completed",
             value: stats?.DoneAppointments,
             icon: (
               <CheckCircleOutlined style={{ fontSize: 28, color: "#13c2c2" }} />
             ),
           },
           {
-            title: "Đã hủy",
+            title: language === LANGUAGES.VI ? "Đã hủy" : "Canceled",
             value: stats?.CanceledAppointments,
             icon: (
               <CloseCircleOutlined style={{ fontSize: 28, color: "#ff4d4f" }} />
             ),
           },
           {
-            title: "Tổng lịch hẹn hôm nay",
+            title:
+              language === LANGUAGES.VI
+                ? "Tổng lịch hẹn hôm nay"
+                : "Today's Appointments",
             value: stats?.todayAppointments,
             icon: (
               <CalendarOutlined style={{ fontSize: 28, color: "#faad14" }} />
             ),
           },
           {
-            title: "Tổng bệnh nhân",
+            title:
+              language === LANGUAGES.VI ? "Tổng bệnh nhân" : "Total Patients",
             value: stats?.totalPatients,
             icon: (
               <UserAddOutlined style={{ fontSize: 28, color: "#722ed1" }} />
             ),
           },
           {
-            title: "Tổng bác sĩ",
+            title: language === LANGUAGES.VI ? "Tổng bác sĩ" : "Total Doctors",
             value: stats?.totalDoctors,
             icon: <TeamOutlined style={{ fontSize: 28, color: "#1677ff" }} />,
           },
           {
-            title: "Tổng chuyên khoa",
+            title:
+              language === LANGUAGES.VI
+                ? "Tổng chuyên khoa"
+                : "Total Specialties",
             value: stats?.totalSpecialties,
             icon: <StarOutlined style={{ fontSize: 28, color: "#eb2f96" }} />,
           },
@@ -268,12 +299,14 @@ const LeaderHospitalDashboard = () => {
 
       {/* Content */}
       <Row gutter={16} style={{ marginTop: 24 }}>
-        {/* Left side: Top doctor & table */}
+        {/* Left: Top doctor & table */}
         <Col span={12}>
           <Card
             title={
               <span style={{ fontWeight: 600, fontSize: 18 }}>
-                Top bác sĩ có nhiều lịch hẹn nhất
+                {language === LANGUAGES.VI
+                  ? "Top bác sĩ có nhiều lịch hẹn nhất"
+                  : "Top Doctors with Most Appointments"}
               </span>
             }
             style={{
@@ -325,12 +358,13 @@ const LeaderHospitalDashboard = () => {
                       gap: 8,
                     }}
                   >
-                    🏆 {topDoctors[0].doctorName}
+                    {topDoctors[0].doctorName}
                   </div>
                   <div
                     style={{ fontSize: 15, color: "#d46b08", fontWeight: 600 }}
                   >
-                    {topDoctors[0].totalBookings} lịch hẹn
+                    {topDoctors[0].totalBookings}{" "}
+                    {language === LANGUAGES.VI ? "lịch hẹn" : "appointments"}
                   </div>
                 </div>
 
@@ -350,10 +384,14 @@ const LeaderHospitalDashboard = () => {
           </Card>
         </Col>
 
-        {/* Right side: Charts */}
+        {/* Right: Charts */}
         <Col span={12}>
           <Card
-            title="Thống kê lịch hẹn theo ngày"
+            title={
+              language === LANGUAGES.VI
+                ? "Thống kê lịch hẹn theo ngày"
+                : "Appointments by Date"
+            }
             style={{
               height: 300,
               marginBottom: 16,
@@ -370,7 +408,11 @@ const LeaderHospitalDashboard = () => {
           </Card>
 
           <Card
-            title="Top chuyên khoa có nhiều lịch hẹn"
+            title={
+              language === LANGUAGES.VI
+                ? "Top chuyên khoa có nhiều lịch hẹn"
+                : "Top Specialties by Bookings"
+            }
             style={{
               height: 300,
               border: "1px solid #74d8fd",

@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import * as actions from "../../store/actions";
-import { FormattedMessage } from "react-intl";
 import { handleLoginApi } from "../../services/userService";
 import "./Auth.scss";
+
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -37,20 +37,26 @@ class Login extends Component {
       let data = await handleLoginApi(this.state.username, this.state.password);
       if (data && data.errCode !== 0) {
         this.setState({
-          errMessage: data.message,
+          errMessage:
+            this.props.lang === "vi"
+              ? data.message
+              : data.messageEn || data.message,
         });
       }
       if (data && data.errCode === 0) {
         this.props.userLoginSuccess(data.user);
       }
     } catch (e) {
-      if (e.response) {
-        if (e.response.data) {
-          this.setState({
-            errMessage: e.response.data.message,
-          });
-        }
+      let errorMsg = "Đã có lỗi xảy ra, vui lòng thử lại!";
+      if (e.response && e.response.data) {
+        errorMsg =
+          this.props.lang === "vi"
+            ? e.response.data.message
+            : e.response.data.messageEn || e.response.data.message;
       }
+      this.setState({
+        errMessage: errorMsg,
+      });
     }
   };
 
@@ -67,28 +73,36 @@ class Login extends Component {
   };
 
   render() {
+    const { lang } = this.props;
+
     return (
       <div className="auth-background">
         <div className="auth-container py-5 mx-3">
           <div className="auth-content row">
-            <div className="col-12 text-login">ĐĂNG NHẬP</div>
+            <div className="col-12 text-login">
+              {lang === "vi" ? "ĐĂNG NHẬP" : "LOGIN"}
+            </div>
+
             <div className="col-12 form-group login-input">
-              <label>Email:</label>
+              <label>{lang === "vi" ? "Email:" : "Email:"}</label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="Nhập email"
+                placeholder={lang === "vi" ? "Nhập email" : "Enter your email"}
                 value={this.state.username}
                 onChange={(event) => this.handleOnChangeUsername(event)}
               />
             </div>
+
             <div className="col-12 form-group login-input">
-              <label>Mật khẩu:</label>
+              <label>{lang === "vi" ? "Mật khẩu:" : "Password:"}</label>
               <div className="custom-input-password">
                 <input
                   type={this.state.isShowPassword ? "text" : "password"}
                   className="form-control"
-                  placeholder="Nhập mật khẩu"
+                  placeholder={
+                    lang === "vi" ? "Nhập mật khẩu" : "Enter password"
+                  }
                   onChange={(event) => this.handleOnChangePassword(event)}
                   onKeyDown={(event) => this.handleKeyDown(event)}
                 />
@@ -103,26 +117,32 @@ class Login extends Component {
                 </span>
               </div>
             </div>
+
             <div className="col-12 err-message">{this.state.errMessage}</div>
+
             <div className="col-12">
               <button className="btn-login" onClick={this.handleLogin}>
-                Đăng nhập
+                {lang === "vi" ? "Đăng nhập" : "Login"}
               </button>
             </div>
+
             <div className="col-12">
               <p className="forgot-password">
-                <a href="/forgot-password">Quên mật khẩu?</a>
+                <a href="/forgot-password">
+                  {lang === "vi" ? "Quên mật khẩu?" : "Forgot password?"}
+                </a>
               </p>
             </div>
+
             <div className="col-12">
               <p className="text-center">
-                Chưa có tài khoản{" "}
+                {lang === "vi" ? "Chưa có tài khoản" : "Don't have an account?"}{" "}
                 <span
                   className="hover-effect fw-bold text-danger text-decoration-underline"
                   style={{ cursor: "pointer" }}
-                  onClick={() => this.props.history.push("/register")}
+                  onClick={() => this.props.navigate("/register")}
                 >
-                  Đăng ký ngay!
+                  {lang === "vi" ? "Đăng ký ngay!" : "Register now!"}
                 </span>
               </p>
             </div>

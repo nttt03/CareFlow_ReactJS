@@ -265,6 +265,10 @@ export const getHospitalStatistics = (hospitalId) => {
   return axios.get(`/api/hospital/${hospitalId}/statistics`);
 };
 
+export const getAdminStatistics = () => {
+  return axios.get(`/api/admin/statistics`);
+};
+
 export {
   handleLoginApi,
   registerNewUser,
