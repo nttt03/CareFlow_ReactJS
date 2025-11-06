@@ -269,6 +269,14 @@ export const getAdminStatistics = () => {
   return axios.get(`/api/admin/statistics`);
 };
 
+export const postForgotPassword = (email) => {
+  return axios.post(`/api/forgot-password`, { email });
+};
+
+export const postResetPassword = (token, newPassword) => {
+  return axios.post(`/api/reset-password`, { token, newPassword });
+};
+
 export {
   handleLoginApi,
   registerNewUser,

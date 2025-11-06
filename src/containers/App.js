@@ -17,6 +17,8 @@ import Doctor from "../routes/Doctor.js";
 import LeaderHospital from "../routes/LeaderHospital.js";
 import Login from "./Auth/Login";
 import Register from "./Auth/Register";
+import ForgotPassword from "./Auth/ForgotPassword.js";
+import ResetPassword from "./Auth/ResetPassword.js";
 import HomePage from "./HomePage/HomePage.js";
 import DetailDoctor from "./Patient/Doctor/DetailDoctor.js";
 import DetailSpecialty from "./Patient/Specialty/DetailSpecialty.js";
@@ -49,6 +51,11 @@ class App extends Component {
                     component={userIsNotAuthenticated(Login)}
                   />
                   <Route path={path.REGISTER} component={Register} />
+                  <Route
+                    path={path.FORGOT_PASSWORD}
+                    component={ForgotPassword}
+                  />
+                  <Route path={path.RESET_PASSWORD} component={ResetPassword} />
                   <Route
                     path={path.SYSTEM}
                     component={userIsAdminOrDoctor(System)}
