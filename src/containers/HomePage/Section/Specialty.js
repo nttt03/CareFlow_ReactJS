@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import Slider from "react-slick";
 import { getAllSpecialty } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
 import { withRouter } from "react-router";
@@ -11,12 +10,12 @@ class Specialty extends Component {
     super(props);
     this.state = {
       dataSpecialty: [],
+      showAll: false,
     };
   }
 
   async componentDidMount() {
     const res = await getAllSpecialty();
-    console.log("check getAllSpecialty: ", res);
     if (res && res.errCode === 0) {
       this.setState({
         dataSpecialty: res.data ? res.data : [],
@@ -24,89 +23,56 @@ class Specialty extends Component {
     }
   }
 
-  handleViewListSpecialty = () => {
-    if (this.props.history) {
-      this.props.history.push(`/list-specialty`);
-    }
-  };
-
   handleViewDetailSpecialty = (item) => {
-    // console.log('check view detail doctor....', doctor);
     if (this.props.history) {
       this.props.history.push(`/detail-specialty/${item.id}`);
     }
   };
 
   render() {
-    let { dataSpecialty } = this.state;
-    // console.log('check state chuyên khoa: ', this.state)
+    const { dataSpecialty, showAll } = this.state;
+
+    const displayData = showAll ? dataSpecialty : dataSpecialty.slice(0, 6);
+
     return (
-      <div className="section-share section-specialty">
-        <div className="section-container">
-          <div className="section-header">
-            <span>
-              <FormattedMessage id="homepage.specialty-popular" />
-            </span>
-            <button
-              className="btn btn-secondary px-3"
-              onClick={() => this.handleViewListSpecialty()}
-            >
-              <FormattedMessage id="homepage.more-infor" />
-            </button>
+      <div className="section-share section-specialty py-5">
+        <div className="container text-center">
+          <h2 className="fw-bold mb-4" style={{ color: "#064580" }}>
+            <FormattedMessage id="homepage.specialty-popular" />
+          </h2>
+
+          <div className="row justify-content-center gy-4">
+            {displayData &&
+              displayData.map((item, index) => (
+                <div
+                  className="col-6 col-md-4 col-lg-2"
+                  key={index}
+                  onClick={() => this.handleViewDetailSpecialty(item)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="specialty-box p-3">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="specialty-img mb-2"
+                    />
+                    <p className="fw-semibold text-dark m-0">{item.name}</p>
+                  </div>
+                </div>
+              ))}
           </div>
 
-          <div className="section-body mb-5">
-            <Slider {...this.props.settings}>
-              {dataSpecialty &&
-                dataSpecialty.length > 0 &&
-                dataSpecialty.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="px-3"
-                      onClick={() => this.handleViewDetailSpecialty(item)}
-                    >
-                      <div className="card hoverable text-center border-0 shadow-sm specialty-card">
-                        <div className="card-img-top d-flex justify-content-center align-items-center p-3">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="img-fluid rounded"
-                            style={{
-                              width: "80px",
-                              height: "80px",
-                              objectFit: "cover",
-                            }}
-                          />
-                        </div>
-                        <div className="card-body p-2">
-                          <h6 className="specialty-name bold text-truncate">
-                            {item.name}
-                          </h6>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-            </Slider>
-          </div>
+          {/* Nút xem thêm */}
+          <button
+            className="btn btn-light shadow-sm mt-4 px-4 py-2 rounded-pill"
+            onClick={() => this.setState({ showAll: !showAll })}
+          >
+            {showAll ? "Thu gọn" : "Xem thêm"}
+          </button>
         </div>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isLoggedIn: state.user.isLoggedIn,
-    language: state.app.language,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(Specialty)
-);
+export default withRouter(connect(null, null)(Specialty));

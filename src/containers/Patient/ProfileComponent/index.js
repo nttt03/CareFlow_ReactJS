@@ -83,7 +83,8 @@ const ProfileComponent = () => {
     <div
       className="profile-container "
       style={{
-        backgroundImage: `url(${bg})`,
+        // backgroundImage: `url(${bg})`,
+        backgroundColor: "#f5f5f5",
         minHeight: "100vh",
         width: "100%",
       }}

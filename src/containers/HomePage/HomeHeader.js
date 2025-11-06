@@ -16,6 +16,7 @@ import {
 import { Dropdown, Badge, message } from "antd";
 import { getNotifications, markAsRead } from "../../services/userService";
 import { io } from "socket.io-client";
+import StatsSection from "../../components/StatsSection";
 
 class HomeHeader extends Component {
   socket = null;
@@ -426,7 +427,7 @@ class HomeHeader extends Component {
               </div>
             </div>
             <div className="content-down">
-              <div className="options">
+              {/* <div className="options">
                 <div className="option-child">
                   <div className="icon-child">
                     <i className="fas fa-hospital"></i>
@@ -475,7 +476,8 @@ class HomeHeader extends Component {
                     <FormattedMessage id="banner.child6" />
                   </div>
                 </div>
-              </div>
+              </div> */}
+              <StatsSection />
             </div>
           </div>
         )}

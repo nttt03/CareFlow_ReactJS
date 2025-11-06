@@ -1,0 +1,49 @@
+.ant-card:hover {
+    transform : translateY(-6px);
+    transition: 0.3s ease;
+}
+
+.fade-in-section {
+    animation: fadeUp 1s ease forwards;
+    opacity  : 0;
+}
+
+@keyframes fadeUp {
+    from {
+        transform: translateY(30px);
+        opacity  : 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity  : 1;
+    }
+}
+
+/* Card floating breathing effect */
+.feature-card {
+    animation : floatCard 3s ease-in-out infinite;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+/* Hover stronger glow */
+.feature-card:hover {
+    transform : translateY(-8px) scale(1.03);
+    box-shadow: 0 12px 26px rgba(0, 118, 255, 0.2);
+}
+
+/* Soft floating animation */
+@keyframes floatCard {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}

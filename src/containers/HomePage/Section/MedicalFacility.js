@@ -44,7 +44,7 @@ class HomePage extends Component {
       <div className="section-share section-medical-facility">
         <div className="section-container">
           <div className="section-header">
-            <span className="text-white">
+            <span className="fw-bold mb-4" style={{ color: "#064580" }}>
               <FormattedMessage id="homepage.medical-facility-outstanding" />
             </span>
             <button

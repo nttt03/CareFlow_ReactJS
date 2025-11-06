@@ -209,109 +209,80 @@
 }
 
 .home-header-banner {
-    // background            : url(../../assets/careFlow_bg.png);
-    background         : url(../../assets/images/banner_homepage.jpg);
+    background         : url(../../assets/images/homepage_banner.jpg) center/cover no-repeat;
     background-repeat  : no-repeat;
     background-size    : contain;
     background-position: center;
-    height             : 650px;
+    position           : relative;
+    height             : 620px;
     display            : flex;
     flex-direction     : column;
-
+    justify-content    : center;
+    text-align         : center;
 
     .content-up {
-        height          : 65%;
-        padding-top     : 80px;
-        background-image: linear-gradient(rgba(126, 126, 126, 0.25), rgba(255, 255, 255, 0.1));
+        position   : relative;
+        // z-index : 2;
 
-        .title1 {
-            color        : #003553;
-            text-align   : center;
-            font-size    : 30px;
-            font-weight  : 600;
-            text-shadow  : 1px 1px 1px #333;
-            margin-top   : 30px;
-            margin-bottom: 5px;
+        .title1,
+        .title2 {
+            font-size     : 42px;
+            font-weight   : 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color         : #003553;
+            text-shadow   : 0 2px 4px rgba(0, 0, 0, 0.15);
+            animation     : fadeUp 0.8s ease;
+
         }
 
         .title2 {
-            color        : #003553;
-            text-align   : center;
-            font-size    : 30px;
-            font-weight  : 600;
-            text-shadow  : 1px 1px 1px #333;
-            margin-bottom: 15px;
+            margin-bottom: 30px;
         }
 
         .search {
-            width          : fit-content;
             display        : flex;
-            justify-content: center;
             align-items    : center;
-            margin         : 0 auto;
-            padding        : 10px;
-            border-radius  : 5px;
-            background     : #fbfaf9;
+            background     : rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(10px);
+            border-radius  : 40px;
+            padding        : 12px 20px;
+            width          : 70%;
+            max-width      : 650px;
+            margin         : auto;
+            box-shadow     : 0 8px 20px rgba(0, 0, 0, 0.12);
+            transition     : 0.3s;
 
-            i {
-                margin: 0 5px;
+            &:hover {
+                transform: scale(1.03);
             }
 
             input {
-                height    : 30px;
-                width     : 660px;
-                background: transparent;
                 border    : none;
+                background: transparent;
+                font-size : 18px;
+                width     : 100%;
                 outline   : none;
             }
         }
     }
 
     .content-down {
-        height          : 35%;
-        display         : flex;
-        justify-content : center;
-        align-items     : flex-end;
-        padding-bottom  : 35px;
-        background-image: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 1));
-        ;
+        position: absolute;
+        bottom  : 20px;
+        width   : 100%;
+    }
+}
 
-        .options {
-            text-align: center;
-            display   : flex;
-            gap       : 60px;
+@keyframes fadeUp {
+    from {
+        opacity  : 0;
+        transform: translateY(20px);
+    }
 
-            .option-child {
-                width: 100px;
-
-                .icon-child {
-                    width        : 50px;
-                    height       : 50px;
-                    background   : #ffffff;
-                    padding      : 10px;
-                    border-radius: 50%;
-                    text-align   : center;
-                    margin       : 0 auto;
-                    box-shadow   : rgba(199, 197, 197, 0.25) 0px 54px 55px, rgba(141, 139, 139, 0.12) 0px -12px 30px, rgba(126, 124, 124, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-
-                    i {
-                        font-size: 30px;
-                        color    : #49bce2;
-                    }
-
-                }
-
-                .text-child {
-                    font-size  : 16px;
-                    font-weight: 600;
-
-                    &:hover {
-                        color : #49bce2;
-                        cursor: pointer;
-                    }
-                }
-            }
-        }
+    to {
+        opacity  : 1;
+        transform: translateY(0);
     }
 }
 

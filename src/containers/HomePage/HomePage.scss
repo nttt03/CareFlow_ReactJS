@@ -33,9 +33,9 @@
     display: none !important;
 }
 
-.section-medical-facility {
-    background-color: navy;
-}
+// .section-medical-facility {
+//     background-color: navy;
+// }
 
 .section-share {
     height: auto;
@@ -65,11 +65,11 @@
         background-image: url(../../assets/background.png);
     }
 
-    &.section-outstanding-doctor {
-        background      : #f5f5f5;
-        background-image: url(../../assets/background.png);
+    // &.section-outstanding-doctor {
+    //     background      : #f5f5f5;
+    //     background-image: url(../../assets/background.png);
 
-    }
+    // }
 
     .section-body {
 
@@ -157,4 +157,38 @@
     height     : 250px;
     text-align : center;
     font-weight: 700;
+}
+
+.specialty-box {
+    background   : #fff;
+    border-radius: 14px;
+    transition   : 0.3s;
+    box-shadow   : 0 3px 12px rgba(0, 0, 0, 0.06);
+    animation    : fadeUp 0.8s ease both;
+}
+
+.specialty-box:hover {
+    transform : translateY(-6px);
+    box-shadow: 0 8px 22px rgba(0, 118, 255, 0.15);
+}
+
+.specialty-img {
+    width     : 64px;
+    height    : 64px;
+    object-fit: contain;
+    display   : block;
+    margin    : auto;
+}
+
+/* Fade up effect */
+@keyframes fadeUp {
+    from {
+        opacity  : 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity  : 1;
+        transform: translateY(0);
+    }
 }
