@@ -17,6 +17,16 @@ import { Dropdown, Badge, message } from "antd";
 import { getNotifications, markAsRead } from "../../services/userService";
 import { io } from "socket.io-client";
 import StatsSection from "../../components/StatsSection";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+
+const bannerImages = [
+  require("../../assets/images/banner2.png"),
+  require("../../assets/images/homepage_banner.jpg"),
+  require("../../assets/images/banner3.png"),
+];
 
 class HomeHeader extends Component {
   socket = null;
@@ -407,13 +417,31 @@ class HomeHeader extends Component {
                   </div>
                 </div>
               )}
-
-              {/* <div className='support'><i className="fas fa-question-circle me-2"></i><FormattedMessage id="homeheader.support" /></div> */}
             </div>
           </div>
         </div>
         {this.props.isShowBanner === true && (
           <div className="home-header-banner">
+            <Swiper
+              modules={[Autoplay, Pagination]}
+              autoplay={{ delay: 3500, disableOnInteraction: false }}
+              loop={true}
+              pagination={{ clickable: true }}
+              speed={900}
+              className="banner-swiper"
+            >
+              {bannerImages.map((img, i) => (
+                <SwiperSlide key={i}>
+                  <div
+                    className="banner-slide"
+                    style={{
+                      backgroundImage: `url(${img})`,
+                    }}
+                  ></div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
             <div className="content-up">
               <div className="title1">
                 <FormattedMessage id="banner.title1" />
@@ -426,57 +454,8 @@ class HomeHeader extends Component {
                 <input type="text" placeholder={placeholderText} />
               </div>
             </div>
+
             <div className="content-down">
-              {/* <div className="options">
-                <div className="option-child">
-                  <div className="icon-child">
-                    <i className="fas fa-hospital"></i>
-                  </div>
-                  <div className="text-child">
-                    <FormattedMessage id="banner.child1" />
-                  </div>
-                </div>
-                <div className="option-child">
-                  <div className="icon-child">
-                    <i className="fas fa-mobile-alt"></i>
-                  </div>
-                  <div className="text-child">
-                    <FormattedMessage id="banner.child2" />
-                  </div>
-                </div>
-                <div className="option-child">
-                  <div className="icon-child">
-                    <i className="fas fa-stethoscope"></i>
-                  </div>
-                  <div className="text-child">
-                    <FormattedMessage id="banner.child3" />
-                  </div>
-                </div>
-                <div className="option-child">
-                  <div className="icon-child">
-                    <i className="fas fa-notes-medical"></i>
-                  </div>
-                  <div className="text-child">
-                    <FormattedMessage id="banner.child4" />
-                  </div>
-                </div>
-                <div className="option-child">
-                  <div className="icon-child">
-                    <i className="fas fa-sun"></i>
-                  </div>
-                  <div className="text-child">
-                    <FormattedMessage id="banner.child5" />
-                  </div>
-                </div>
-                <div className="option-child">
-                  <div className="icon-child">
-                    <i className="fas fa-plus-circle"></i>
-                  </div>
-                  <div className="text-child">
-                    <FormattedMessage id="banner.child6" />
-                  </div>
-                </div>
-              </div> */}
               <StatsSection />
             </div>
           </div>
