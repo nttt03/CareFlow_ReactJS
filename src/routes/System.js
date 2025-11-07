@@ -19,6 +19,9 @@ import ManageSchedule from "../containers/System/Doctor/ManageSchedule";
 import AdminDashboard from "../containers/System/Admin/AdminDashboard";
 import ProfileUser from "../containers/System/Doctor/ProfileUser";
 import ChangePassword from "../components/ChangePassword";
+import MedicalRecord from "../containers/System/Doctor/MedicalRecord";
+import ManagePatient from "../containers/System/Doctor/ManagePatient";
+import WaitingApproval from "../containers/System/Doctor/WaitingApproval";
 
 class System extends Component {
   render() {
@@ -67,6 +70,18 @@ class System extends Component {
                 <Route
                   path="/system/manage-schedule"
                   component={ManageSchedule}
+                />
+                <Route
+                  path="/system/waiting-approval"
+                  component={WaitingApproval}
+                />
+                <Route
+                  path="/system/manage-patient"
+                  component={ManagePatient}
+                />
+                <Route
+                  path="/system/manage-medical-record"
+                  component={MedicalRecord}
                 />
                 <Route
                   path="/system/manage-specialty/edit-specialty/:specialtyId"

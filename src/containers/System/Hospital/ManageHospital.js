@@ -248,7 +248,7 @@ function ManageHospital({ language }) {
               history.push(`/system/manage-hospital/edit-hospital/${record.id}`)
             }
           />
-          <Button
+          {/* <Button
             icon={<EyeOutlined />}
             size="small"
             onClick={() =>
@@ -256,7 +256,7 @@ function ManageHospital({ language }) {
                 `/system/manage-hospital/detail-hospital/${record.id}`
               )
             }
-          />
+          /> */}
           <Popconfirm
             title={language === "vi" ? "Xóa bản ghi" : "Delete record"}
             description={

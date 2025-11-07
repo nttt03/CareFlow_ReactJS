@@ -50,6 +50,7 @@
             "manage-account": "Quản lý tài khoản",
             "manage-doctor": "Quản lý bác sĩ",
             "manage-admin": "Quản lý admin",
+            "manage-examination": "Quản lý khám bệnh",
             "crud": "Quản lý người dùng",
             "crud-redux": "Quản lý người dùng",
             "hospital": "Bệnh viện",
@@ -155,7 +156,7 @@
     },
     "admin": {
         "manage-doctor": {
-            "title": "Tạo thêm thông tin bác sĩ",
+            "title": "Quản lý thông tin bác sĩ",
             "choose-doctor": "Chọn bác sĩ",
             "choose-doctor-placeholder": "Chọn...",
             "intro": "Thông tin giới thiệu",
@@ -175,6 +176,7 @@
             "title": "Quản lý chuyên khoa",
             "title-add": "Thêm chuyên khoa",
             "title-edit": "Cập nhật thông tin chuyên khoa",
+            "title-view": "Thông tin chuyên khoa",
             "name-specialty": "Tên chuyên khoa",
             "img-specialty": "Ảnh chuyên khoa",
             "save": "Lưu thông tin",

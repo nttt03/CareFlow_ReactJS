@@ -36,15 +36,10 @@ export const adminMenu = [
       //   name: "menu.admin.crud",
       //   link: "/system/user-manage",
       // },
-      {
-        name: "menu.admin.crud-redux",
-        link: "/system/user-redux",
-      },
-      {
-        // quản lý kế hoạch khám bệnh của bác sĩ
-        name: "menu.doctor.manage-schedule",
-        link: "/system/manage-schedule",
-      },
+      // {
+      //   name: "menu.admin.crud-redux",
+      //   link: "/system/user-redux",
+      // },
     ],
   },
 
@@ -66,6 +61,32 @@ export const adminMenu = [
       {
         name: "menu.admin.manage-specialty",
         link: "/system/manage-specialty",
+      },
+    ],
+  },
+
+  {
+    // quản lý khám bệnh
+    name: "menu.admin.manage-examination",
+    menus: [
+      {
+        // quản lý kế hoạch khám bệnh của bác sĩ
+        name: "menu.doctor.manage-schedule",
+        link: "/system/manage-schedule",
+      },
+      {
+        name: "menu.doctor.waiting-approval",
+        link: "/system/waiting-approval",
+      },
+      {
+        // quản lý bệnh nhân của bác sĩ
+        name: "menu.doctor.manage-patient",
+        link: "/system/manage-patient",
+      },
+      {
+        // quản lý hồ sơ bệnh án
+        name: "menu.doctor.manage-medical-record",
+        link: "/system/manage-medical-record",
       },
     ],
   },

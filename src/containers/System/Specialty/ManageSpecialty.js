@@ -201,20 +201,21 @@ function ManageSpecialty({ language }) {
       render: (_, record) => (
         <Space>
           <Button
-            icon={<EditOutlined />}
-            size="small"
-            onClick={() =>
-              history.push(
-                `/system/manage-specialty/edit-specialty/${record.id}`
-              )
-            }
-          />
-          <Button
             icon={<EyeOutlined />}
             size="small"
             onClick={() =>
               history.push(
-                `/system/manage-specialty/detail-specialty/${record.id}`
+                `/system/manage-specialty/edit-specialty/${record.id}?mode=view`
+              )
+            }
+          />
+
+          <Button
+            icon={<EditOutlined />}
+            size="small"
+            onClick={() =>
+              history.push(
+                `/system/manage-specialty/edit-specialty/${record.id}?mode=edit`
               )
             }
           />

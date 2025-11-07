@@ -7,7 +7,7 @@ import MarkdownIt from "markdown-it";
 import MdEditor from "react-markdown-editor-lite";
 import "react-markdown-editor-lite/lib/index.css";
 import { getDetailInforDoctor } from "../../../services/userService";
-
+import "../LeaderHospital/LeaderHospitalDashboard/LeaderHospitalDashboard.scss";
 import {
   Card,
   Form,
@@ -180,7 +180,10 @@ class ManageDoctor extends Component {
     const { language } = this.props;
 
     return (
-      <div className="manage-doctor-container" style={{ padding: 24 }}>
+      <div
+        className="manage-doctor-container vh-100 overflow-auto p-4 no-scrollbar"
+        style={{ padding: 24 }}
+      >
         <Title level={3} className="title mt-0">
           <FormattedMessage id="admin.manage-doctor.title" />
         </Title>
@@ -303,7 +306,7 @@ class ManageDoctor extends Component {
             </Row>
 
             <Row gutter={16}>
-              <Col span={8}>
+              {/* <Col span={8}>
                 <Form.Item
                   label={<FormattedMessage id="admin.manage-doctor.price" />}
                 >
@@ -321,7 +324,7 @@ class ManageDoctor extends Component {
                     min={0}
                   />
                 </Form.Item>
-              </Col>
+              </Col> */}
               <Col span={8}>
                 <Form.Item
                   label={<FormattedMessage id="admin.manage-doctor.note" />}

@@ -37,6 +37,9 @@ function EditSpecialty({ language }) {
   const [descriptionMarkdown, setDescriptionMarkdown] = useState("");
   const [descriptionHTML, setDescriptionHTML] = useState("");
   const [status, setStatus] = useState("");
+  const queryParams = new URLSearchParams(window.location.search);
+  const mode = queryParams.get("mode") || "edit";
+  const isViewMode = mode === "view";
 
   // Load dữ liệu khi edit
   useEffect(() => {
@@ -119,9 +122,13 @@ function EditSpecialty({ language }) {
           style={{ color: "#0071ba", marginTop: "2px" }}
         />
         <h2 className="title">
-          <FormattedMessage id="admin.manage-specialty.title-edit" />
+          {isViewMode ? (
+            <FormattedMessage id="admin.manage-specialty.title-view" />
+          ) : (
+            <FormattedMessage id="admin.manage-specialty.title-edit" />
+          )}
         </h2>
-        <Form form={form} layout="vertical">
+        <Form form={form} layout="vertical" disabled={isViewMode}>
           <Row gutter={16}>
             {/* Tên chuyên khoa */}
             <Col xs={24} md={12}>
@@ -180,9 +187,10 @@ function EditSpecialty({ language }) {
               <Upload
                 beforeUpload={() => false}
                 maxCount={1}
-                onChange={handleOnChangeImage}
+                onChange={isViewMode ? undefined : handleOnChangeImage}
                 accept="image/*"
                 showUploadList={false}
+                disabled={isViewMode}
               >
                 <Button icon={<UploadOutlined />}>
                   <FormattedMessage id="admin.manage-hospital.upload" />
@@ -199,15 +207,18 @@ function EditSpecialty({ language }) {
               value={descriptionMarkdown}
               style={{ height: "400px" }}
               renderHTML={(text) => mdParser.render(text)}
-              onChange={handleEditorChange}
+              onChange={isViewMode ? undefined : handleEditorChange}
+              readOnly={isViewMode}
             />
           </Form.Item>
 
           {/* Nút Save */}
           <Form.Item>
-            <Button type="primary" onClick={handleSave} className="float-end">
-              <FormattedMessage id="admin.manage-specialty.save" />
-            </Button>
+            {!isViewMode && (
+              <Button type="primary" onClick={handleSave} className="float-end">
+                <FormattedMessage id="admin.manage-specialty.save" />
+              </Button>
+            )}
           </Form.Item>
         </Form>
       </div>
