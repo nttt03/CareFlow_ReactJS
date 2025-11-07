@@ -5,9 +5,9 @@ import DoctorImg from "../../../assets/specialty/doctor.jpg";
 import * as actions from "../../../store/actions";
 import { LANGUAGES } from "../../../utils";
 import { FormattedMessage } from "react-intl";
-import { Redirect } from "react-router-dom";
 import { withRouter } from "react-router";
 import { Buffer } from "buffer";
+import { CrownOutlined } from "@ant-design/icons";
 
 class OutStandingDoctor extends Component {
   constructor(props) {
@@ -30,7 +30,6 @@ class OutStandingDoctor extends Component {
   }
 
   handleViewDetailDoctor = (doctor) => {
-    // console.log('check view detail doctor....', doctor);
     if (this.props.history) {
       this.props.history.push(`/detail-doctor/${doctor.id}`);
     }
@@ -43,11 +42,9 @@ class OutStandingDoctor extends Component {
   };
 
   render() {
-    // console.log('data topdotor: ', this.props.topDoctorsRedux)
     let arrDoctors = this.state.arrDoctors;
-    // console.log('arrDoctor: ', arrDoctors);
     let { language } = this.props;
-    // arrDoctors = arrDoctors.concat(arrDoctors)
+
     return (
       <div className="section-share section-outstanding-doctor">
         <div className="section-container">
@@ -68,9 +65,9 @@ class OutStandingDoctor extends Component {
               {arrDoctors &&
                 arrDoctors.length > 0 &&
                 arrDoctors.map((item, index) => {
-                  let imageBase64 = "";
-                  if (item.image) {
-                    imageBase64 = Buffer.from(item.image, "base64").toString(
+                  let imageBase64 = null;
+                  if (item.avatar) {
+                    imageBase64 = Buffer.from(item.avatar, "base64").toString(
                       "binary"
                     );
                   }
@@ -82,22 +79,57 @@ class OutStandingDoctor extends Component {
                     item.fullName
                   }`;
 
-                  // Kiểm tra và hiển thị tên chuyên khoa, nếu không có thì hiển thị "Chưa xác định"
                   let specialtyName =
                     item.doctorInfor &&
                     item.doctorInfor.specialty &&
                     item.doctorInfor.specialty.name
                       ? item.doctorInfor.specialty.name
                       : "Chưa xác định";
+
+                  const isTop3 = index < 3;
                   return (
                     <div
-                      className="section-customize"
+                      className="section-customize position-relative"
                       key={index}
                       onClick={() => this.handleViewDetailDoctor(item)}
                     >
+                      {isTop3 && (
+                        <div
+                          className="animate__animated animate__pulse animate__infinite"
+                          style={{
+                            position: "absolute",
+                            top: "5px",
+                            right: "18px",
+                            background: "white",
+                            borderRadius: "50%",
+                            width: "32px",
+                            height: "32px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                            zIndex: 10,
+                            border: "2px solid white",
+                          }}
+                        >
+                          <CrownOutlined
+                            style={{
+                              fontSize: "22px",
+                              color: "#f7b30b",
+                              filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.3))",
+                            }}
+                          />
+                        </div>
+                      )}
+
                       <div
-                        style={{ background: "navy" }}
                         className="mx-3 text-white card hoverable border-0 shadow-sm text-center p-3 doctor-card"
+                        style={{
+                          background: "navy",
+                          position: "relative",
+                          overflow: "hidden",
+                          borderRadius: "12px",
+                        }}
                       >
                         <img
                           src={imageBase64 || DoctorImg}
@@ -108,6 +140,7 @@ class OutStandingDoctor extends Component {
                             height: "90px",
                             objectFit: "cover",
                             border: "2px solid #eee",
+                            marginTop: "8px",
                           }}
                         />
 

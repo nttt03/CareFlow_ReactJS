@@ -35,6 +35,7 @@ class HomeHeader extends Component {
     this.state = {
       mobileMenu: false,
       notifications: [],
+      activeSlide: 0,
     };
     this.toggleMenu = this.toggleMenu.bind(this);
   }
@@ -429,6 +430,9 @@ class HomeHeader extends Component {
               pagination={{ clickable: true }}
               speed={900}
               className="banner-swiper"
+              onSlideChange={(swiper) =>
+                this.setState({ activeSlide: swiper.realIndex })
+              }
             >
               {bannerImages.map((img, i) => (
                 <SwiperSlide key={i}>
@@ -443,10 +447,23 @@ class HomeHeader extends Component {
             </Swiper>
 
             <div className="content-up">
-              <div className="title1">
+              <div
+                className={`title1 ${
+                  this.state.activeSlide === 0 || this.state.activeSlide === 2
+                    ? "text-white"
+                    : ""
+                }`}
+              >
                 <FormattedMessage id="banner.title1" />
               </div>
-              <div className="title2">
+
+              <div
+                className={`title2 ${
+                  this.state.activeSlide === 0 || this.state.activeSlide === 2
+                    ? "text-white"
+                    : ""
+                }`}
+              >
                 <FormattedMessage id="banner.title2" />
               </div>
               <div className="search">
