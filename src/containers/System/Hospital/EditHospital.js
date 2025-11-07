@@ -308,27 +308,13 @@ function EditHospital({ language }) {
           />
         </TabPane>
 
-        {/* Tab 3 - Lãnh đạo */}
-        <TabPane
-          tab={
-            language === "vi" ? "Cấu hình lãnh đạo" : "Hospital leader config"
-          }
-          key="3"
-        >
-          <Table
-            dataSource={leaders}
-            rowKey="id"
-            columns={[
-              { title: "Họ tên", dataIndex: "fullName" },
-              { title: "Email", dataIndex: "email" },
-              { title: "SĐT", dataIndex: "phoneNumber" },
-            ]}
-          />
-        </TabPane>
-
         {/* Tab 4 - Bác sĩ */}
         <TabPane
-          tab={language === "vi" ? "Cấu hình bác sĩ" : "Doctor config"}
+          tab={
+            language === "vi"
+              ? "Cấu hình bác sĩ / lãnh đạo"
+              : "Doctor/Leader Configuration"
+          }
           key="4"
         >
           <DoctorConfig

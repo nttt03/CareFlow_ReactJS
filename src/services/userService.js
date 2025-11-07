@@ -216,12 +216,20 @@ export const getAllDoctorConfig = () => {
   return axios.get(`/api/get-all-doctor-config`);
 };
 
+export const getAllLeaderHospitalConfig = () => {
+  return axios.get(`/api/get-all-leader-hospital`);
+};
+
 export const getDoctorsByHospital = (hospitalId) => {
   return axios.get(`/hospital-doctors/${hospitalId}`);
 };
 
 export const saveDoctorsForHospital = (data) => {
   return axios.post("/hospital-doctors", data);
+};
+
+export const saveLeaderForHospital = (data) => {
+  return axios.post("/hospital-leader", data);
 };
 
 export const savePriceForHospital = (data) => {
