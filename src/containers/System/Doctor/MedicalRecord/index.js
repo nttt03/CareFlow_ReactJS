@@ -3,6 +3,7 @@ import { Modal } from "antd";
 import { useSelector } from "react-redux";
 import "../ManagePatient.scss";
 import {
+  getListMedicalRecord,
   getAllPatientForDoctor,
   postMedicalRecord,
   deleteMedicalRecord,
@@ -55,17 +56,31 @@ const MedicalRecord = () => {
   });
 
   const getDataPatient = useCallback(async () => {
-    if (!user?.id) return;
-    let params = {
-      doctorId: user.id,
-      status: "S4",
-    };
-    if (filterDate) {
-      params.date = moment(filterDate).startOf("day").valueOf();
+    if (user?.roleId === "R1") {
+      let params = {
+        status: "S4",
+      };
+      if (filterDate) {
+        params.date = moment(filterDate).startOf("day").valueOf();
+      }
+      let res = await getListMedicalRecord(params);
+      if (res && res.errCode === 0) {
+        setDataPatient(res.data);
+      }
     }
-    let res = await getAllPatientForDoctor(params);
-    if (res && res.errCode === 0) {
-      setDataPatient(res.data);
+    if (user?.roleId === "R2") {
+      if (!user?.id) return;
+      let params = {
+        doctorId: user.id,
+        status: "S4",
+      };
+      if (filterDate) {
+        params.date = moment(filterDate).startOf("day").valueOf();
+      }
+      let res = await getAllPatientForDoctor(params);
+      if (res && res.errCode === 0) {
+        setDataPatient(res.data);
+      }
     }
   }, [user, filterDate]);
 

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import "./ManagePatient.scss";
 import {
+  getWaitingApprovalForAdmin,
   getWaitingApprovalForDoctor,
   updateBookingStatus,
 } from "../../../services/userService";
@@ -29,15 +30,26 @@ class WaitingApproval extends Component {
 
   getDataPatient = async () => {
     let { user } = this.props;
+    console.log("user: ", user);
     let { currentDate } = this.state;
     let formatedDate = new Date(currentDate).getTime();
-    let res = await getWaitingApprovalForDoctor({
-      doctorId: user.id,
-      // date: formatedDate,
-      status: "S1",
-    });
-    if (res && res.errCode === 0) {
-      this.setState({ dataPatient: res.data });
+    if (user.roleId === "R1") {
+      let res = await getWaitingApprovalForAdmin({
+        status: "S1",
+      });
+      if (res && res.errCode === 0) {
+        this.setState({ dataPatient: res.data });
+      }
+    }
+    if (user.roleId === "R2") {
+      let res = await getWaitingApprovalForDoctor({
+        doctorId: user.id,
+        // date: formatedDate,
+        status: "S1",
+      });
+      if (res && res.errCode === 0) {
+        this.setState({ dataPatient: res.data });
+      }
     }
   };
 

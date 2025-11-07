@@ -79,11 +79,6 @@ export const adminMenu = [
         link: "/system/waiting-approval",
       },
       {
-        // quản lý bệnh nhân của bác sĩ
-        name: "menu.doctor.manage-patient",
-        link: "/system/manage-patient",
-      },
-      {
         // quản lý hồ sơ bệnh án
         name: "menu.doctor.manage-medical-record",
         link: "/system/manage-medical-record",

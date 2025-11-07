@@ -119,10 +119,20 @@ const getAllPatientForDoctor = (data) => {
   );
 };
 
+export const getListMedicalRecord = (data) => {
+  return axios.get(
+    `/api/get-list-medical-record?date=${data.date || ""}&status=${data.status}`
+  );
+};
+
 export const getWaitingApprovalForDoctor = (data) => {
   return axios.get(
     `/api/get-list-patient-for-doctor?doctorId=${data.doctorId}&status=${data.status}`
   );
+};
+
+export const getWaitingApprovalForAdmin = (data) => {
+  return axios.get(`/api/get-list-booking-approval?status=${data.status}`);
 };
 
 export const updateBookingStatus = (data) => {
