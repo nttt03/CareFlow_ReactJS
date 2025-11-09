@@ -10,7 +10,7 @@ import moment from "moment";
 import { LANGUAGES } from "../../../utils";
 import RemedyModal from "./RemedyModal";
 import { toast } from "react-toastify";
-import { Spin } from "antd";
+import { Spin, Modal, Input, Form } from "antd";
 
 class WaitingApproval extends Component {
   constructor(props) {
@@ -21,8 +21,28 @@ class WaitingApproval extends Component {
       isOpenRemedyModal: false,
       dataModal: {},
       isShowLoading: false,
+      isOpenCancelModal: false,
+      cancelBookingId: null,
+      cancelReason: "",
+      isSubmitting: false,
     };
   }
+
+  handleOpenCancelModal = (item) => {
+    this.setState({
+      isOpenCancelModal: true,
+      cancelBookingId: item.id,
+      cancelReason: "",
+    });
+  };
+
+  handleCloseCancelModal = () => {
+    this.setState({
+      isOpenCancelModal: false,
+      cancelBookingId: null,
+      cancelReason: "",
+    });
+  };
 
   async componentDidMount() {
     this.getDataPatient();
@@ -74,30 +94,61 @@ class WaitingApproval extends Component {
     }
   };
 
-  handleCancel = async (item) => {
-    const { language } = this.props;
-    let res = await updateBookingStatus({
-      bookingId: item.id,
-      status: "S5",
-    });
+  handleCancel = (item) => {
+    this.handleOpenCancelModal(item);
+  };
 
-    if (res && res.errCode === 0) {
-      toast.success(
-        language === "vi"
-          ? "Hủy lịch thành công!"
-          : "Appointment cancelled successfully!"
-      );
-      await this.getDataPatient();
-    } else {
+  handleSubmitCancel = async () => {
+    const { cancelBookingId, cancelReason } = this.state;
+    const { language } = this.props;
+
+    if (!cancelReason.trim()) {
       toast.error(
-        language === "vi" ? "Hủy lịch thất bại!" : "Cancellation failed!"
+        language === "vi"
+          ? "Vui lòng nhập lý do hủy!"
+          : "Please enter cancel reason!"
       );
+      return;
+    }
+
+    this.setState({ isSubmitting: true });
+
+    try {
+      let res = await updateBookingStatus({
+        bookingId: cancelBookingId,
+        status: "S5",
+        rejectReason: cancelReason.trim(),
+      });
+
+      if (res && res.errCode === 0) {
+        toast.success(
+          language === "vi"
+            ? "Hủy lịch thành công!"
+            : "Appointment cancelled successfully!"
+        );
+        this.handleCloseCancelModal();
+        await this.getDataPatient();
+      } else {
+        toast.error(
+          res.errMessage ||
+            (language === "vi" ? "Hủy thất bại!" : "Cancellation failed!")
+        );
+      }
+    } catch (error) {
+      toast.error(language === "vi" ? "Lỗi hệ thống!" : "System error!");
+    } finally {
+      this.setState({ isSubmitting: false });
     }
   };
 
   render() {
-    let { dataPatient, isOpenRemedyModal, dataModal, isShowLoading } =
-      this.state;
+    let {
+      dataPatient,
+      isOpenRemedyModal,
+      dataModal,
+      isShowLoading,
+      isOpenCancelModal,
+    } = this.state;
     let { language } = this.props;
     return (
       <Spin spinning={isShowLoading} tip="Loading...">
@@ -187,6 +238,78 @@ class WaitingApproval extends Component {
           closeRemedyModal={this.closeRemedyModal}
           sendRemedy={this.sendRemedy}
         />
+        <Modal
+          title={
+            <span style={{ color: "#d4380d" }}>
+              {language === "vi"
+                ? "Xác nhận hủy lịch hẹn"
+                : "Confirm Appointment Cancellation"}
+            </span>
+          }
+          open={isOpenCancelModal}
+          onCancel={this.handleCloseCancelModal}
+          footer={null}
+          width={500}
+          centered
+        >
+          <Form layout="vertical">
+            <Form.Item
+              label={
+                language === "vi" ? "Lý do hủy lịch" : "Cancellation Reason"
+              }
+              required
+              tooltip={language === "vi" ? "Bắt buộc nhập" : "Required"}
+            >
+              <Input.TextArea
+                rows={4}
+                placeholder={
+                  language === "vi"
+                    ? "Ví dụ: Bệnh nhân không đến, lịch trùng, yêu cầu hủy..."
+                    : "E.g., Patient no-show, schedule conflict, patient request..."
+                }
+                value={this.state.cancelReason}
+                onChange={(e) =>
+                  this.setState({ cancelReason: e.target.value })
+                }
+                disabled={this.state.isSubmitting}
+              />
+            </Form.Item>
+
+            <div className="text-right">
+              <button
+                className="mp-btn-cancel"
+                onClick={this.handleCloseCancelModal}
+                disabled={this.state.isSubmitting}
+                style={{ marginRight: 8 }}
+              >
+                {language === "vi" ? "Đóng" : "Close"}
+              </button>
+              <button
+                className="mp-btn-confirm"
+                onClick={this.handleSubmitCancel}
+                disabled={
+                  this.state.isSubmitting || !this.state.cancelReason.trim()
+                }
+                style={{
+                  background: "#d4380d",
+                  borderColor: "#d4380d",
+                  opacity:
+                    this.state.isSubmitting || !this.state.cancelReason.trim()
+                      ? 0.6
+                      : 1,
+                }}
+              >
+                {this.state.isSubmitting ? (
+                  <Spin size="small" />
+                ) : language === "vi" ? (
+                  "Xác nhận hủy"
+                ) : (
+                  "Confirm Cancel"
+                )}
+              </button>
+            </div>
+          </Form>
+        </Modal>
       </Spin>
     );
   }

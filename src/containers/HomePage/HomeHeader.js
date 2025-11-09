@@ -12,6 +12,9 @@ import {
   LockOutlined,
   LogoutOutlined,
   BellOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ClockCircleOutlined,
 } from "@ant-design/icons";
 import { Dropdown, Badge, message } from "antd";
 import { getNotifications, markAsRead } from "../../services/userService";
@@ -21,6 +24,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import moment from "moment";
+import "moment/locale/vi";
+moment.locale("vi");
 
 const bannerImages = [
   require("../../assets/images/banner2.png"),
@@ -53,6 +59,29 @@ class HomeHeader extends Component {
       } catch (e) {
         console.log("Lỗi load notification:", e);
       }
+    }
+  };
+
+  handleMarkAllAsRead = async () => {
+    const { notifications } = this.state;
+    try {
+      // lặp từng cái gọi markAsRead()
+      await Promise.all(
+        notifications.filter((n) => !n.isRead).map((n) => markAsRead(n.id))
+      );
+
+      // Cập nhật lại state
+      this.setState((prevState) => ({
+        notifications: prevState.notifications.map((n) => ({
+          ...n,
+          isRead: true,
+        })),
+      }));
+
+      message.success("Tất cả thông báo đã được đánh dấu là đã đọc!");
+    } catch (e) {
+      console.log("Lỗi khi đánh dấu tất cả đã đọc:", e);
+      message.error("Không thể đánh dấu tất cả thông báo!");
     }
   };
 
@@ -159,6 +188,7 @@ class HomeHeader extends Component {
   };
 
   render() {
+    const { notifications } = this.state;
     const currentPath = this.props.location.pathname;
     const { intl } = this.props;
     const placeholderText = intl.formatMessage({ id: "banner.placeholder" });
@@ -203,7 +233,67 @@ class HomeHeader extends Component {
         icon: <LogoutOutlined />,
       });
     }
-    // console.log("check userInfo: ", userInfo);
+    const renderNotificationItem = (item) => {
+      let icon;
+      if (item.message.includes("xác nhận")) {
+        icon = <CheckCircleOutlined style={{ color: "#52c41a" }} />;
+      } else if (
+        item.message.includes("hủy") ||
+        item.message.includes("bị huỷ")
+      ) {
+        icon = <CloseCircleOutlined style={{ color: "#f5222d" }} />;
+      } else {
+        icon = <ClockCircleOutlined style={{ color: "#faad14" }} />;
+      }
+
+      return (
+        <div
+          onClick={() => this.handleNotificationClick(item.url, item.id)}
+          className={`notif-item ${item.isRead ? "read" : "unread"}`}
+          key={item.id}
+        >
+          <div className="notif-icon">{icon}</div>
+          <div className="notif-content">
+            <div className="notif-text">{item.message}</div>
+            <div className="notif-time">{moment(item.createdAt).fromNow()}</div>
+          </div>
+          {!item.isRead && <span className="notif-dot"></span>}
+        </div>
+      );
+    };
+
+    const notificationOverlay = (
+      <div className="custom-notif-dropdown">
+        <div className="notif-container">
+          {/* HEADER: Chỉ tiêu đề */}
+          <div className="notif-header">
+            <span>Thông báo</span>
+          </div>
+
+          {/* DANH SÁCH CUỘN */}
+          <div className="notif-list">
+            {notifications.length > 0 ? (
+              notifications.map((item) => renderNotificationItem(item))
+            ) : (
+              <div className="text-center p-3 text-muted">
+                Không có thông báo nào
+              </div>
+            )}
+          </div>
+
+          {/* FOOTER: Nút đánh dấu tất cả */}
+          {notifications.some((n) => !n.isRead) && (
+            <div
+              className="notif-footer"
+              onClick={this.handleMarkAllAsRead}
+              style={{ cursor: "pointer" }}
+            >
+              Đánh dấu tất cả là đã đọc
+            </div>
+          )}
+        </div>
+      </div>
+    );
     return (
       <React.Fragment>
         <div className="home-header-container">
@@ -297,40 +387,29 @@ class HomeHeader extends Component {
               </div>
             </div>
             <div className="right-content">
-              {isLoggedIn && this.state.notifications && (
-                <div className="notification-wrapper">
+              {isLoggedIn && (
+                <div className="notification-wrapper me-3">
                   <Dropdown
+                    overlay={notificationOverlay}
                     trigger={["click"]}
-                    menu={{
-                      items: this.state.notifications.map((item) => ({
-                        key: item.id,
-                        label: (
-                          <div
-                            onClick={() =>
-                              this.handleNotificationClick(item.url, item.id)
-                            }
-                            style={{
-                              fontWeight: item.isRead ? "normal" : "bold",
-                            }}
-                          >
-                            {item.message}
-                          </div>
-                        ),
-                      })),
-                    }}
+                    placement="bottomRight"
+                    overlayClassName="custom-notif-overlay"
                   >
                     <Badge
-                      count={
-                        this.state.notifications.filter((n) => !n.isRead).length
-                      }
-                      offset={[-16, 2]}
+                      count={notifications.filter((n) => !n.isRead).length}
+                      offset={[-16, -2]}
                     >
                       <BellOutlined
+                        className={
+                          notifications.some((n) => !n.isRead)
+                            ? "bell-icon bell-animate"
+                            : "bell-icon"
+                        }
                         style={{
-                          fontSize: "22px",
+                          fontSize: "25px",
                           cursor: "pointer",
-                          marginRight: 20,
-                          color: "blue",
+                          marginRight: 10,
+                          color: "#2563eb",
                         }}
                       />
                     </Badge>

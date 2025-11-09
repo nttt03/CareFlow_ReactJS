@@ -12,6 +12,14 @@ import { Avatar, Badge, Dropdown, message } from "antd";
 import { CrownTwoTone, BellOutlined, LogoutOutlined } from "@ant-design/icons";
 import { getNotifications, markAsRead } from "../../services/userService";
 import { io } from "socket.io-client";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ClockCircleOutlined,
+} from "@ant-design/icons";
+import moment from "moment";
+import "moment/locale/vi";
+moment.locale("vi");
 
 class Header extends Component {
   socket = null;
@@ -147,23 +155,93 @@ class Header extends Component {
       console.log("Lỗi khi đánh dấu thông báo đã đọc:", e);
     }
   };
+
+  handleMarkAllAsRead = async () => {
+    const { notifications } = this.state;
+    try {
+      await Promise.all(
+        notifications.filter((n) => !n.isRead).map((n) => markAsRead(n.id))
+      );
+
+      this.setState((prevState) => ({
+        notifications: prevState.notifications.map((n) => ({
+          ...n,
+          isRead: true,
+        })),
+      }));
+
+      message.success("Tất cả thông báo đã được đánh dấu là đã đọc!");
+    } catch (e) {
+      console.log("Lỗi khi đánh dấu tất cả đã đọc:", e);
+      message.error("Không thể đánh dấu tất cả thông báo!");
+    }
+  };
+
   render() {
     const { processLogout, language, userInfo } = this.props;
     const { notifications } = this.state;
 
-    const notificationMenu = {
-      items: notifications.map((item) => ({
-        key: item.id,
-        label: (
-          <div
-            onClick={() => this.handleNotificationClick(item.url, item.id)}
-            style={{ fontWeight: item.isRead ? "normal" : "bold" }}
-          >
-            {item.message}
+    const renderNotificationItem = (item) => {
+      let icon, color;
+
+      if (item.message.includes("xác nhận")) {
+        icon = <CheckCircleOutlined style={{ color: "#52c41a" }} />;
+      } else if (
+        item.message.includes("hủy") ||
+        item.message.includes("bị huỷ")
+      ) {
+        icon = <CloseCircleOutlined style={{ color: "#f5222d" }} />;
+      } else {
+        icon = <ClockCircleOutlined style={{ color: "#faad14" }} />;
+      }
+
+      return (
+        <div
+          onClick={() => this.handleNotificationClick(item.url, item.id)}
+          className={`notif-item ${item.isRead ? "read" : "unread"}`}
+        >
+          <div className="notif-icon">{icon}</div>
+          <div className="notif-content">
+            <div className="notif-text">{item.message}</div>
+            <div className="notif-time">{moment(item.createdAt).fromNow()}</div>
           </div>
-        ),
-      })),
+          {!item.isRead && <span className="notif-dot"></span>}
+        </div>
+      );
     };
+
+    const notificationOverlay = (
+      <div className="custom-notif-dropdown">
+        <div className="notif-container">
+          {/* Header cố định */}
+          <div className="notif-header">
+            <span>Thông báo</span>
+          </div>
+
+          {/* Danh sách cuộn */}
+          <div className="notif-list">
+            {notifications.length > 0 ? (
+              notifications.map((item) => renderNotificationItem(item))
+            ) : (
+              <div className="text-center p-3 text-muted">
+                Không có thông báo
+              </div>
+            )}
+          </div>
+
+          {/* Footer: Đánh dấu tất cả (có điều kiện) */}
+          {notifications.some((n) => !n.isRead) && (
+            <div
+              className="notif-footer"
+              onClick={this.handleMarkAllAsRead}
+              style={{ cursor: "pointer" }}
+            >
+              Đánh dấu tất cả là đã đọc
+            </div>
+          )}
+        </div>
+      </div>
+    );
 
     return (
       <div className="header">
@@ -171,14 +249,24 @@ class Header extends Component {
 
         <div className="languages">
           {/* Icon thông báo */}
-          <Dropdown menu={notificationMenu} trigger={["click"]}>
+          <Dropdown
+            overlay={notificationOverlay}
+            trigger={["click"]}
+            placement="bottomRight"
+            overlayClassName="custom-notif-overlay"
+          >
             <Badge
               count={notifications.filter((notif) => !notif.isRead).length}
-              offset={[-16, 2]}
+              offset={[-25, 0]}
             >
               <BellOutlined
+                className={
+                  notifications.some((notif) => !notif.isRead)
+                    ? "bell-icon bell-animate"
+                    : "bell-icon"
+                }
                 style={{
-                  fontSize: "22px",
+                  fontSize: "25px",
                   cursor: "pointer",
                   marginRight: 20,
                   color: "white",
