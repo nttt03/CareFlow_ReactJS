@@ -151,7 +151,9 @@
             "time": "Time:",
             "address": "Address:",
             "price": "Price:",
-            "doctor": "Doctor:"
+            "doctor": "Doctor:",
+            "reason": "Reason:",
+            "hospital": "Hospital:"
         }
     },
     "admin": {

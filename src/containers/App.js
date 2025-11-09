@@ -29,7 +29,7 @@ import ListDoctor from "./Patient/Doctor/ListDoctor.js";
 import NewAppointment from "./Patient/AppointmentSchedule/NewAppointment.js";
 import DoneAppointment from "./Patient/AppointmentSchedule/DoneAppointment.js";
 import ProfileComponent from "./Patient/ProfileComponent/index.js";
-
+import ViewAppointment from "./Patient/AppointmentSchedule/ViewAppointment.js";
 import { CustomToastCloseButton } from "../components/CustomToast";
 import CustomScrollbars from "../components/CustomScrollbars.js";
 import GlobalLoading from "../components/GlobalLoading.js";
@@ -91,6 +91,10 @@ class App extends Component {
                   <Route
                     path={path.NEW_APPOINTMENT}
                     component={NewAppointment}
+                  />
+                  <Route
+                    path={path.VIEW_APPOINTMENT}
+                    component={ViewAppointment}
                   />
                   <Route
                     path={path.DONE_APPOINTMENT}

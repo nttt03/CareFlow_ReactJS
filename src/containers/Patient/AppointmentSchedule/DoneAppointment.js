@@ -162,9 +162,9 @@ class DoneAppointment extends Component {
               })
             ) : (
               <div className="appointment-schedule-content">
-                <div className="title py-3">
+                <h3 className="text-primary text-uppercase fw-bold text-center py-3">
                   <FormattedMessage id="patient.appointment-patient.title-none-done" />
-                </div>
+                </h3>
                 <div className="empty-image">
                   <img src={emptyImg} alt="empty" />
                 </div>

@@ -142,7 +142,7 @@ class NewAppointment extends Component {
                         <span className="label">
                           <FormattedMessage id="patient.appointment-patient.date" />
                         </span>
-                        <span className="value">
+                        <span className="value text-primary">
                           {this.formatDate(appointment.date)}
                         </span>
                       </div>
@@ -150,10 +150,18 @@ class NewAppointment extends Component {
                         <span className="label">
                           <FormattedMessage id="patient.appointment-patient.time" />
                         </span>
-                        <span className="value">
+                        <span className="value text-primary">
                           {isVietnamese
                             ? appointment.timeTypeDataPatient?.valueVi
                             : appointment.timeTypeDataPatient?.valueEn || "-"}
+                        </span>
+                      </div>
+                      <div className="appointment-item">
+                        <span className="label">
+                          <FormattedMessage id="patient.appointment-patient.hospital" />
+                        </span>
+                        <span className="value">
+                          {appointment.doctorInfoData?.hospital?.name}
                         </span>
                       </div>
                       <div className="appointment-item">
@@ -199,6 +207,16 @@ class NewAppointment extends Component {
                           } ${appointment.infoDataDoctor?.fullName || ""} `}
                         </span>
                       </div>
+                      {appointment?.rejectReason && (
+                        <div className="appointment-item">
+                          <span className="label">
+                            <FormattedMessage id="patient.appointment-patient.reason" />
+                          </span>
+                          <span className="value text-warning fw-bold">
+                            {appointment?.rejectReason}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))

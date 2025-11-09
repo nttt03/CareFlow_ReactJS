@@ -201,6 +201,7 @@ class BookingModal extends Component {
           : "Booking a new appointment succeed"
       );
       this.props.closeBookingModal();
+      window.location.href = "/new-appointment";
     } else {
       message.error(
         language === "vi"

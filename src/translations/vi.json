@@ -151,7 +151,9 @@
             "time": "Giờ khám:",
             "address": "Địa chỉ:",
             "price": "Giá khám:",
-            "doctor": "Bác sĩ:"
+            "doctor": "Bác sĩ:",
+            "reason": "Lý do:",
+            "hospital": "Bệnh viện:"
         }
     },
     "admin": {

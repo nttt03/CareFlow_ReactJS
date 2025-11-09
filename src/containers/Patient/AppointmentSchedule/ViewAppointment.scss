@@ -1,0 +1,70 @@
+.view-appointment-container {
+    padding-top   : 90px;
+    padding-bottom: 50px;
+    max-width     : 900px;
+}
+
+.page-title {
+    font-weight: 700;
+    color      : #0b74de;
+}
+
+.info-card {
+    background   : #ffffff;
+    border-radius: 12px;
+    box-shadow   : 0 4px 12px rgba(0, 0, 0, 0.06);
+    overflow     : hidden;
+    transition   : transform .2s;
+    border       : 1px solid #ccc;
+}
+
+.info-card:hover {
+    transform: translateY(-3px);
+}
+
+.info-header {
+    background : linear-gradient(135deg, rgb(0, 119, 255), rgb(49, 203, 250));
+    color      : white;
+    font-weight: 600;
+    padding    : 12px 16px;
+    font-size  : 16px;
+}
+
+.info-header-blue {
+    background: linear-gradient(135deg, rgb(0, 119, 255), rgb(49, 203, 250));
+}
+
+.info-body {
+    padding    : 15px 18px;
+    font-size  : 15px;
+    line-height: 1.6;
+}
+
+/* STATUS BADGE */
+.status-badge {
+    display      : inline-block;
+    padding      : 6px 16px;
+    border-radius: 25px;
+    font-weight  : 600;
+    font-size    : 14px;
+}
+
+.status-success {
+    background: rgba(17, 176, 92, 0.15);
+    color     : #10a463;
+}
+
+.status-cancel {
+    background: rgba(255, 76, 76, 0.15);
+    color     : #ff4c4c;
+}
+
+.status-waiting {
+    background: rgba(255, 184, 0, 0.2);
+    color     : #b37b00;
+}
+
+.status-default {
+    background: #e0e0e0;
+    color     : #555;
+}

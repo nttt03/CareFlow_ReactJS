@@ -151,6 +151,10 @@ const getDoneAppointment = (patientId) => {
   return axios.get(`/api/get-done-appointment?patientId=${patientId}`);
 };
 
+export const getViewAppointmentForNoti = (bookingId) => {
+  return axios.get(`/api/get-appointment-for-noti?bookingId=${bookingId}`);
+};
+
 // const getNewAppointment = (patientId) => {
 //     return axios.get(`/api/get-new-appointment`, {
 //         params: { patientId } // Axios sẽ tự động encode và thêm vào query string
