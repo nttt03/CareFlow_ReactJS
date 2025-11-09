@@ -130,14 +130,14 @@ const Favorites = ({ userInfo, allFavorites, fetchUserFavorite }) => {
                   </p>
                 </div>
                 <div
-                  className="d-flex justify-content-center gap-3 mt-auto pt-2 border-top"
-                  style={{ borderColor: "#f0f0f0" }}
+                  className="d-flex justify-content-center gap-3 mt-auto pt-2 border-top flex-wrap"
+                  style={{ borderColor: "#f0f0f0", rowGap: "8px" }}
                 >
                   <Button
                     type="primary"
                     size="small"
                     style={{
-                      backgroundColor: "#BFEFFF",
+                      backgroundColor: "white",
                       border: "none",
                       borderRadius: 15,
                       color: "#0033FF",

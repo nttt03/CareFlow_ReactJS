@@ -33,9 +33,13 @@
     display: none !important;
 }
 
-// .section-medical-facility {
-//     background-color: navy;
-// }
+@media (max-width: 576px) {
+
+    .slick-prev,
+    .slick-next {
+        display: none !important;
+    }
+}
 
 .section-share {
     height: auto;
@@ -56,6 +60,18 @@
             span {
                 font-size: 25px;
             }
+        }
+
+        @media (max-width: 991px) {
+            margin: 0 40px; // Tablet
+        }
+
+        @media (max-width: 576px) {
+            margin: 0 15px; // Mobile nhỏ
+        }
+
+        @media (max-width: 480px) {
+            margin: 0 10px; // Mobile rất nhỏ
         }
     }
 }

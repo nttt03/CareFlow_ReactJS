@@ -1,10 +1,20 @@
 import React, { Component } from "react";
 import { Scrollbars } from "react-custom-scrollbars-2";
+import ScrollToTopButton from "./ScrollToTop";
 
 import "./CustomScrollbars.scss";
 
 class CustomScrollbars extends Component {
   ref = React.createRef();
+
+  state = {
+    showScrollTop: false,
+  };
+
+  handleScroll = () => {
+    const scrollTop = this.ref.current.getScrollTop();
+    this.setState({ showScrollTop: scrollTop > 300 });
+  };
 
   getScrollLeft = () => {
     const scrollbars = this.ref.current;
@@ -87,6 +97,7 @@ class CustomScrollbars extends Component {
         ref={this.ref}
         autoHide={true}
         autoHideTimeout={200}
+        onScroll={this.handleScroll}
         hideTracksWhenNotNeeded={true}
         className={
           className ? className + " custom-scrollbar" : "custom-scrollbar"
@@ -106,6 +117,9 @@ class CustomScrollbars extends Component {
         }
       >
         {children}
+        {this.state.showScrollTop && (
+          <ScrollToTopButton onClick={() => this.scrollTo(0)} />
+        )}
       </Scrollbars>
     );
   }
