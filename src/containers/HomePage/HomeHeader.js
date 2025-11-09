@@ -42,9 +42,17 @@ class HomeHeader extends Component {
       mobileMenu: false,
       notifications: [],
       activeSlide: 0,
+      keyword: "",
     };
     this.toggleMenu = this.toggleMenu.bind(this);
   }
+
+  handleSearch = () => {
+    const { keyword } = this.state;
+    if (!keyword.trim()) return;
+
+    this.props.history.push(`/search?keyword=${encodeURIComponent(keyword)}`);
+  };
 
   loadNotifications = async () => {
     const { userInfo } = this.props;
@@ -546,8 +554,18 @@ class HomeHeader extends Component {
                 <FormattedMessage id="banner.title2" />
               </div>
               <div className="search">
-                <i className="fas fa-search"></i>
-                <input type="text" placeholder={placeholderText} />
+                <i
+                  className="fas fa-search"
+                  onClick={this.handleSearch}
+                  style={{ cursor: "pointer" }}
+                ></i>
+                <input
+                  type="text"
+                  placeholder={placeholderText}
+                  value={this.state.keyword}
+                  onChange={(e) => this.setState({ keyword: e.target.value })}
+                  onKeyDown={(e) => e.key === "Enter" && this.handleSearch()}
+                />
               </div>
             </div>
 

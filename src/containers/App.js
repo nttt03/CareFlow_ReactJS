@@ -34,6 +34,8 @@ import { CustomToastCloseButton } from "../components/CustomToast";
 import CustomScrollbars from "../components/CustomScrollbars.js";
 import GlobalLoading from "../components/GlobalLoading.js";
 import VerifyEmail from "./Patient/VerifyEmail.js";
+import Search from "./Patient/Search/index.js";
+import Contact from "../components/Contact/index.js";
 
 class App extends Component {
   render() {
@@ -69,7 +71,7 @@ class App extends Component {
                     component={userIsLeaderHospital(LeaderHospital)}
                   />
                   <Route path={path.HOMEPAGE} component={HomePage} />
-
+                  <Route path={path.SEARCH} component={Search} />
                   <Route path={path.DETAIL_DOCTOR} component={DetailDoctor} />
                   <Route
                     path={path.DETAIL_SPECIALTY}
@@ -106,6 +108,7 @@ class App extends Component {
                     component={ProfileComponent}
                   />
                 </Switch>
+                <Contact />
               </CustomScrollbars>
             </div>
 

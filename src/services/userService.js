@@ -299,6 +299,15 @@ export const postResetPassword = (token, newPassword) => {
   return axios.post(`/api/reset-password`, { token, newPassword });
 };
 
+export const searchAll = ({ keyword, provinceId }) => {
+  return axios.get(`/api/search`, {
+    params: {
+      keyword,
+      provinceId,
+    },
+  });
+};
+
 export {
   handleLoginApi,
   registerNewUser,

@@ -18,6 +18,7 @@ export const path = {
   DONE_APPOINTMENT: "/done-appointment/:id",
   VIEW_APPOINTMENT: "/view-appointment/:bookingId",
   PROFILE_USER: "/profile-user/:id",
+  SEARCH: "/search",
 };
 
 export const LANGUAGES = {

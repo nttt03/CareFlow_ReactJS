@@ -1,0 +1,78 @@
+.search-bar-container {
+    padding-top: 8%;
+}
+
+.result-container {
+    margin: 0 230px;
+}
+
+.doctor-card {
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        transform : translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .doctor-avatar {
+        width     : 90px;
+        height    : 90px;
+        object-fit: cover;
+    }
+
+    .hospital-avatar {
+        width     : 90px;
+        height    : 90px;
+        object-fit: cover;
+    }
+}
+
+.hospital-card {
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        transform : translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .hospital-avatar {
+        width     : 90px;
+        height    : 90px;
+        object-fit: cover;
+    }
+}
+
+.topDoctor-container {
+    border: 0px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
+        rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+}
+
+.section-topDoctor {
+    border                 : 0px;
+    border-top-left-radius : 10px;
+    border-top-right-radius: 10px;
+    margin                 : 0px !important;
+    background             : linear-gradient(135deg, rgb(229, 233, 6), rgb(255, 241, 116));
+}
+
+@media (max-width: 768px) {
+
+    .search-bar-container {
+        padding-top: 16%;
+    }
+
+    .result-container {
+        margin: 0 10px;
+    }
+
+    .doctor-avatar {
+        width : 60px !important;
+        height: 60px !important;
+    }
+
+    .hospital-avatar {
+        width : 60px !important;
+        height: 60px !important;
+    }
+}
