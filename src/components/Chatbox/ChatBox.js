@@ -1,12 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
-import { CloseOutlined } from "@ant-design/icons";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import ReactMarkdown from "react-markdown";
+import { CloseOutlined, CustomerServiceOutlined } from "@ant-design/icons";
+import CustomScrollbars from "../CustomScrollbars";
 
 export default function ChatBox({ onClose }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
+  const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  console.log("apiKey", apiKey);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -16,27 +23,36 @@ export default function ChatBox({ onClose }) {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     const userMessage = { from: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    setIsLoading(true);
 
     try {
-      const res = await axios.post("/api/chat", { message: input });
-      const botMessage = {
-        from: "bot",
-        text: res.data.reply || "Xin lỗi, tôi chưa hiểu.",
-      };
+      const result = await model.generateContent(input);
+      const botText = await result.response.text();
+
+      const botMessage = { from: "bot", text: botText };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      const errorMsg = { from: "bot", text: "Lỗi kết nối. Vui lòng thử lại." };
+      console.error("Gemini API error:", error);
+      const errorMsg = {
+        from: "bot",
+        text: "Xin lỗi, có lỗi xảy ra. Vui lòng thử lại!",
+      };
       setMessages((prev) => [...prev, errorMsg]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") handleSend();
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
   return (
@@ -46,7 +62,7 @@ export default function ChatBox({ onClose }) {
         bottom: "80px",
         right: "18px",
         width: "400px",
-        height: "480px",
+        height: "500px",
         border: "1px solid #d9d9d9",
         borderRadius: "12px",
         backgroundColor: "#fff",
@@ -61,7 +77,8 @@ export default function ChatBox({ onClose }) {
       <div
         style={{
           padding: "12px 16px",
-          backgroundColor: "#1890ff",
+          background:
+            "linear-gradient(135deg, rgb(6, 169, 233), rgb(116, 239, 255))",
           color: "white",
           borderRadius: "12px 12px 0 0",
           fontWeight: "bold",
@@ -70,7 +87,9 @@ export default function ChatBox({ onClose }) {
           alignItems: "center",
         }}
       >
-        <span>Trợ lý ảo</span>
+        <span>
+          <CustomerServiceOutlined className="mr-2 fs-4" /> Trợ lý AI
+        </span>
         <button
           onClick={onClose}
           style={{
@@ -88,6 +107,7 @@ export default function ChatBox({ onClose }) {
 
       {/* Messages */}
       <div
+        className="no-scrollbar"
         style={{
           flex: 1,
           padding: "12px",
@@ -119,10 +139,22 @@ export default function ChatBox({ onClose }) {
                 boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
               }}
             >
-              {msg.text}
+              {/* Render Markdown cho bot response */}
+              {msg.from === "bot" ? (
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
+              ) : (
+                msg.text
+              )}
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div style={{ textAlign: "center", color: "#999" }}>
+            <div>
+              <CustomerServiceOutlined /> Đang suy nghĩ...
+            </div>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
@@ -135,6 +167,7 @@ export default function ChatBox({ onClose }) {
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Nhập tin nhắn..."
+            disabled={isLoading}
             style={{
               flex: 1,
               padding: "8px 12px",
@@ -145,13 +178,14 @@ export default function ChatBox({ onClose }) {
           />
           <button
             onClick={handleSend}
+            disabled={isLoading}
             style={{
               padding: "8px 16px",
-              backgroundColor: "#1890ff",
+              backgroundColor: isLoading ? "#ccc" : "#1890ff",
               color: "white",
               border: "none",
               borderRadius: "20px",
-              cursor: "pointer",
+              cursor: isLoading ? "not-allowed" : "pointer",
             }}
           >
             Gửi
