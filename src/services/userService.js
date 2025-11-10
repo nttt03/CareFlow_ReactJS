@@ -155,6 +155,10 @@ export const getViewAppointmentForNoti = (bookingId) => {
   return axios.get(`/api/get-appointment-for-noti?bookingId=${bookingId}`);
 };
 
+export const getAppointmentNeedReview = (patientId) => {
+  return axios.get(`/api/get-appointment-need-review?patientId=${patientId}`);
+};
+
 // const getNewAppointment = (patientId) => {
 //     return axios.get(`/api/get-new-appointment`, {
 //         params: { patientId } // Axios sẽ tự động encode và thêm vào query string
@@ -305,6 +309,27 @@ export const searchAll = ({ keyword, provinceId }) => {
       keyword,
       provinceId,
     },
+  });
+};
+
+export const reviewDoctor = (
+  bookingId,
+  rating,
+  comment,
+  isAnonymous = false
+) => {
+  return axios.post(
+    "/api/review-doctor",
+    { bookingId, rating, comment, isAnonymous },
+    { withCredentials: true }
+  );
+};
+
+export const chatWithDatabase = async (message, history, patientId) => {
+  return await axios.post("/api/chat-with-db", {
+    message,
+    history,
+    patientId,
   });
 };
 

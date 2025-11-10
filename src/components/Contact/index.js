@@ -15,6 +15,7 @@ const Contact = () => {
 
   const isSystemPage =
     location.pathname.startsWith("/system") ||
+    location.pathname.startsWith("/doctor") ||
     authPages.includes(location.pathname);
 
   const handleCall = () => {
@@ -44,7 +45,7 @@ const Contact = () => {
         position: "fixed",
         bottom: "90px",
         right: "18px",
-        zIndex: 9999,
+        zIndex: 10,
       }}
     >
       <button

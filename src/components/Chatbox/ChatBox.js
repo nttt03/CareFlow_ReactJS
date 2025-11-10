@@ -2,18 +2,16 @@ import React, { useState, useRef, useEffect } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import ReactMarkdown from "react-markdown";
 import { CloseOutlined, CustomerServiceOutlined } from "@ant-design/icons";
-import CustomScrollbars from "../CustomScrollbars";
+import { useSelector } from "react-redux";
+import { chatWithDatabase } from "../../services/userService";
 
 export default function ChatBox({ onClose }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
-
-  const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-  console.log("apiKey", apiKey);
+  const language = useSelector((state) => state.app.language);
+  const userInfor = useSelector((state) => state.user.userInfo);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -26,23 +24,27 @@ export default function ChatBox({ onClose }) {
     if (!input.trim() || isLoading) return;
 
     const userMessage = { from: "user", text: input };
+    const currentMessages = [...messages, userMessage];
+
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
 
     try {
-      const result = await model.generateContent(input);
-      const botText = await result.response.text();
+      const response = await chatWithDatabase(input, messages, userInfor?.id);
 
+      const botText = response.text;
       const botMessage = { from: "bot", text: botText };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      console.error("Gemini API error:", error);
-      const errorMsg = {
-        from: "bot",
-        text: "Xin lỗi, có lỗi xảy ra. Vui lòng thử lại!",
-      };
-      setMessages((prev) => [...prev, errorMsg]);
+      console.error("API Gateway error:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          from: "bot",
+          text: "Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại!",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }

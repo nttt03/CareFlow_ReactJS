@@ -36,6 +36,7 @@ import GlobalLoading from "../components/GlobalLoading.js";
 import VerifyEmail from "./Patient/VerifyEmail.js";
 import Search from "./Patient/Search/index.js";
 import Contact from "../components/Contact/index.js";
+import Review from "../components/Review/index.js";
 
 class App extends Component {
   render() {
@@ -72,6 +73,7 @@ class App extends Component {
                   />
                   <Route path={path.HOMEPAGE} component={HomePage} />
                   <Route path={path.SEARCH} component={Search} />
+                  <Route path={path.REVIEW} component={Review} />
                   <Route path={path.DETAIL_DOCTOR} component={DetailDoctor} />
                   <Route
                     path={path.DETAIL_SPECIALTY}
