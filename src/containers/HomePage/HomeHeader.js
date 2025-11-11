@@ -207,7 +207,7 @@ class HomeHeader extends Component {
 
   handleViewNewAppointment = () => {
     if (this.props.history) {
-      this.props.history.push(`/new-appointment`);
+      this.props.history.push(`/schedule-appointment`);
     }
   };
 
@@ -272,6 +272,8 @@ class HomeHeader extends Component {
     const renderNotificationItem = (item) => {
       let icon;
       if (item.message.includes("xác nhận")) {
+        icon = <CheckCircleOutlined style={{ color: "#0775d5" }} />;
+      } else if (item.message.includes("hoàn thành")) {
         icon = <CheckCircleOutlined style={{ color: "#52c41a" }} />;
       } else if (
         item.message.includes("hủy") ||
@@ -408,7 +410,7 @@ class HomeHeader extends Component {
               </div>
               <div
                 className={`child-content ${
-                  currentPath === "/new-appointment" ? "active" : ""
+                  currentPath === "/schedule-appointment" ? "active" : ""
                 }`}
                 onClick={() => this.handleViewNewAppointment()}
               >

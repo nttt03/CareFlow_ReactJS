@@ -12,94 +12,197 @@ class RemedyModal extends Component {
     super(props);
     this.state = {
       email: "",
-      imgBase64: "",
+      file: null,
+      fileName: "",
+      imgPreview: "",
+      isImage: false,
     };
   }
 
   async componentDidMount() {
     if (this.props.dataModal) {
       this.setState({
-        email: this.props.dataModal.email,
+        email: this.props.dataModal.email || "",
       });
     }
   }
 
-  async componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.dataModal !== this.props.dataModal) {
       this.setState({
-        email: this.props.dataModal.email,
+        email: this.props.dataModal.email || "",
+        file: null,
+        fileName: "",
+        imgPreview: "",
+        isImage: false,
       });
     }
   }
 
-  handleOnchangeEmail = (event) => {
+  handleOnChangeEmail = (e) => {
+    this.setState({ email: e.target.value });
+  };
+
+  handleOnChangeFile = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const fileName = file.name;
+    const fileType = file.type;
+
+    // Kiểm tra định dạng file hợp lệ
+    const validImageTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "image/gif",
+    ];
+    const validPdfType = "application/pdf";
+
+    let isImage = false;
+    let imgPreview = "";
+
+    if (validImageTypes.includes(fileType)) {
+      isImage = true;
+      imgPreview = URL.createObjectURL(file);
+    } else if (fileType === validPdfType) {
+      isImage = false;
+      imgPreview = "/path-to-pdf-icon.png";
+    } else {
+      toast.error("Chỉ hỗ trợ file ảnh (JPG, PNG) hoặc PDF!");
+      return;
+    }
+
     this.setState({
-      email: event.target.value,
+      file,
+      fileName,
+      imgPreview,
+      isImage,
     });
   };
 
-  handleOnChangeImage = async (event) => {
-    let data = event.target.files;
-    let file = data[0];
-    if (file) {
-      let base64 = await CommonUtils.getBase64(file);
-      this.setState({
-        imgBase64: base64,
-      });
-    }
-  };
+  handleSendRemedy = async () => {
+    const { email, file } = this.state;
 
-  handleSendRemedy = () => {
-    this.props.sendRemedy(this.state);
+    if (!email) {
+      toast.error("Vui lòng nhập email bệnh nhân!");
+      return;
+    }
+
+    if (!file) {
+      toast.error("Vui lòng chọn file đơn thuốc!");
+      return;
+    }
+
+    // Chuẩn bị dữ liệu gửi lên server
+    let data = {
+      email: email.trim(),
+      fileName: this.state.fileName,
+      imgBase64: await CommonUtils.getBase64(file), // Chuyển file thành base64
+    };
+
+    // Gọi hàm từ parent
+    this.props.sendRemedy(data);
   };
 
   render() {
-    let { isOpenModal, closeRemedyModal, sendRemedy, dataModal } = this.props;
+    const { isOpenModal, closeRemedyModal } = this.props;
+    const { email, fileName, imgPreview, isImage } = this.state;
 
     return (
       <Modal
         isOpen={isOpenModal}
-        className={"booking-modal-container"}
-        size="mg"
+        className="booking-modal-container"
+        size="lg"
+        centered
       >
-        <div className="modal-header">
-          <h5 className="modal-title">Gửi hóa đơn</h5>
-          <button
-            type="button"
-            className="close"
-            aria-label="Close"
-            onClick={closeRemedyModal}
-          >
-            <span aria-hidden="true">x</span>
-          </button>
-        </div>
-        <ModalBody>
+        <ModalHeader>Gửi hóa đơn & đơn thuốc</ModalHeader>
+
+        <ModalBody style={{ minHeight: "70vh" }}>
           <div className="row">
+            {/* Email */}
             <div className="col-6 form-group">
-              <label>Email bệnh nhân</label>
+              <label>
+                <FormattedMessage id="patient.booking-modal.email" />
+              </label>
               <input
                 type="email"
                 className="form-control"
-                value={this.state.email}
-                onChange={(e) => this.handleOnchangeEmail(e)}
+                value={email}
+                onChange={this.handleOnChangeEmail}
+                placeholder="nhập email bệnh nhân..."
               />
             </div>
+
+            {/* File Upload */}
             <div className="col-6 form-group">
-              <label>Chọn đơn thuốc</label>
+              <label>Chọn file (PDF hoặc ảnh)</label>
               <input
                 type="file"
                 className="form-control-file"
-                onChange={(e) => this.handleOnChangeImage(e)}
+                accept=".pdf,image/*"
+                onChange={this.handleOnChangeFile}
               />
+              {fileName && (
+                <small className="text-success d-block mt-1">
+                  Đã chọn: <strong>{fileName}</strong>
+                </small>
+              )}
             </div>
           </div>
+
+          {/* Preview */}
+          {imgPreview && (
+            <div className="row mt-3">
+              <div className="col-12">
+                <label>Preview:</label>
+                <div
+                  className="preview-container"
+                  style={{
+                    maxHeight: "300px",
+                    overflow: "auto",
+                    border: "1px solid #ddd",
+                    borderRadius: "8px",
+                    padding: "10px",
+                    background: "#f9f9f9",
+                  }}
+                >
+                  {isImage ? (
+                    <img
+                      src={imgPreview}
+                      alt="Preview"
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "280px",
+                        objectFit: "contain",
+                      }}
+                    />
+                  ) : (
+                    <div className="text-center">
+                      <i className="fas fa-file-pdf fa-5x text-danger"></i>
+                      <p className="mt-2">File PDF: {fileName}</p>
+                      {/* <small className="text-muted">
+                        (Không thể hiển thị preview PDF)
+                      </small> */}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </ModalBody>
+
         <ModalFooter>
-          <Button color="primary" onClick={() => this.handleSendRemedy()}>
-            Send
+          <span></span>
+          <Button
+            color="primary"
+            onClick={this.handleSendRemedy}
+            disabled={!fileName}
+          >
+            Gửi
           </Button>
-          <Button className="secondary" onClick={closeRemedyModal}>
-            Cancel
+          <Button color="secondary" onClick={closeRemedyModal}>
+            Hủy
           </Button>
         </ModalFooter>
       </Modal>
@@ -110,7 +213,6 @@ class RemedyModal extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
-    genders: state.admin.genders,
   };
 };
 

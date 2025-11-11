@@ -41,7 +41,7 @@ export default function ViewAppointment() {
 
     switch (status) {
       case "S2":
-        className += "status-success";
+        className += "status-confirmed";
         text = "Đã xác nhận";
         break;
       case "S5":
@@ -51,6 +51,10 @@ export default function ViewAppointment() {
       case "S1":
         className += "status-waiting";
         text = "Chờ duyệt";
+        break;
+      case "S4":
+        className += "status-success";
+        text = "Đã hoàn thành";
         break;
       default:
         className += "status-default";

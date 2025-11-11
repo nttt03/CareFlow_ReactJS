@@ -135,6 +135,59 @@ class DoctorSchedule extends Component {
     } = this.state;
     let { language } = this.props;
 
+    const filterFutureSlots = (allAvailableTime, language) => {
+      const now = Date.now();
+
+      return allAvailableTime.filter((item) => {
+        // Lấy ngày của slot
+        let slotDate = moment(parseInt(item.date)).startOf("day");
+
+        // Lấy giờ bắt đầu của slot
+        let startTime =
+          language === "vi"
+            ? item.timeTypeData.valueVi.split(" - ")[0]
+            : item.timeTypeData.valueEn.split(" - ")[0];
+
+        // Parse giờ và phút
+        let [hour, minute] = startTime.split(/[: ]/).map((x) => parseInt(x));
+
+        // Nếu là tiếng Anh và có PM, cộng thêm 12h
+        if (
+          language === "en" &&
+          startTime.toUpperCase().includes("PM") &&
+          hour < 12
+        ) {
+          hour += 12;
+        }
+        if (
+          language === "en" &&
+          startTime.toUpperCase().includes("AM") &&
+          hour === 12
+        ) {
+          hour = 0;
+        }
+
+        // Tạo timestamp đầy đủ của slot
+        let slotDateTime = slotDate
+          .clone()
+          .hours(hour)
+          .minutes(minute)
+          .seconds(0)
+          .milliseconds(0)
+          .valueOf();
+
+        // Nếu slot trong ngày hôm nay → so sánh với thời gian hiện tại
+        if (slotDate.isSame(moment(), "day")) {
+          return slotDateTime > now;
+        }
+
+        // Nếu slot ngày khác → hiển thị tất cả
+        return true;
+      });
+    };
+
+    const futureSlots = filterFutureSlots(allAvailableTime, language);
+
     return (
       <>
         <Card className="border-0 mt-3" bodyStyle={{ padding: "20px 25px" }}>
@@ -156,28 +209,23 @@ class DoctorSchedule extends Component {
               ))}
             </Select>
           </div>
-
           <div className="mt-3">
             {allAvailableTime && allAvailableTime.length > 0 ? (
               <>
                 <div className="d-flex flex-wrap gap-2">
-                  {allAvailableTime.map((item, index) => {
-                    let timeDisplay =
-                      language === LANGUAGES.VI
+                  {futureSlots.map((item, index) => (
+                    <Button
+                      key={index}
+                      type="primary"
+                      icon={<ClockCircleOutlined />}
+                      onClick={() => this.handleClickScheduleTime(item)}
+                      style={{ minWidth: "200px" }}
+                    >
+                      {language === LANGUAGES.VI
                         ? item.timeTypeData.valueVi
-                        : item.timeTypeData.valueEn;
-                    return (
-                      <Button
-                        key={index}
-                        type="primary"
-                        icon={<ClockCircleOutlined />}
-                        onClick={() => this.handleClickScheduleTime(item)}
-                        style={{ minWidth: "200px" }}
-                      >
-                        {timeDisplay}
-                      </Button>
-                    );
-                  })}
+                        : item.timeTypeData.valueEn}
+                    </Button>
+                  ))}
                 </div>
 
                 <div className="text-muted mt-3 small">

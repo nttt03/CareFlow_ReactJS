@@ -5,251 +5,259 @@ import "./NewAppointment.scss";
 import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
 import { FormattedMessage } from "react-intl";
-import { getNewAppointment } from "../../../services/userService";
+import {
+  getNewAppointment,
+  getDoneAppointment,
+} from "../../../services/userService";
 import emptyImg from "../../../assets/empty.png";
-import { message } from "antd";
+import { Card, Row, Col, Empty, Tabs, Pagination, message } from "antd";
+import moment from "moment";
+
+const { TabPane } = Tabs;
 
 class NewAppointment extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      newAppointment: [],
+      newAppointments: [],
+      doneAppointments: [],
       isDataFetched: false,
-      isActive: "new",
+      activeTab: "new",
+      currentPage: 1,
+      itemsPerPage: 3,
     };
   }
 
-  async componentDidMount() {
-    let { userInfo } = this.props;
-    console.log("UserInfo from props:", userInfo);
-    if (userInfo && userInfo.id) {
-      let data = await this.getNewAppointmentData(userInfo.id);
-      // console.log("Fetched new appointment data:", data);
-      this.setState({
-        newAppointment: data,
-        isDataFetched: true,
-      });
-    } else {
-      console.log("User information not available");
-      this.setState({ isDataFetched: true });
-    }
+  componentDidMount() {
+    this.fetchAppointments("new");
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.newAppointment.length === 0 &&
-      this.state.newAppointment.length > 0
-    ) {
-      console.log(
-        "Dữ liệu lịch hẹn đã được cập nhật:",
-        this.state.newAppointment
-      );
+  fetchAppointments = async (tab) => {
+    const { userInfo } = this.props;
+    if (!userInfo || !userInfo.id) {
+      message.warning("Bạn cần đăng nhập để xem lịch hẹn!");
+      return;
     }
-  }
 
-  getNewAppointmentData = async (patientId) => {
-    let dataNewAppointment = [];
-    if (patientId) {
-      let res = await getNewAppointment(patientId);
-      if (res && res.errCode === 0) {
-        dataNewAppointment = res.dataAppointments;
+    try {
+      if (tab === "new") {
+        const res = await getNewAppointment(userInfo.id);
+        if (res && res.errCode === 0) {
+          // Lọc các lịch hẹn từ ngày hiện tại trở đi
+          const todayTimestamp = new Date().setHours(0, 0, 0, 0);
+          const upcoming =
+            res.dataAppointments?.filter(
+              (a) => parseInt(a.date) >= todayTimestamp
+            ) || [];
+          this.setState({ newAppointments: upcoming, isDataFetched: true });
+        }
+      } else if (tab === "done") {
+        const res = await getDoneAppointment(userInfo.id);
+        if (res && res.errCode === 0) {
+          this.setState({
+            doneAppointments: res.dataAppointments || [],
+            isDataFetched: true,
+          });
+        }
       }
+    } catch (e) {
+      console.error(e);
+      message.error("Lỗi khi tải dữ liệu lịch hẹn!");
     }
-    return dataNewAppointment;
   };
 
-  formatDate = (timestamp) => {
-    const date = new Date(parseInt(timestamp));
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+  formatDate = (timestamp) => moment(+timestamp).format("DD/MM/YYYY");
+
+  handleTabChange = (key) => {
+    this.setState({ activeTab: key, currentPage: 1 }, () => {
+      if (key === "done" && this.state.doneAppointments.length === 0) {
+        this.fetchAppointments("done");
+      }
+    });
   };
 
-  handleViewDoneAppointment = () => {
-    if (this.props.history) {
-      const { userInfo } = this.props;
-      if (userInfo && userInfo.id) {
-        this.props.history.push(`/done-appointment/${userInfo.id}`);
-      } else {
-        message.warning("Bạn cần đăng nhập để xem lịch hẹn đã khám!");
-      }
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+  };
+
+  renderStatus = (status, statusData, isVietnamese) => {
+    let className = "status-badge ";
+    let text = "";
+
+    switch (status) {
+      case "S2": // Đã xác nhận
+        className += "status-confirmed"; // CSS: xanh dương
+        text = isVietnamese ? "Đã xác nhận" : "Confirmed";
+        break;
+      case "S4": // Đã hoàn thành (ví dụ dùng S3)
+        className += "status-done"; // CSS: xanh lá
+        text = isVietnamese ? "Đã hoàn thành" : "Done";
+        break;
+      case "S5": // Đã hủy
+        className += "status-cancel";
+        text = isVietnamese ? "Đã hủy" : "Cancelled";
+        break;
+      case "S1": // Chờ duyệt
+        className += "status-waiting";
+        text = isVietnamese ? "Chờ duyệt" : "Waiting";
+        break;
+      default:
+        className += "status-default";
+        text = isVietnamese
+          ? statusData?.valueVi
+          : statusData?.valueEn || "N/A";
     }
+
+    return <span className={className}>{text}</span>;
   };
 
   render() {
-    const currentPath = this.props.location?.pathname;
-    const { userInfo } = this.props;
-    let { newAppointment } = this.state;
-    const isVietnamese = this.props.language === "vi";
+    const {
+      newAppointments,
+      doneAppointments,
+      activeTab,
+      currentPage,
+      itemsPerPage,
+    } = this.state;
+    const { language } = this.props;
+    const isVietnamese = language === "vi";
 
-    // Lấy timestamp của ngày hiện tại (00:00) một cách động
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0); // Đặt về 00:00:00 của ngày hiện tại
-    const currentTimestamp = currentDate.getTime();
+    const dataToShow = activeTab === "new" ? newAppointments : doneAppointments;
 
-    // Lọc các lịch hẹn từ ngày hiện tại trở đi
-    const upcomingAppointments = newAppointment.filter(
-      (appointment) => parseInt(appointment.date) >= currentTimestamp
-    );
-    console.log("currentPath:", currentPath);
+    const indexOfLast = currentPage * itemsPerPage;
+    const indexOfFirst = indexOfLast - itemsPerPage;
+    const currentAppointments = dataToShow.slice(indexOfFirst, indexOfLast);
 
     return (
-      <React.Fragment>
+      <>
         <HomeHeader />
-        <div className="container">
-          <div className="appointment-schedule-container">
-            <div className="appointment-schedule-navigation">
-              <button
-                className={`new-appointment ${
-                  currentPath.includes("new-appointment") ? "actived" : ""
-                }`}
-                onClick={() =>
-                  this.props.history.push(`/new-appointment/${userInfo.id}`)
-                }
-              >
+        <div
+          className="container"
+          style={{ paddingTop: "100px", minHeight: "100vh" }}
+        >
+          <Tabs
+            activeKey={activeTab}
+            onChange={this.handleTabChange}
+            type="line"
+          >
+            <TabPane
+              tab={
                 <FormattedMessage id="patient.appointment-patient.new-appointment" />
-              </button>
-
-              <button
-                className={`old-appointment ${
-                  currentPath.includes("done-appointment") ? "actived" : ""
-                }`}
-                onClick={() => this.handleViewDoneAppointment()}
-              >
+              }
+              key="new"
+            />
+            <TabPane
+              tab={
                 <FormattedMessage id="patient.appointment-patient.done-appointment" />
-              </button>
-            </div>
-            <div className="appointment-schedule-content">
-              {upcomingAppointments && upcomingAppointments.length > 0 ? (
-                upcomingAppointments.map((appointment, index) => (
-                  <div key={index}>
-                    <div className="distance"></div>
-                    <div
-                      className={`status ${
-                        appointment.statusId === "S2" ? "status-confirmed" : ""
-                      }`}
-                    >
-                      {isVietnamese
-                        ? appointment.statusData?.valueVi
-                        : appointment.statusData?.valueEn || "N/A"}
-                    </div>
-                    <div className="appointment-details">
-                      <h4 className="title">
-                        <FormattedMessage id="patient.appointment-patient.title" />
-                      </h4>
-                      <div className="appointment-item">
-                        <span className="label">
-                          <FormattedMessage id="patient.appointment-patient.date" />
-                        </span>
-                        <span className="value text-primary">
-                          {this.formatDate(appointment.date)}
-                        </span>
-                      </div>
-                      <div className="appointment-item">
-                        <span className="label">
-                          <FormattedMessage id="patient.appointment-patient.time" />
-                        </span>
-                        <span className="value text-primary">
-                          {isVietnamese
-                            ? appointment.timeTypeDataPatient?.valueVi
-                            : appointment.timeTypeDataPatient?.valueEn || "-"}
-                        </span>
-                      </div>
-                      <div className="appointment-item">
-                        <span className="label">
-                          <FormattedMessage id="patient.appointment-patient.hospital" />
-                        </span>
-                        <span className="value">
-                          {appointment.doctorInfoData?.hospital?.name}
-                        </span>
-                      </div>
-                      <div className="appointment-item">
-                        <span className="label">
-                          <FormattedMessage id="patient.appointment-patient.address" />
-                        </span>
-                        <span className="value">
-                          {appointment.doctorInfoData?.hospital
-                            ?.addressDetail || "-"}
-                          {appointment.doctorInfoData?.hospital?.provinceData
-                            ?.name
-                            ? `, ${appointment.doctorInfoData.hospital.provinceData.name}`
-                            : ""}
-                        </span>
-                      </div>
-                      {/* <div className="appointment-item">
-                        <span className="label">
-                          <FormattedMessage id="patient.appointment-patient.price" />
-                        </span>
-                        <span className="value">
-                          {appointment.doctorInfoData?.priceTypeData
-                            ? `${
-                                isVietnamese
-                                  ? appointment.doctorInfoData.priceTypeData
-                                      .valueVi
-                                  : appointment.doctorInfoData.priceTypeData
-                                      .valueEn
-                              } ${isVietnamese ? "VNĐ" : "USD"}`
-                            : "-"}
-                        </span>
-                      </div> */}
-                      <div className="appointment-item">
-                        <span className="label">
+              }
+              key="done"
+            />
+          </Tabs>
+
+          {currentAppointments.length > 0 ? (
+            <Row gutter={[16, 16]}>
+              {currentAppointments.map((a, idx) => (
+                <Col xs={24} sm={24} md={12} lg={8} key={idx}>
+                  <Card
+                    hoverable
+                    bordered={false}
+                    className="appointment-card"
+                    title={this.renderStatus(
+                      a.statusId,
+                      a.statusData,
+                      isVietnamese
+                    )}
+                  >
+                    <div className="appointment-card-content">
+                      <p>
+                        <b>
                           <FormattedMessage id="patient.appointment-patient.doctor" />
-                        </span>
-                        <span className="value">
+                        </b>{" "}
+                        <span className="text-primary fw-bold">
                           {`${
                             isVietnamese
-                              ? appointment.infoDataDoctor?.positionData
-                                  ?.valueVi
-                              : appointment.infoDataDoctor?.positionData
-                                  ?.valueEn || ""
-                          } ${appointment.infoDataDoctor?.fullName || ""} `}
+                              ? a.infoDataDoctor?.positionData?.valueVi
+                              : a.infoDataDoctor?.positionData?.valueEn || ""
+                          } ${a.infoDataDoctor?.fullName || ""}`}
                         </span>
-                      </div>
-                      {appointment?.rejectReason && (
-                        <div className="appointment-item">
-                          <span className="label">
+                      </p>
+                      <p>
+                        <b>
+                          <FormattedMessage id="patient.appointment-patient.date" />
+                        </b>{" "}
+                        <span className="text-primary">
+                          {this.formatDate(a.date)}
+                        </span>
+                      </p>
+                      <p>
+                        <b>
+                          <FormattedMessage id="patient.appointment-patient.time" />
+                        </b>{" "}
+                        <span className="text-primary">
+                          {isVietnamese
+                            ? a.timeTypeDataPatient?.valueVi
+                            : a.timeTypeDataPatient?.valueEn || "-"}
+                        </span>
+                      </p>
+                      <p>
+                        <b>
+                          <FormattedMessage id="patient.appointment-patient.hospital" />
+                        </b>{" "}
+                        {a.doctorInfoData?.hospital?.name || "-"}
+                      </p>
+                      <p>
+                        <b>
+                          <FormattedMessage id="patient.appointment-patient.address" />
+                        </b>{" "}
+                        {a.doctorInfoData?.hospital?.addressDetail || "-"}
+                        {a.doctorInfoData?.hospital?.provinceData?.name
+                          ? `, ${a.doctorInfoData.hospital.provinceData.name}`
+                          : ""}
+                      </p>
+                      {a?.rejectReason && (
+                        <p className="text-danger fw-bold">
+                          <b>
                             <FormattedMessage id="patient.appointment-patient.reason" />
-                          </span>
-                          <span className="value text-warning fw-bold">
-                            {appointment?.rejectReason}
-                          </span>
-                        </div>
+                          </b>{" "}
+                          {a.rejectReason}
+                        </p>
                       )}
                     </div>
-                  </div>
-                ))
-              ) : (
-                <div className="appointment-schedule-content">
-                  <div className="title py-3">
-                    <FormattedMessage id="patient.appointment-patient.title-none-new" />
-                  </div>
-                  <div className="empty-image">
-                    <img src={emptyImg} alt="empty" />
-                  </div>
-                </div>
-              )}
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          ) : (
+            <Empty
+              description={
+                <FormattedMessage id="patient.appointment-patient.title-none-new" />
+              }
+              image={emptyImg}
+              imageStyle={{ height: 120 }}
+            />
+          )}
+
+          {dataToShow.length > itemsPerPage && (
+            <div className="d-flex justify-content-center mt-4">
+              <Pagination
+                current={currentPage}
+                pageSize={itemsPerPage}
+                total={dataToShow.length}
+                onChange={this.handlePageChange}
+                showSizeChanger={false}
+              />
             </div>
-          </div>
+          )}
         </div>
         <HomeFooter />
-      </React.Fragment>
+      </>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    language: state.app.language,
-    userInfo: state.user.userInfo,
-  };
-};
+const mapStateToProps = (state) => ({
+  language: state.app.language,
+  userInfo: state.user.userInfo,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(NewAppointment)
-);
+export default withRouter(connect(mapStateToProps)(NewAppointment));

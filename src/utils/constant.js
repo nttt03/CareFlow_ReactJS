@@ -14,7 +14,7 @@ export const path = {
   LIST_SPECIALTY: "/list-specialty",
   LIST_HOSPITAL: "/list-hospital",
   LIST_DOCTOR: "/list-doctor",
-  NEW_APPOINTMENT: "/new-appointment",
+  NEW_APPOINTMENT: "/schedule-appointment",
   DONE_APPOINTMENT: "/done-appointment/:id",
   VIEW_APPOINTMENT: "/view-appointment/:bookingId",
   PROFILE_USER: "/profile-user/:id",

@@ -1,98 +1,69 @@
-.appointment-schedule-container {
-    margin-top         : 80px;
-    min-height         : 570px;
-    padding            : 30px 0 8px 0;
-    // background-color: #ccc;
+.appointment-card {
+    display       : flex;
+    flex-direction: column;
+    height        : 100%;
+    box-shadow    : rgba(2, 66, 131, 0.1) 0px 4px 12px !important;
+}
 
-    .appointment-schedule-navigation {
-        .new-appointment {
-            border : none;
-            outline: none;
-            padding: 8px 20px;
+.appointment-card .appointment-card-content {
+    flex           : 1;
+    display        : flex;
+    flex-direction : column;
+    justify-content: space-between;
 
-            &.actived {
-                background-color: #06a7d3;
-                color           : #ffffff;
-            }
-        }
+}
 
-        .old-appointment {
-            border : none;
-            outline: none;
-            padding: 8px 20px;
-        }
-    }
+.ant-row {
+    display  : flex;
+    flex-wrap: wrap;
+}
 
-    .appointment-schedule-content {
-        background-color: #f9f6f6;
-        background-image: url(../../../assets/background.png);
-        ;
-        width     : 100%;
-        min-height: 480px;
+.ant-col {
+    display      : flex;
+    margin-bottom: 16px;
+}
 
-        .empty-image {
-            display        : flex;
-            justify-content: center;
-            align-items    : center;
+.ant-col>.appointment-card {
+    flex: 1;
+}
 
-            img {
-                width: 300px;
+.status-badge {
+    padding      : 2px 8px;
+    border-radius: 12px;
+    font-weight  : 500;
+    font-size    : 13px;
+}
 
-            }
-        }
+/* STATUS BADGE */
+.status-badge {
+    display      : inline-block;
+    padding      : 6px 16px;
+    border-radius: 25px;
+    font-weight  : 600;
+    font-size    : 14px;
+}
 
-        .distance {
-            height: 15px;
-        }
+.status-confirmed {
+    background-color: rgba(9, 160, 219, 0.15);
+    color           : #0775d5;
+}
 
-        .status {
-            margin          : 0 auto;
-            max-width       : 250px;
-            border-radius   : 3px;
-            background-color: #ecba07;
-            color           : aliceblue;
-            font-size       : 16px;
-            text-align      : center;
-            padding         : 10px 20px;
-        }
+.status-done {
+    background: rgba(17, 176, 92, 0.15);
+    color     : #10a463;
+}
 
-        .status-confirmed {
-            color           : #ffffff;
-            background-color: #28a745;
-        }
+.status-cancel {
+    background: rgba(255, 76, 76, 0.15);
+    color     : #ff4c4c;
+}
 
-        .status-done {
-            color           : #ffffff;
-            background-color: #0e79d7;
-        }
+.status-waiting {
+    background: rgba(255, 184, 0, 0.2);
+    color     : #b37b00;
+}
 
-        .appointment-details {
-            margin       : 30px auto;
-            padding      : 20px;
-            max-width    : 600px;
-            background   : #ffffff;
-            box-shadow   : 0 2px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-
-            .appointment-item {
-                display        : flex;
-                justify-content: space-between;
-                padding        : 10px 0;
-                border-bottom  : 1px solid #ddd;
-
-                .label {
-                    font-weight: 600;
-                    color      : #333;
-                }
-
-                .value {
-                    color: #555;
-                }
-
-                &:last-child {
-                    border-bottom: none;
-                }
-            }
-        }
-    }
+.status-default {
+    background: #e0e0e0;
+    color     : #555;
 }

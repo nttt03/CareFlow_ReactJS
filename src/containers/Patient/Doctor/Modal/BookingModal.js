@@ -9,7 +9,7 @@ import DatePicker from "../../../../components/Input/DatePicker";
 import * as actions from "../../../../store/actions";
 import { postPatientBookingAppointment } from "../../../../services/userService";
 import moment from "moment";
-import { Spin, Alert } from "antd";
+import { Spin, Alert, Modal as AntdModal } from "antd";
 import { Modal } from "reactstrap";
 import { message } from "antd";
 
@@ -201,7 +201,39 @@ class BookingModal extends Component {
           : "Booking a new appointment succeed"
       );
       this.props.closeBookingModal();
-      window.location.href = "/new-appointment";
+      setTimeout(() => {
+        window.location.href = "/schedule-appointment";
+      }, 3000);
+    } else if (res && res.errCode === 2) {
+      // message.info(
+      //   language === "vi"
+      //     ? "Bạn đã có lịch khám trong khung giờ này. Vui lòng chọn giờ khác."
+      //     : "Duplicate schedule. Please choose another time."
+      // );
+      AntdModal.info({
+        title: language === "vi" ? "Cảnh báo" : "Warning",
+        content:
+          language === "vi"
+            ? "Bạn đã có lịch khám với bác sĩ khác trong khung giờ này. Vui lòng chọn giờ khác."
+            : "Duplicate schedule. Please choose another time.",
+        okText: language === "vi" ? "Đồng ý" : "OK",
+      });
+      this.props.closeBookingModal();
+    } else if (res && res.errCode === 3) {
+      // message.info(
+      //   language === "vi"
+      //     ? "Bạn đã đặt lịch với bác sĩ này vào thời gian này rồi."
+      //     : "Booking existed"
+      // );
+      AntdModal.info({
+        title: language === "vi" ? "Cảnh báo" : "Warning",
+        content:
+          language === "vi"
+            ? "Bạn đã đặt lịch với bác sĩ vào thời gian này rồi."
+            : "Booking existed",
+        okText: language === "vi" ? "Đồng ý" : "OK",
+      });
+      this.props.closeBookingModal();
     } else {
       message.error(
         language === "vi"

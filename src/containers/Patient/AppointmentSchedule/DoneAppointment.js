@@ -41,7 +41,7 @@ class DoneAppointment extends Component {
 
   handleViewNewAppointment = () => {
     if (this.props.history) {
-      this.props.history.push(`/new-appointment`);
+      this.props.history.push(`/schedule-appointment`);
     }
   };
 
@@ -67,7 +67,7 @@ class DoneAppointment extends Component {
               <button
                 onClick={() => this.handleViewNewAppointment()}
                 className={`new-appointment ${
-                  currentPath.includes("new-appointment") ? "actived" : ""
+                  currentPath.includes("schedule-appointment") ? "actived" : ""
                 }`}
               >
                 <FormattedMessage id="patient.appointment-patient.new-appointment" />

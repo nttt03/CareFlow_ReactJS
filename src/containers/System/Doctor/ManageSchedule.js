@@ -21,6 +21,7 @@ class ManageSchedule extends Component {
       selectedDoctor: {},
       currentDate: "",
       rangeTime: [],
+      maxNumber: 10,
     };
   }
 
@@ -101,9 +102,27 @@ class ManageSchedule extends Component {
     this.setState({ selectedDoctor });
   };
 
+  handleChangeMaxNumber = (e) => {
+    this.setState({ maxNumber: e.target.value });
+  };
+
+  // handleOnChangeDatePicker = (data) => {
+  //   this.setState({
+  //     currentDate: data[0],
+  //   });
+  // };
   handleOnChangeDatePicker = (data) => {
+    const selectedDate = data[0];
+
+    // reset tất cả time về isSelected: false khi đổi ngày
+    let rangeTime = this.state.rangeTime.map((item) => ({
+      ...item,
+      isSelected: false,
+    }));
+
     this.setState({
-      currentDate: data[0],
+      currentDate: selectedDate,
+      rangeTime,
     });
   };
 
@@ -152,6 +171,7 @@ class ManageSchedule extends Component {
           object.doctorId = selectedDoctor.value;
           object.date = formatedDate;
           object.timeType = schedule.keyMap;
+          object.maxNumber = this.state.maxNumber;
           result.push(object);
         });
       } else {
@@ -221,7 +241,8 @@ class ManageSchedule extends Component {
                 className="form-control"
                 onChange={this.handleOnChangeDatePicker}
                 value={this.state.currentDate}
-                minDate={moment().startOf("day").toDate()}
+                // minDate={moment().startOf("day").toDate()}
+                minDate={moment().add(1, "days").startOf("day").toDate()}
               />
             </div>
             <div className="col-12 pick-hour-container">
@@ -243,6 +264,21 @@ class ManageSchedule extends Component {
                   );
                 })}
             </div>
+            <div className="col-6 form-group mt-3">
+              <label className="fw-bold">Số bệnh nhân tối đa / khung giờ</label>
+              <input
+                type="number"
+                min="1"
+                className="form-control shadow-sm"
+                value={this.state.maxNumber}
+                onChange={this.handleChangeMaxNumber}
+                placeholder="VD: 10"
+              />
+              <small className="text-muted">
+                Mặc định: 10 bệnh nhân (bạn có thể thay đổi)
+              </small>
+            </div>
+
             <div className="col-12">
               <button
                 className="btn btn-primary btn-save-schedule"

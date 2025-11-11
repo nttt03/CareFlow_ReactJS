@@ -277,7 +277,8 @@ class WaitingApproval extends Component {
 
             <div className="text-right">
               <button
-                className="mp-btn-cancel"
+                className="mp-btn-cancel border-0 rounded-2 px-3 py-1"
+                py-2
                 onClick={this.handleCloseCancelModal}
                 disabled={this.state.isSubmitting}
                 style={{ marginRight: 8 }}
@@ -285,7 +286,7 @@ class WaitingApproval extends Component {
                 {language === "vi" ? "Đóng" : "Close"}
               </button>
               <button
-                className="mp-btn-confirm"
+                className="mp-btn-confirm border-0 rounded-2 px-3 py-1 text-white"
                 onClick={this.handleSubmitCancel}
                 disabled={
                   this.state.isSubmitting || !this.state.cancelReason.trim()
