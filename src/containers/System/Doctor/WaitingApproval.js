@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import "./ManagePatient.scss";
 import {
   getWaitingApprovalForAdmin,
+  getWaitingApprovalForLeaderHospital,
   getWaitingApprovalForDoctor,
   updateBookingStatus,
 } from "../../../services/userService";
@@ -55,6 +56,15 @@ class WaitingApproval extends Component {
     let formatedDate = new Date(currentDate).getTime();
     if (user.roleId === "R1") {
       let res = await getWaitingApprovalForAdmin({
+        status: "S1",
+      });
+      if (res && res.errCode === 0) {
+        this.setState({ dataPatient: res.data });
+      }
+    }
+    if (user.roleId === "R4") {
+      let res = await getWaitingApprovalForLeaderHospital({
+        leaderId: user.id,
         status: "S1",
       });
       if (res && res.errCode === 0) {

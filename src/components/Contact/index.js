@@ -16,6 +16,7 @@ const Contact = () => {
   const isSystemPage =
     location.pathname.startsWith("/system") ||
     location.pathname.startsWith("/doctor") ||
+    location.pathname.startsWith("/leader-hospital") ||
     authPages.includes(location.pathname);
 
   const handleCall = () => {

@@ -135,6 +135,12 @@ export const getWaitingApprovalForAdmin = (data) => {
   return axios.get(`/api/get-list-booking-approval?status=${data.status}`);
 };
 
+export const getWaitingApprovalForLeaderHospital = (data) => {
+  return axios.get(
+    `/api/get-list-booking-approval-for-leader?leaderId=${data.leaderId}&status=${data.status}`
+  );
+};
+
 export const updateBookingStatus = (data) => {
   return axios.put("/api/update-booking-status", data);
 };

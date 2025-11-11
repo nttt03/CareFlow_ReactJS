@@ -21,7 +21,7 @@ const ScrollToTopButton = ({ onClick }) => {
         right: "18px",
         borderRadius: "50%",
         fontSize: "20px",
-        zIndex: 9999,
+        zIndex: 10,
       }}
       title="Lên đầu trang"
     >

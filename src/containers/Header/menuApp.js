@@ -173,6 +173,10 @@ export const leaderHospitalMenu = [
         link: "/leader-hospital/manage-schedule",
       },
       {
+        name: "menu.doctor.waiting-approval",
+        link: "/leader-hospital/waiting-approval",
+      },
+      {
         // quản lý bệnh nhân của bác sĩ
         name: "menu.leader-hospital.manage-patient",
         link: "/leader-hospital/manage-patient",

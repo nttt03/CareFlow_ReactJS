@@ -59,6 +59,10 @@ class LeaderHospital extends Component {
                   component={ManageSchedule}
                 />
                 <Route
+                  path="/leader-hospital/waiting-approval"
+                  component={WaitingApproval}
+                />
+                <Route
                   path="/leader-hospital/manage-patient"
                   component={ManagePatient}
                 />
