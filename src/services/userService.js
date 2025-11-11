@@ -333,6 +333,10 @@ export const chatWithDatabase = async (message, history, patientId) => {
   });
 };
 
+export const getAllReview = () => {
+  return axios.get(`/api/reviews`);
+};
+
 export {
   handleLoginApi,
   registerNewUser,

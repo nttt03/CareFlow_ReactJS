@@ -17,6 +17,8 @@ import {
   StarOutlined,
   UserOutlined,
   CloseOutlined,
+  LeftOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 import {
   getAppointmentNeedReview,
@@ -25,17 +27,16 @@ import {
 
 const { TextArea } = Input;
 
-const Review = ({ visible, onClose, userId }) => {
+const Review = ({ visible, onClose, userId, socketBooking }) => {
   const [appointments, setAppointments] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const language = useSelector((state) => state.app.language);
 
   const currentApt = appointments[currentPage - 1];
 
-  // Text đa ngôn ngữ
   const text = {
     title: language === "vi" ? "Đánh giá bác sĩ" : "Rate the doctor",
     toReview:
@@ -69,14 +70,22 @@ const Review = ({ visible, onClose, userId }) => {
   };
 
   useEffect(() => {
+    if (socketBooking) {
+      setAppointments((prev) => [socketBooking, ...prev]);
+      setCurrentPage(1);
+    }
+  }, [socketBooking]);
+
+  useEffect(() => {
     if (!visible || !userId) return;
 
-    const fetchData = async () => {
+    const fetchAppointments = async () => {
       try {
         setLoading(true);
         const res = await getAppointmentNeedReview(userId);
         if (res?.errCode === 0 && res.dataAppointments?.length > 0) {
           setAppointments(res.dataAppointments);
+          setCurrentPage(1);
         } else {
           onClose();
         }
@@ -88,7 +97,7 @@ const Review = ({ visible, onClose, userId }) => {
       }
     };
 
-    fetchData();
+    fetchAppointments();
   }, [visible, userId]);
 
   const handleSubmit = async () => {
@@ -98,10 +107,14 @@ const Review = ({ visible, onClose, userId }) => {
       const res = await reviewDoctor(currentApt.id, rating, comment, false);
       if (res.errCode === 0) {
         message.success(text.thank);
-        setAppointments((prev) => prev.filter((_, i) => i !== currentPage - 1));
+        const newAppointments = appointments.filter(
+          (_, i) => i !== currentPage - 1
+        );
+        setAppointments(newAppointments);
         setRating(0);
         setComment("");
-        if (appointments.length <= 1) onClose();
+        setCurrentPage(1);
+        if (newAppointments.length === 0) onClose();
       } else if (res.errCode === 5) {
         message.info(text.already);
       } else {
@@ -132,6 +145,7 @@ const Review = ({ visible, onClose, userId }) => {
       footer={null}
       width={600}
       centered
+      maskClosable={true}
       closeIcon={
         <Button
           type="text"
@@ -140,7 +154,6 @@ const Review = ({ visible, onClose, userId }) => {
           onClick={onClose}
         />
       }
-      maskClosable={true}
     >
       <div className="review-modal">
         <h3 className="text-primary">
@@ -164,8 +177,8 @@ const Review = ({ visible, onClose, userId }) => {
                     <strong>{currentApt.infoDataDoctor?.fullName}</strong>
                     <div style={{ fontSize: 12, color: "#888" }}>
                       {language === "vi"
-                        ? `${currentApt.infoDataDoctor?.positionData?.valueVi}`
-                        : `${currentApt.infoDataDoctor?.positionData?.valueEn}`}
+                        ? currentApt.infoDataDoctor?.positionData?.valueVi
+                        : currentApt.infoDataDoctor?.positionData?.valueEn}
                     </div>
                   </div>
                 </div>
@@ -186,55 +199,55 @@ const Review = ({ visible, onClose, userId }) => {
                 </div>
               </div>
 
-              <div>
-                <p>
-                  <strong>{text.rateLabel}</strong>
-                </p>
-                <Rate
-                  allowHalf
-                  value={rating}
-                  onChange={setRating}
-                  style={{ fontSize: 28 }}
-                />
-                <TextArea
-                  rows={2}
-                  placeholder={text.placeholder}
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  style={{ margin: "12px 0" }}
-                />
-                <div style={{ textAlign: "right" }}>
-                  <Button
-                    type="primary"
-                    onClick={handleSubmit}
-                    disabled={rating === 0}
-                  >
-                    {text.submit}
-                  </Button>
-                </div>
+              <p>
+                <strong>{text.rateLabel}</strong>
+              </p>
+              <Rate
+                allowHalf
+                value={rating}
+                onChange={setRating}
+                style={{ fontSize: 28 }}
+              />
+              <TextArea
+                rows={2}
+                placeholder={text.placeholder}
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                style={{ margin: "12px 0" }}
+              />
+              <div style={{ textAlign: "right" }}>
+                <Button
+                  type="primary"
+                  onClick={handleSubmit}
+                  disabled={rating === 0}
+                >
+                  {text.submit}
+                </Button>
               </div>
             </Card>
 
             {appointments.length > 1 && (
               <div style={{ textAlign: "center", marginTop: 16 }}>
                 <Button
+                  className="border-0"
                   size="small"
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                 >
-                  {text.prev}
+                  <LeftOutlined />
                 </Button>
                 <span style={{ margin: "0 12px" }}>
                   {currentPage} / {appointments.length}
                 </span>
                 <Button
+                  className="border-0"
                   size="small"
                   onClick={() =>
                     setCurrentPage((p) => Math.min(appointments.length, p + 1))
                   }
                   disabled={currentPage === appointments.length}
                 >
-                  {text.next}
+                  <RightOutlined />
                 </Button>
               </div>
             )}

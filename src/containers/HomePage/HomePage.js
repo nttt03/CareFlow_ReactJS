@@ -8,6 +8,9 @@ import HandBook from "./Section/HandBook";
 import HomeFooter from "./HomeFooter";
 import FeaturesSection from "../../components/FeaturesSection";
 import Review from "../../components/Review";
+import AllReview from "../../components/AllReview";
+import { getAppointmentNeedReview } from "../../services/userService";
+import { io } from "socket.io-client";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -15,25 +18,75 @@ import "./HomePage.scss";
 
 const HomePage = () => {
   const userInfo = useSelector((state) => state.user.userInfo);
-
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [pendingBooking, setPendingBooking] = useState(null);
+
+  // useEffect(() => {
+  //   const currId = userInfo?.id;
+  //   if (!currId) {
+  //     localStorage.removeItem("reviewShownIds");
+  //     return;
+  //   }
+
+  //   const checkReview = async () => {
+  //     try {
+  //       const res = await getAppointmentNeedReview(currId);
+  //       const pending = res?.dataAppointments || [];
+
+  //       // danh sách id người dùng cần review
+  //       const idsToReview = pending.map((item) => item.id);
+
+  //       // lấy ids đã show modal từ localStorage
+  //       const shownIds = JSON.parse(
+  //         localStorage.getItem("reviewShownIds") || "[]"
+  //       );
+
+  //       // tìm những id chưa show
+  //       const newIds = idsToReview.filter((id) => !shownIds.includes(id));
+
+  //       console.log("pending ids", idsToReview);
+  //       console.log("shown ids", shownIds);
+  //       console.log("new ids", newIds);
+
+  //       // nếu có appointment mới cần review → show modal
+  //       if (newIds.length > 0) {
+  //         setShowReviewModal(true);
+
+  //         // cập nhật vào localStorage
+  //         const updatedIds = [...shownIds, ...newIds];
+  //         localStorage.setItem("reviewShownIds", JSON.stringify(updatedIds));
+  //       }
+
+  //       // nếu không còn pending appointments → reset storage
+  //       if (idsToReview.length === 0) {
+  //         localStorage.removeItem("reviewShownIds");
+  //       }
+  //     } catch (err) {
+  //       console.error("Review check failed", err);
+  //     }
+  //   };
+
+  //   const timer = setTimeout(checkReview, 800);
+  //   return () => clearTimeout(timer);
+  // }, [userInfo]);
 
   useEffect(() => {
-    const currId = userInfo?.id;
+    const socket = io(process.env.REACT_APP_BACKEND_URL);
 
-    if (!currId) {
-      localStorage.removeItem("reviewShown");
-      return;
+    // join room cho user hiện tại
+    if (userInfo?.id) {
+      socket.emit("joinCustomerRoom", userInfo.id);
     }
 
-    const reviewShown = localStorage.getItem("reviewShown");
+    socket.on("review-reminder", (booking) => {
+      console.log("Received review reminder:", booking);
+      setPendingBooking(booking);
+      setShowReviewModal(true);
+    });
 
-    if (currId && !reviewShown) {
-      setTimeout(() => {
-        setShowReviewModal(true);
-        localStorage.setItem("reviewShown", "true");
-      }, 1000);
-    }
+    return () => {
+      socket.disconnect();
+    };
   }, [userInfo]);
 
   const settings = {
@@ -58,11 +111,18 @@ const HomePage = () => {
 
   return (
     <div>
-      <HomeHeader isShowBanner={true} />
+      <HomeHeader
+        isShowBanner
+        onReviewNotification={(booking) => {
+          setPendingBooking(booking);
+          setShowReviewModal(true);
+        }}
+      />
       <FeaturesSection />
       <Specialty settings={settings} />
       <MedicalFacility settings={settings} />
       <OutStandingDoctor settings={settings} />
+      <AllReview />
       <HandBook />
       <HomeFooter />
 
@@ -70,6 +130,7 @@ const HomePage = () => {
         visible={showReviewModal}
         onClose={() => setShowReviewModal(false)}
         userId={userInfo?.id}
+        socketBooking={pendingBooking}
       />
     </div>
   );

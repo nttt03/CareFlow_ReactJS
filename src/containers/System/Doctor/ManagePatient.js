@@ -106,6 +106,8 @@ const ManagePatient = () => {
       email: item.patientData.email,
       timeType: item.timeType,
       patientName: item.patientData.fullName,
+      doctorName: item.infoDataDoctor.fullName,
+      bookingId: item.id,
     };
     setIsOpenRemedyModal(true);
     setDataModal(data);
@@ -125,6 +127,8 @@ const ManagePatient = () => {
       patientId: dataModal.patientId,
       timeType: dataModal.timeType,
       patientName: dataModal.patientName,
+      doctorName: dataModal.doctorName,
+      bookingId: dataModal.bookingId,
       language: language,
     });
     if (res && res.errCode === 0) {

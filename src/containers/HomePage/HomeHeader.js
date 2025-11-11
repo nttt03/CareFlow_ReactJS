@@ -22,6 +22,7 @@ import { io } from "socket.io-client";
 import StatsSection from "../../components/StatsSection";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
+import Review from "../../components/Review";
 import "swiper/css";
 import "swiper/css/pagination";
 import moment from "moment";
@@ -43,10 +44,28 @@ class HomeHeader extends Component {
       notifications: [],
       activeSlide: 0,
       keyword: "",
+      reviewSocketBooking: null,
+      notifDropdownOpen: false,
     };
     this.toggleMenu = this.toggleMenu.bind(this);
   }
+  openReviewModal = (socketBooking = null) => {
+    this.setState({
+      reviewModalVisible: true,
+      reviewSocketBooking: socketBooking,
+    });
+  };
 
+  closeReviewModal = () => {
+    this.setState({
+      reviewModalVisible: false,
+      reviewSocketBooking: null,
+    });
+  };
+
+  setNotifDropdownOpen = (open) => {
+    this.setState({ notifDropdownOpen: open });
+  };
   handleSearch = () => {
     const { keyword } = this.state;
     if (!keyword.trim()) return;
@@ -117,6 +136,10 @@ class HomeHeader extends Component {
           }
           return prevState;
         });
+        // Nếu notification có URL /review → gọi callback HomePage
+        if (data.url === "/review" && this.props.onReviewNotification) {
+          this.props.onReviewNotification(data.booking || null);
+        }
       });
     }
   }
@@ -139,8 +162,13 @@ class HomeHeader extends Component {
         }));
         await this.loadNotifications();
       }
-      if (url) {
+
+      if (url === "/review") {
+        this.openReviewModal();
+        this.setState({ notifDropdownOpen: false });
+      } else {
         this.props.history.push(url);
+        this.setState({ notifDropdownOpen: false });
       }
     } catch (e) {
       console.log("Lỗi khi đánh dấu thông báo đã đọc:", e);
@@ -402,6 +430,8 @@ class HomeHeader extends Component {
                     trigger={["click"]}
                     placement="bottomRight"
                     overlayClassName="custom-notif-overlay"
+                    open={this.state.notifDropdownOpen}
+                    onOpenChange={(open) => this.setNotifDropdownOpen(open)}
                   >
                     <Badge
                       count={notifications.filter((n) => !n.isRead).length}
@@ -574,6 +604,12 @@ class HomeHeader extends Component {
             </div>
           </div>
         )}
+        <Review
+          visible={this.state.reviewModalVisible}
+          onClose={this.closeReviewModal}
+          userId={userInfo?.id}
+          socketBooking={this.state.reviewSocketBooking}
+        />
       </React.Fragment>
     );
   }

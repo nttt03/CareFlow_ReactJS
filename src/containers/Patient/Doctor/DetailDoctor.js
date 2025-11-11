@@ -13,7 +13,7 @@ import DoctorExtraInfor from "./DoctorExtraInfor";
 import DoctorImg from "../../../assets/specialty/doctor.jpg";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Buffer } from "buffer";
-import { message } from "antd";
+import { message, Rate } from "antd";
 import { HeartFilled } from "@ant-design/icons";
 
 class DetailDoctor extends Component {
@@ -100,10 +100,7 @@ class DetailDoctor extends Component {
     nameVi = `${positionVi}, ${detailDoctor?.fullName || ""}`;
     nameEn = `${positionEn}, ${detailDoctor?.fullName || ""}`;
 
-    const description =
-      detailDoctor?.Markdown?.description || language === "vi"
-        ? "Thông tin đang được cập nhật..."
-        : "Information is being updated...";
+    const description = detailDoctor?.Markdown?.description;
 
     const currentURL =
       +process.env.REACT_APP_IS_LOCALHOST === 1
@@ -145,6 +142,17 @@ class DetailDoctor extends Component {
                   <h4 className="fw-bold mb-2 text-primary">
                     {language === LANGUAGES.VI ? nameVi : nameEn}
                   </h4>
+                  {detailDoctor?.doctorInfor?.rating && (
+                    <Rate
+                      disabled
+                      allowHalf
+                      value={Number(detailDoctor?.doctorInfor?.rating) || 0}
+                      style={{
+                        color: "#FFD700",
+                        fontSize: "15px",
+                      }}
+                    />
+                  )}
 
                   <p
                     className="text-muted mb-2"
@@ -163,7 +171,13 @@ class DetailDoctor extends Component {
                       className="btn btn-link p-0 text-decoration-none"
                       onClick={this.toggleDescription}
                     >
-                      {showFullDescription ? "Thu gọn ▲" : "Xem thêm ▼"}
+                      {showFullDescription
+                        ? language === "vi"
+                          ? "Thu gọn"
+                          : "Collapse"
+                        : language === "vi"
+                        ? "Xem thêm"
+                        : "See more"}
                     </button>
                   )}
                 </div>
@@ -214,7 +228,9 @@ class DetailDoctor extends Component {
 
           {detailDoctor?.Markdown?.contentHTML && (
             <div className="bg-white p-4 rounded-3 shadow-sm mb-4">
-              <h5 className="fw-bold text-primary mb-3">Giới thiệu chi tiết</h5>
+              <h5 className="fw-bold text-primary mb-3">
+                {language === "vi" ? "Giới thiệu chi tiết" : "Abouts"}
+              </h5>
               <div
                 dangerouslySetInnerHTML={{
                   __html: detailDoctor.Markdown.contentHTML,

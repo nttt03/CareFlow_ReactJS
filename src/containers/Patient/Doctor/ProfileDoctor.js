@@ -9,6 +9,7 @@ import _ from "lodash";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { Buffer } from "buffer";
+import { Rate } from "antd";
 
 class ProfileDoctor extends Component {
   constructor(props) {
@@ -112,8 +113,20 @@ class ProfileDoctor extends Component {
                 {language === "vi" ? "Chuyên khoa:" : "Specialty:"}{" "}
                 {dataProfile?.doctorInfor?.specialty?.name}
               </span>
+              {dataProfile?.doctorInfor?.rating && (
+                <Rate
+                  disabled
+                  allowHalf
+                  value={Number(dataProfile?.doctorInfor?.rating) || 0}
+                  style={{
+                    color: "#FFD700",
+                    fontSize: "15px",
+                    marginTop: "5px",
+                  }}
+                />
+              )}
             </div>
-            <div className="down">
+            <div className="down text-truncate">
               {isShowDescriptionDoctor === true ? (
                 <>
                   {dataProfile &&

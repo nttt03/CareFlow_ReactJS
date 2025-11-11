@@ -9,7 +9,7 @@ import { FormattedMessage } from "react-intl";
 import { Buffer } from "buffer";
 import DoctorImg from "../../../assets/specialty/doctor.jpg";
 import BackButton from "../../../components/BackButton";
-
+import { Rate } from "antd";
 class ListDoctor extends Component {
   constructor(props) {
     super(props);
@@ -92,7 +92,21 @@ class ListDoctor extends Component {
                       <div className="doctor-name">
                         {language === LANGUAGES.VI ? nameVi : nameEn}
                       </div>
-                      <div className="doctor-specialty">{specialtyName}</div>
+                      <div className="doctor-specialty mb-2">
+                        {specialtyName}
+                      </div>
+                      {item.doctorInfor?.rating && (
+                        <Rate
+                          disabled
+                          allowHalf
+                          value={Number(item.doctorInfor?.rating) || 0}
+                          style={{
+                            color: "#FFD700",
+                            fontSize: "18px",
+                            margin: "auto",
+                          }}
+                        />
+                      )}
                     </div>
                   </div>
                 );

@@ -8,6 +8,7 @@ import { FormattedMessage } from "react-intl";
 import { withRouter } from "react-router";
 import { Buffer } from "buffer";
 import { CrownOutlined } from "@ant-design/icons";
+import { Rate } from "antd";
 
 class OutStandingDoctor extends Component {
   constructor(props) {
@@ -107,7 +108,7 @@ class OutStandingDoctor extends Component {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                            // boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
                             zIndex: 10,
                             border: "2px solid white",
                           }}
@@ -125,10 +126,11 @@ class OutStandingDoctor extends Component {
                       <div
                         className="mx-3 text-white card hoverable border-0 shadow-sm text-center p-3 doctor-card"
                         style={{
-                          background: "navy",
+                          background: "#f3f4f4",
                           position: "relative",
                           overflow: "hidden",
                           borderRadius: "12px",
+                          minHeight: "210px",
                         }}
                       >
                         <img
@@ -144,10 +146,24 @@ class OutStandingDoctor extends Component {
                           }}
                         />
 
-                        <h5 className="mt-3 mb-1 fw-bold">
+                        <h5 className="mt-3 mb-1 fw-bold text-primary">
                           {language === LANGUAGES.VI ? nameVi : nameEn}
                         </h5>
-                        <p className="small mb-0 text-white">{specialtyName}</p>
+                        <p className="fs-10 mb-2 text-primary">
+                          {specialtyName}
+                        </p>
+                        {item.doctorInfor?.rating && (
+                          <Rate
+                            disabled
+                            allowHalf
+                            value={Number(item.doctorInfor?.rating) || 0}
+                            style={{
+                              color: "#FFD700",
+                              fontSize: "18px",
+                              margin: "auto",
+                            }}
+                          />
+                        )}
                       </div>
                     </div>
                   );

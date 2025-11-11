@@ -45,7 +45,7 @@ export default function StatsSection() {
             icon: <TeamOutlined />,
           },
           {
-            to: 4.9,
+            to: 4.8,
             label: language === "vi" ? "Mức độ hài lòng" : "Rating",
             icon: <StarFilled />,
           },
@@ -60,25 +60,31 @@ export default function StatsSection() {
   };
 
   const startCounter = () => {
-    stats.forEach((item, i) => {
-      let start = 0;
-      const end = item.to;
-      const duration = 2000;
-      const increment = end / (duration / 30);
+    const duration = 2000; // tổng thời gian chạy
+    const fps = 30; // tốc độ cập nhật
+    const steps = duration / (1000 / fps);
+    let currentStep = 0;
 
-      const counter = setInterval(() => {
-        start += increment;
-        if (start >= end) {
-          start = end;
-          clearInterval(counter);
-        }
-        setCounts((prev) => {
-          const newCounts = [...prev];
-          newCounts[i] = start;
-          return newCounts;
-        });
-      }, 30);
-    });
+    const animate = () => {
+      currentStep++;
+      setCounts((prev) =>
+        stats.map((item) => {
+          const end = item.to;
+          const progress = Math.min(currentStep / steps, 1);
+          const value = end * progress;
+          // Làm tròn nếu là số thập phân
+          return end % 1 !== 0
+            ? Math.round(value * 10) / 10
+            : Math.round(value);
+        })
+      );
+
+      if (currentStep < steps) {
+        setTimeout(animate, 1000 / fps);
+      }
+    };
+
+    animate();
   };
 
   useEffect(() => {
@@ -114,9 +120,12 @@ export default function StatsSection() {
                 className="fw-bold text-warning"
                 style={{ fontSize: "36px", margin: "10px 0" }}
               >
-                {Math.ceil(counts[i])}
-                {item.to !== 4.9 ? "+" : ""}
-                {item.to === 4.9 && <StarFilled />}
+                {item.to % 1 !== 0
+                  ? (counts[i] ?? 0).toFixed(1)
+                  : formatNumber(Math.floor(counts[i] ?? 0))}
+
+                {item.to !== 4.8 ? "+" : ""}
+                {item.to === 4.8 && <StarFilled />}
               </h3>
 
               <span

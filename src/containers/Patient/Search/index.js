@@ -6,7 +6,17 @@ import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
 import { LANGUAGES } from "../../../utils";
 import { Buffer } from "buffer";
-import { Input, Select, Button, Row, Col, Spin, Typography, Empty } from "antd";
+import {
+  Input,
+  Select,
+  Button,
+  Row,
+  Col,
+  Spin,
+  Typography,
+  Empty,
+  Rate,
+} from "antd";
 import {
   SearchOutlined,
   EnvironmentOutlined,
@@ -141,7 +151,7 @@ const Search = () => {
       {/* Danh sách kết quả */}
       <div className="result-container py-5">
         <Row gutter={[24, 24]}>
-          <Col xs={24} md={18}>
+          <Col xs={24} md={17}>
             <Title level={5} style={{ fontSize: "20px", lineHeight: 1.2 }}>
               {language === "vi" ? "Tìm thấy" : "Find"}{" "}
               <Text strong className="text-danger" style={{ fontSize: "20px" }}>
@@ -339,7 +349,7 @@ const Search = () => {
             )}
           </Col>
           {/* Cột phải - Top Doctors */}
-          <Col xs={24} md={6}>
+          <Col xs={24} md={7}>
             <div className="topDoctor-container rounded">
               <Title
                 level={4}
@@ -378,6 +388,19 @@ const Search = () => {
                       <div className="text-secondary">
                         {doc.doctorInfor?.specialty?.name}
                       </div>
+
+                      {doc?.doctorInfor?.rating && (
+                        <Rate
+                          disabled
+                          allowHalf
+                          value={Number(doc?.doctorInfor?.rating) || 0}
+                          style={{
+                            color: "#FFD700",
+                            fontSize: "15px",
+                            width: "100%",
+                          }}
+                        />
+                      )}
 
                       <Button
                         size="small"

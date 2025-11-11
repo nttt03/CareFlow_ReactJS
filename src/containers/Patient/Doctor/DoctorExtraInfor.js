@@ -43,10 +43,7 @@ class DoctorExtraInfor extends Component {
 
     // Lấy thông tin cần hiển thị
     const hospitalName = extraInfor?.hospital?.name || "";
-    const specialtyName =
-      extraInfor?.specialty?.name || language === "vi"
-        ? "Thông tin đang được cập nhật..."
-        : "Information is being updated...";
+    const specialtyName = extraInfor?.specialty?.name;
     const address = `${extraInfor?.hospital?.addressDetail || ""}, ${
       extraInfor?.hospital?.provinceData?.name || ""
     }`;
@@ -80,15 +77,19 @@ class DoctorExtraInfor extends Component {
         </div>
 
         {/* Chuyên khoa */}
-        <div className="mb-3">
-          <h6 className="text-secondary">
-            <FormattedMessage
-              id="patient.extra-infor-doctor.specialty"
-              defaultMessage={language === "vi" ? "Chuyên khoa" : "Specialty"}
-            />
-          </h6>
-          <p className="fw-semibold">{specialtyName}</p>
-        </div>
+        {specialtyName && (
+          <div className="mb-3">
+            <span className="text-secondary">
+              <FormattedMessage
+                id="patient.extra-infor-doctor.specialty"
+                defaultMessage={
+                  language === "vi" ? "Chuyên khoa:" : "Specialty:"
+                }
+              />
+            </span>{" "}
+            <span className="fw-semibold">{specialtyName}</span>
+          </div>
+        )}
 
         {/* Ghi chú */}
         {note && (
