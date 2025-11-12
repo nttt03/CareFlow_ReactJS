@@ -10,6 +10,8 @@ import ChangePassword from "../components/ChangePassword";
 import LeaderHospitalDashboard from "../containers/System/LeaderHospital/LeaderHospitalDashboard";
 import Navigator from "../components/Navigator";
 import { leaderHospitalMenu } from "../containers/Header/menuApp";
+import EditHospital from "../containers/System/Hospital/EditHospital";
+import ManageDoctor from "../containers/System/Admin/ManageDoctor";
 
 class LeaderHospital extends Component {
   render() {
@@ -22,6 +24,12 @@ class LeaderHospital extends Component {
           return {
             ...item,
             link: item.link.replace(":id", userInfo?.id || ""),
+          };
+        }
+        if (item.link.includes(":hospitalId")) {
+          return {
+            ...item,
+            link: item.link.replace(":hospitalId", userInfo?.hospitalId || ""),
           };
         }
         return item;
@@ -61,6 +69,14 @@ class LeaderHospital extends Component {
                 <Route
                   path="/leader-hospital/waiting-approval"
                   component={WaitingApproval}
+                />
+                <Route
+                  path="/leader-hospital/manage-hospital/:hospitalId"
+                  component={EditHospital}
+                />
+                <Route
+                  path="/leader-hospital/manage-doctor"
+                  component={ManageDoctor}
                 />
                 <Route
                   path="/leader-hospital/manage-patient"

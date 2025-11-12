@@ -29,6 +29,7 @@ import BackButton from "../../../components/BackButton";
 import HospitalSpecialtyConfig from "./Config/HospitalSpecialtyConfig";
 import DoctorConfig from "./Config/DoctorConfig";
 import PriceConfig from "./Config/PriceConfig";
+import { useSelector } from "react-redux";
 
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -41,6 +42,7 @@ const hospitalStatuses = {
 
 function EditHospital({ language }) {
   const history = useHistory();
+  const userInfor = useSelector((state) => state.user.userInfo);
   const { hospitalId } = useParams();
   const [form] = Form.useForm();
   const [provinces, setProvinces] = useState([]);
@@ -311,9 +313,13 @@ function EditHospital({ language }) {
         {/* Tab 4 - Bác sĩ */}
         <TabPane
           tab={
-            language === "vi"
-              ? "Cấu hình bác sĩ / lãnh đạo"
-              : "Doctor/Leader Configuration"
+            userInfor?.roleId === "R1"
+              ? language === "vi"
+                ? "Cấu hình bác sĩ / lãnh đạo"
+                : "Doctor/Leader Configuration"
+              : language === "vi"
+              ? "Cấu hình bác sĩ"
+              : "Doctor Configuration"
           }
           key="4"
         >

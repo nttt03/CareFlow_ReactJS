@@ -62,9 +62,23 @@ class ManageDoctor extends Component {
   };
 
   componentDidUpdate(prevProps) {
+    // if (prevProps.allDoctors !== this.props.allDoctors) {
+    //   this.setState({
+    //     listDoctors: this.buildDataInputSelect(this.props.allDoctors),
+    //   });
+    // }
     if (prevProps.allDoctors !== this.props.allDoctors) {
+      let doctors = this.props.allDoctors;
+
+      // Nếu người dùng là lãnh đạo bệnh viện (R4) thì lọc bác sĩ theo hospitalId
+      if (this.props.userInfo?.roleId === "R4") {
+        doctors = doctors.filter(
+          (doc) => doc.hospitalId === this.props.userInfo.hospitalId
+        );
+      }
+
       this.setState({
-        listDoctors: this.buildDataInputSelect(this.props.allDoctors),
+        listDoctors: this.buildDataInputSelect(doctors),
       });
     }
 
@@ -177,7 +191,8 @@ class ManageDoctor extends Component {
       hasOlData,
     } = this.state;
 
-    const { language } = this.props;
+    const { language, userInfo } = this.props;
+    // console.log("alldoctor", this.props.allDoctors);
 
     return (
       <div
@@ -229,29 +244,36 @@ class ManageDoctor extends Component {
             </Row>
 
             <Row gutter={16}>
-              <Col span={8}>
-                <Form.Item
-                  label={
-                    <>
-                      <span>
-                        <FormattedMessage id="admin.manage-doctor.hospital" />
-                      </span>
-                      <span className="text-danger ms-2">*</span>
-                    </>
-                  }
-                >
-                  <AntdSelect
-                    placeholder={
-                      language === "vi" ? "Chọn bệnh viện" : "Select hospital"
+              {userInfo?.roleId === "R1" && (
+                <Col span={8}>
+                  <Form.Item
+                    label={
+                      <>
+                        <span>
+                          <FormattedMessage id="admin.manage-doctor.hospital" />
+                        </span>
+                        <span className="text-danger ms-2">*</span>
+                      </>
                     }
-                    options={listHospital}
-                    value={selectedHospital}
-                    onChange={(value, option) =>
-                      this.setState({ selectedHospital: option })
-                    }
-                  />
-                </Form.Item>
-              </Col>
+                  >
+                    <AntdSelect
+                      showSearch
+                      placeholder={
+                        language === "vi" ? "Chọn bệnh viện" : "Select hospital"
+                      }
+                      options={listHospital}
+                      value={selectedHospital}
+                      onChange={(value, option) =>
+                        this.setState({ selectedHospital: option })
+                      }
+                      optionFilterProp="label"
+                      filterOption={(input, option) =>
+                        option.label.toLowerCase().includes(input.toLowerCase())
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+              )}
               <Col span={8}>
                 <Form.Item
                   label={
@@ -264,6 +286,7 @@ class ManageDoctor extends Component {
                   }
                 >
                   <AntdSelect
+                    showSearch
                     placeholder={
                       language === "vi"
                         ? "Chọn chuyên khoa"
@@ -273,6 +296,10 @@ class ManageDoctor extends Component {
                     value={selectedSpecialty}
                     onChange={(value, option) =>
                       this.setState({ selectedSpecialty: option })
+                    }
+                    optionFilterProp="label"
+                    filterOption={(input, option) =>
+                      option.label.toLowerCase().includes(input.toLowerCase())
                     }
                   />
                 </Form.Item>
@@ -374,6 +401,7 @@ const mapStateToProps = (state) => ({
   allDoctors: state.admin.allDoctors,
   allRequiredDoctorInfor: state.admin.allRequiredDoctorInfor,
   positionRedux: state.admin.positions,
+  userInfo: state.user.userInfo,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -31,6 +31,7 @@ const DoctorConfig = ({
   hospitalName,
   hospitalAvatar,
   language,
+  userInfo,
 }) => {
   const [doctors, setDoctors] = useState([]);
   const [leaders, setLeaders] = useState([]);
@@ -195,97 +196,102 @@ const DoctorConfig = ({
           />
 
           {/* LEADER CARD */}
-          {(() => {
-            const leader = doctorsSelected.find((doc) => doc.roleId === "R4");
+          {userInfo?.roleId === "R1" &&
+            (() => {
+              const leader = doctorsSelected.find((doc) => doc.roleId === "R4");
 
-            return (
-              <div
-                className="my-2 p-3 rounded-3 text-white position-relative overflow-hidden"
-                style={{
-                  background: "linear-gradient(135deg, #FFD700, #FFA500)",
-                  boxShadow: "0 4px 12px rgba(255, 215, 0, 0.4)",
-                }}
-              >
-                <div className="d-flex align-items-center gap-3 position-relative z-10">
-                  <div className="position-relative">
-                    <Avatar
-                      src={leader?.avatar || "/defaultimg.png"}
-                      size={60}
-                      className="border border-4 border-white shadow-lg"
-                    />
-                  </div>
-
-                  <div>
-                    <h5 className="mb-1 fw-bold">
-                      {leader ? leader.fullName : "Chưa có lãnh đạo"}
-                    </h5>
-                    <span
-                      className="badge bg-white text-dark px-2 py-1 rounded-pill fw-bold"
-                      style={{ fontSize: "11px" }}
-                    >
-                      {language === "vi"
-                        ? "LÃNH ĐẠO BỆNH VIỆN"
-                        : "HOSPITAL LEADER"}
-                    </span>
-                  </div>
-                </div>
+              return (
                 <div
+                  className="my-2 p-3 rounded-3 text-white position-relative overflow-hidden"
                   style={{
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                    cursor: "pointer",
+                    background: "linear-gradient(135deg, #FFA500, #FFD700)",
+                    boxShadow: "0 4px 12px rgba(255, 215, 0, 0.4)",
                   }}
                 >
-                  {leader ? (
-                    <SwapOutlined
-                      style={{ fontSize: 22, color: "white" }}
-                      onClick={() => setShowLeaderDropdown(!showLeaderDropdown)}
-                      title="Đổi lãnh đạo"
-                    />
-                  ) : (
-                    <PlusOutlined
-                      style={{ fontSize: 22, color: "white" }}
-                      onClick={() => setShowLeaderDropdown(!showLeaderDropdown)}
-                      title="Thêm lãnh đạo"
-                    />
+                  <div className="d-flex align-items-center gap-3 position-relative z-10">
+                    <div className="position-relative">
+                      <Avatar
+                        src={leader?.avatar || "/defaultimg.png"}
+                        size={60}
+                        className="border border-4 border-white shadow-lg"
+                      />
+                    </div>
+
+                    <div>
+                      <h5 className="mb-1 fw-bold">
+                        {leader ? leader.fullName : "Chưa có lãnh đạo"}
+                      </h5>
+                      <span
+                        className="badge bg-white text-dark px-2 py-1 rounded-pill fw-bold"
+                        style={{ fontSize: "11px" }}
+                      >
+                        {language === "vi"
+                          ? "LÃNH ĐẠO BỆNH VIỆN"
+                          : "HOSPITAL LEADER"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 10,
+                      right: 10,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {leader ? (
+                      <SwapOutlined
+                        style={{ fontSize: 22, color: "white" }}
+                        onClick={() =>
+                          setShowLeaderDropdown(!showLeaderDropdown)
+                        }
+                        title="Đổi lãnh đạo"
+                      />
+                    ) : (
+                      <PlusOutlined
+                        style={{ fontSize: 22, color: "white" }}
+                        onClick={() =>
+                          setShowLeaderDropdown(!showLeaderDropdown)
+                        }
+                        title="Thêm lãnh đạo"
+                      />
+                    )}
+                  </div>
+
+                  {showLeaderDropdown && (
+                    <div style={{ marginTop: 10 }}>
+                      <Select
+                        showSearch
+                        style={{ width: "100%" }}
+                        placeholder={
+                          language === "vi" ? "Chọn lãnh đạo" : "Select leader"
+                        }
+                        value={selectedLeader}
+                        onChange={(value) => setSelectedLeader(value)}
+                        onBlur={() => setShowLeaderDropdown(false)}
+                        optionFilterProp="children"
+                      >
+                        {leaders.map((ld) => (
+                          <Option key={ld.id} value={ld.id}>
+                            {ld.fullName}
+                          </Option>
+                        ))}
+                      </Select>
+
+                      <Button
+                        type="primary"
+                        block
+                        style={{ marginTop: 8 }}
+                        onClick={handleSaveLeader}
+                      >
+                        {language === "vi" ? "Lưu" : "Save"}
+                      </Button>
+                    </div>
                   )}
                 </div>
-
-                {/* DROPDOWN chọn leader */}
-                {showLeaderDropdown && (
-                  <div style={{ marginTop: 10 }}>
-                    <Select
-                      showSearch
-                      style={{ width: "100%" }}
-                      placeholder={
-                        language === "vi" ? "Chọn lãnh đạo" : "Select leader"
-                      }
-                      value={selectedLeader}
-                      onChange={(value) => setSelectedLeader(value)}
-                      onBlur={() => setShowLeaderDropdown(false)}
-                      optionFilterProp="children"
-                    >
-                      {leaders.map((ld) => (
-                        <Option key={ld.id} value={ld.id}>
-                          {ld.fullName}
-                        </Option>
-                      ))}
-                    </Select>
-
-                    <Button
-                      type="primary"
-                      block
-                      style={{ marginTop: 8 }}
-                      onClick={handleSaveLeader}
-                    >
-                      {language === "vi" ? "Lưu" : "Save"}
-                    </Button>
-                  </div>
-                )}
-              </div>
-            );
-          })()}
+              );
+            })()}
 
           <List
             header={
@@ -357,6 +363,7 @@ const DoctorConfig = ({
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
+    userInfo: state.user.userInfo,
   };
 };
 
