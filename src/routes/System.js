@@ -22,6 +22,7 @@ import ChangePassword from "../components/ChangePassword";
 import MedicalRecord from "../containers/System/Doctor/MedicalRecord";
 import ManagePatient from "../containers/System/Doctor/ManagePatient";
 import WaitingApproval from "../containers/System/Doctor/WaitingApproval";
+import CalendarSchedule from "../components/CalendarSchedule";
 
 class System extends Component {
   render() {
@@ -105,6 +106,7 @@ class System extends Component {
                   path="/system/manage-hospital/edit-hospital/:hospitalId"
                   component={EditHospital}
                 />
+                <Route path="/system/schedule" component={CalendarSchedule} />
 
                 <Route
                   exact

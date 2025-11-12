@@ -70,6 +70,11 @@ export const adminMenu = [
     name: "menu.admin.manage-examination",
     menus: [
       {
+        // ds lịch hẹn
+        name: "menu.admin.schedule",
+        link: "/system/schedule",
+      },
+      {
         // quản lý kế hoạch khám bệnh của bác sĩ
         name: "menu.doctor.manage-schedule",
         link: "/system/manage-schedule",
@@ -122,6 +127,11 @@ export const doctorMenu = [
     name: "menu.doctor.manage",
     menus: [
       {
+        // ds lịch hẹn
+        name: "menu.admin.schedule",
+        link: "/doctor/schedule",
+      },
+      {
         // quản lý kế hoạch khám bệnh của bác sĩ
         name: "menu.doctor.manage-schedule",
         link: "/doctor/manage-schedule",
@@ -167,6 +177,11 @@ export const leaderHospitalMenu = [
   {
     name: "menu.leader-hospital.manage",
     menus: [
+      {
+        // ds lịch hẹn
+        name: "menu.admin.schedule",
+        link: "/leader-hospital/schedule",
+      },
       {
         // quản lý kế hoạch khám bệnh của bác sĩ
         name: "menu.leader-hospital.manage-schedule",

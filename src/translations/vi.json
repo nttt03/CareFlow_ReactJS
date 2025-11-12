@@ -60,7 +60,8 @@
             "handbook": "Cẩm nang",
             "manage-handbook": "Quản lý cẩm nang",
             "profile-user": "Hồ sơ cá nhân",
-            "change-password": "Đổi mật khẩu"
+            "change-password": "Đổi mật khẩu",
+            "schedule": "Lịch hẹn"
         },
         "doctor": {
             "system": "Hệ thống",

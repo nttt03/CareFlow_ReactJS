@@ -1,0 +1,19 @@
+.ant-picker-calendar-mode-switch {
+    display: none !important;
+}
+
+.calandar-container {
+    height    : calc(100vh - 120px);
+    /* trừ header nếu có */
+    overflow-y: auto;
+}
+
+.no-scrollbar {
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+}

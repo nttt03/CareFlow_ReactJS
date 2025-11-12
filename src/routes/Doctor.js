@@ -11,6 +11,7 @@ import DoctorDashboard from "../containers/System/Doctor/DoctorDashboard";
 import MedicalRecord from "../containers/System/Doctor/MedicalRecord";
 import Navigator from "../components/Navigator";
 import { doctorMenu } from "../containers/Header/menuApp";
+import CalendarSchedule from "../components/CalendarSchedule";
 
 class Doctor extends Component {
   render() {
@@ -68,6 +69,7 @@ class Doctor extends Component {
                   path="/doctor/manage-medical-record"
                   component={MedicalRecord}
                 />
+                <Route path="/doctor/schedule" component={CalendarSchedule} />
               </Switch>
             </div>
           </div>

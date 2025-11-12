@@ -60,7 +60,8 @@
             "handbook": "Handbook",
             "manage-handbook": "Manage handbook",
             "profile-user": "User Profile",
-            "change-password": "Change Password"
+            "change-password": "Change Password",
+            "schedule": "Schedule"
         },
         "doctor": {
             "system": "System",
