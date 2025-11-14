@@ -212,6 +212,9 @@ const LeaderHospitalDashboard = () => {
             icon: (
               <CalendarOutlined style={{ fontSize: 28, color: "#1677ff" }} />
             ),
+            bgColor:
+              "linear-gradient(316.02deg, #4e8cff 5.24%, #1f49cd 87.62%)",
+            color: "white",
           },
           {
             title: language === LANGUAGES.VI ? "Đã xác nhận" : "Confirmed",
@@ -219,6 +222,9 @@ const LeaderHospitalDashboard = () => {
             icon: (
               <CheckCircleOutlined style={{ fontSize: 28, color: "#52c41a" }} />
             ),
+            bgColor:
+              "linear-gradient(351.87deg, rgb(247 241 241) 0.55%, rgb(193 229 255) 43.79%, rgb(255, 255, 255) 97.25%)",
+            border: "1px solid #7eb2e9",
           },
           {
             title: language === LANGUAGES.VI ? "Đã hoàn thành" : "Completed",
@@ -226,6 +232,8 @@ const LeaderHospitalDashboard = () => {
             icon: (
               <CheckCircleOutlined style={{ fontSize: 28, color: "#13c2c2" }} />
             ),
+            bgColor: "linear-gradient(180deg, #15b02c, #6ce27e)",
+            color: "white",
           },
           {
             title: language === LANGUAGES.VI ? "Đã hủy" : "Canceled",
@@ -233,6 +241,9 @@ const LeaderHospitalDashboard = () => {
             icon: (
               <CloseCircleOutlined style={{ fontSize: 28, color: "#ff4d4f" }} />
             ),
+            bgColor:
+              "linear-gradient(145.87deg, #fff .55%, #ffebeb 43.79%, #fff 97.25%)",
+            border: "1px solid #fca5a5",
           },
           {
             title:
@@ -243,6 +254,7 @@ const LeaderHospitalDashboard = () => {
             icon: (
               <CalendarOutlined style={{ fontSize: 28, color: "#faad14" }} />
             ),
+            border: "1px solid #fca5a5",
           },
           {
             title:
@@ -251,11 +263,13 @@ const LeaderHospitalDashboard = () => {
             icon: (
               <UserAddOutlined style={{ fontSize: 28, color: "#722ed1" }} />
             ),
+            border: "1px solid #7eb2e9",
           },
           {
             title: language === LANGUAGES.VI ? "Tổng bác sĩ" : "Total Doctors",
             value: stats?.totalDoctors,
             icon: <TeamOutlined style={{ fontSize: 28, color: "#1677ff" }} />,
+            border: "1px solid #7eb2e9",
           },
           {
             title:
@@ -264,6 +278,7 @@ const LeaderHospitalDashboard = () => {
                 : "Total Specialties",
             value: stats?.totalSpecialties,
             icon: <StarOutlined style={{ fontSize: 28, color: "#eb2f96" }} />,
+            border: "1px solid #fca5a5",
           },
         ].map((item, i) => (
           <Col span={6} key={i}>
@@ -272,6 +287,9 @@ const LeaderHospitalDashboard = () => {
               style={{
                 borderRadius: 10,
                 boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                backgroundImage: `${item?.bgColor}`,
+                color: `${item?.color}`,
+                border: `${item?.border}`,
               }}
               bodyStyle={{ padding: 18 }}
             >
@@ -287,7 +305,7 @@ const LeaderHospitalDashboard = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <div>{item.icon}</div>
+                <div className="p-2 bg-white rounded-3">{item.icon}</div>
                 <div style={{ fontSize: 24, fontWeight: 700 }}>
                   {item.value}
                 </div>

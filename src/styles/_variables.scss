@@ -7,21 +7,23 @@ sans-serif,
 "Segoe UI Symbol",
 "Noto Color Emoji";
 // $colormain         :#0071ba;
-$colormain         : navy;
-$color-yellow      : #f1ce08;
-$colorsub          :#bb8d09;
-$common-text-color :white;
-$common-btn-confirm: #0f9bcc;
-$common-btn-deny   : #bb8d09;
-$common-error      : #ff9600;
-$common-notify     : greenyellow;
-$common-green      : #00C087;
-$common-red        : #d01a1d;
-$common-white      : #fff;
-$common-gray       : #ebe8e8;
-$common-orange     : #FFAC42;
-$border            : #ccc;
-$text-in-light     : #181818;
+$colormain          : #2350db;
+$colormainblue1     : linear-gradient(169.83deg, #fff .21%, #e3f3ff 36.32%, #fff 80.97%);
+$colormainblue2     : linear-gradient(316.02deg, #4e8cff 5.24%, #1f49cd 87.62%);
+$color-yellow       : #f1ce08;
+$colorsub           :#bb8d09;
+$common-text-color  :white;
+$common-btn-confirm : #0f9bcc;
+$common-btn-deny    : #bb8d09;
+$common-error       : #ff9600;
+$common-notify      : greenyellow;
+$common-green       : #00C087;
+$common-red         : #d01a1d;
+$common-white       : #fff;
+$common-gray        : #ebe8e8;
+$common-orange      : #FFAC42;
+$border             : #ccc;
+$text-in-light      : #181818;
 
 $input-focus: #FFAC42;
 

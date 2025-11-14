@@ -172,7 +172,7 @@ const AdminDashboard = () => {
 
   const pieOptions = {
     responsive: true,
-    plugins: { legend: { position: "bottom" } },
+    plugins: { legend: { position: "right" } },
   };
 
   // Bảng: Top bệnh viện
@@ -247,11 +247,17 @@ const AdminDashboard = () => {
               language === LANGUAGES.VI ? "Tổng bệnh viện" : "Total Hospitals",
             value: stats.totalHospitals,
             icon: <ShopOutlined style={{ fontSize: 28, color: "#1677ff" }} />,
+            bgColor:
+              "linear-gradient(316.02deg, #4e8cff 5.24%, #1f49cd 87.62%)",
+            color: "white",
           },
           {
             title: language === LANGUAGES.VI ? "Tổng bác sĩ" : "Total Doctors",
             value: stats.totalDoctors,
             icon: <TeamOutlined style={{ fontSize: 28, color: "#52c41a" }} />,
+            bgColor:
+              "linear-gradient(145.87deg, #fff .55%, #d9efff 43.79%, #fff 97.25%)",
+            border: "1px solid #7eb2e9",
           },
           {
             title:
@@ -260,6 +266,9 @@ const AdminDashboard = () => {
             icon: (
               <UserAddOutlined style={{ fontSize: 28, color: "#722ed1" }} />
             ),
+            bgColor:
+              "linear-gradient(145.87deg, #fff .55%, #d9efff 43.79%, #fff 97.25%)",
+            border: "1px solid #7eb2e9",
           },
           {
             title:
@@ -270,6 +279,9 @@ const AdminDashboard = () => {
             icon: (
               <CalendarOutlined style={{ fontSize: 28, color: "#faad14" }} />
             ),
+            bgColor:
+              "linear-gradient(145.87deg, #fff .55%, #ffeece 43.79%, #fff 97.25%)",
+            border: "1px solid #fb923c",
           },
           {
             title:
@@ -280,6 +292,9 @@ const AdminDashboard = () => {
             icon: (
               <CheckCircleOutlined style={{ fontSize: 28, color: "#13c2c2" }} />
             ),
+            bgColor:
+              "linear-gradient(0deg, #f1f9ff, #f1f9ff), linear-gradient(169.83deg, #fff .21%, #e2ffe7 36.32%, #fff 80.97%)",
+            border: "1px solid #7eb2e9",
           },
           {
             title: language === LANGUAGES.VI ? "Đã xác nhận" : "Confirmed",
@@ -287,6 +302,9 @@ const AdminDashboard = () => {
             icon: (
               <CheckCircleOutlined style={{ fontSize: 28, color: "#389e0d" }} />
             ),
+            bgColor:
+              "linear-gradient(351.87deg, rgb(247 241 241) 0.55%, rgb(193 229 255) 43.79%, rgb(255, 255, 255) 97.25%)",
+            border: "1px solid #7eb2e9",
           },
           {
             title: language === LANGUAGES.VI ? "Đã hoàn thành" : "Completed",
@@ -294,6 +312,8 @@ const AdminDashboard = () => {
             icon: (
               <CheckCircleOutlined style={{ fontSize: 28, color: "#08979c" }} />
             ),
+            bgColor: "linear-gradient(180deg, #15b02c, #6ce27e)",
+            color: "white",
           },
           {
             title: language === LANGUAGES.VI ? "Đã hủy" : "Canceled",
@@ -301,6 +321,9 @@ const AdminDashboard = () => {
             icon: (
               <CloseCircleOutlined style={{ fontSize: 28, color: "#ff4d4f" }} />
             ),
+            bgColor:
+              "linear-gradient(145.87deg, #fff .55%, #ffebeb 43.79%, #fff 97.25%)",
+            border: "1px solid #fca5a5",
           },
         ].map((item, i) => (
           <Col span={6} key={i}>
@@ -309,6 +332,9 @@ const AdminDashboard = () => {
               style={{
                 borderRadius: 10,
                 boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                backgroundImage: `${item?.bgColor}`,
+                color: `${item?.color}`,
+                border: `${item?.border}`,
               }}
               bodyStyle={{ padding: 18 }}
             >
@@ -323,7 +349,7 @@ const AdminDashboard = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <div>{item.icon}</div>
+                <div className="p-2 bg-white rounded-3">{item.icon}</div>
                 <div style={{ fontSize: 24, fontWeight: 700 }}>
                   {item.value}
                 </div>

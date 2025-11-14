@@ -1,30 +1,32 @@
 @import "../styles/common.scss";
 
 .navigator-menu {
-    display       : flex;
-    flex-direction: column;
-    margin        : 0;
-    padding       : 0;
-    list-style    : none;
-    width         : 220px;
-    min-height    : 100vh;
-    background    : $colormain;
-    color         : white;
-    font-family   : 'Roboto', sans-serif;
+    display         : flex;
+    flex-direction  : column;
+    margin          : 0;
+    padding         : 0;
+    list-style      : none;
+    width           : 220px;
+    min-height      : 100vh;
+    background-image: $colormainblue1;
+    border          : 1px solid #aad6ff;
+    border-top      : none;
+    box-shadow      : 2px 2px 5.5px 0px #60acf866;
+    color           : rgb(35, 80, 219);
+    font-family     : 'Roboto', sans-serif;
 
     .menu-group {
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
 
         .menu-group-name {
             font-size      : 15px;
-            font-weight    : 500;
+            font-weight    : 600;
             padding        : 12px 18px;
             display        : flex;
             justify-content: space-between;
             align-items    : center;
             cursor         : pointer;
             transition     : background 0.3s ease;
-            color          : #fff;
+            color          : $colormain;
 
             &:hover {
                 background: rgba(255, 255, 255, 0.1);
@@ -43,30 +45,38 @@
         }
 
         .menu-list {
-            background-color: rgba(0, 0, 0, 0.15);
-            margin          : 0;
-            list-style      : none;
-            animation       : fadeIn 0.3s ease;
+            margin    : 0;
+            list-style: none;
+            animation : fadeIn 0.3s ease;
 
             .menu {
-                padding    : 8px 20px;
-                font-size  : 14px;
-                color      : #e0e0e0;
-                border-left: 3px solid transparent;
-                transition : all 0.2s ease;
+                padding      : 8px 15px;
+                font-size    : 14px;
+                margin       : 5px 15px;
+                border       : 1px solid #c8e4ff;
+                border-radius: 8px;
+                background   : white;
+
+                font-weight: 600;
+                color      : rgb(102, 102, 102);
+
+                transition: all 0.2s ease;
 
                 &:hover {
-                    background: rgba(255, 255, 255, 0.08);
-                    color     : #fff;
+                    background: #eff8ff;
+                    color     : $colormain;
+                    border    : 1px solid #a2d1fc;
                 }
 
                 &.active {
-                    border-left: 3px solid #ffcc00;
-                    background : rgba(255, 255, 255, 0.15);
+                    margin       : 0px 15px;
+                    border       : 1px solid #c8e4ff;
+                    border-radius: 8px;
+                    background   : $colormainblue2;
 
                     a {
                         font-weight: 600;
-                        color      : #ffcc00;
+                        color      : white;
                     }
                 }
 

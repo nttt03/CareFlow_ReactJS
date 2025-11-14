@@ -47,7 +47,7 @@ function ManageAccount({
   });
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 5,
+    pageSize: 4,
     total: 0,
   });
   const [loading, setLoading] = useState(false);

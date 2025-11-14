@@ -4,14 +4,14 @@
     display         : flex;
     justify-content : space-between;
     align-items     : center;
-    background-color: $colormain;
+    background-image: $colormainblue1;
     width           : 100%;
     height          : auto;
     padding         : 5px 10px 5px 5px;
-    box-shadow      : rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    box-shadow      : 2px 2px 5.5px 0px #60acf866;
 
     .logo-header {
-        background       : url(../../assets/images/logo_system.png);
+        background       : url(../../assets/careFlow_logo.png);
         background-repeat: no-repeat;
         background-size  : contain;
         height           : 58px;
@@ -33,10 +33,12 @@
                 align-items: center;
                 gap        : 8px;
                 white-space: nowrap;
+                color      : $colormain;
 
                 .username {
                     font-weight : 600;
                     margin-right: 5px;
+                    color       : $colormain;
                 }
             }
 
@@ -67,6 +69,7 @@
         }
 
         .language-vi {
+            color: red;
 
             span {
                 cursor: pointer;
@@ -88,6 +91,7 @@
         .language-en {
             margin-right: 15px;
             margin-left : 10px;
+            color       : $colormain;
 
             span {
                 cursor: pointer;
@@ -107,13 +111,14 @@
     }
 
     .btn-logout {
-        color      : $common-text-color;
+        // color      : $common-text-color;
+        color      : $colormain;
         line-height: 40px;
         height     : 40px;
         padding    : 0 10px;
 
         &:hover {
-            background-color: darken($colormain, 5);
+            background-color: #ccc;
         }
 
         i {

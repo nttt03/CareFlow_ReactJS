@@ -1,29 +1,54 @@
 /*
  * General styles
  */
- body, html {
-    background-image: "#fff";
-    background-repeat: no-repeat;
-    background-size: cover;
-    font-family: $fontmain;
-    font-size: $base-size - 2px;
-    height: 100vh;
-    // overflow: hidden;
+body,
+html {
+  background-image : "#fff";
+  background-repeat: no-repeat;
+  background-size  : cover;
+  font-family      : $fontmain;
+  font-size        : $base-size - 2px;
+  height           : 100vh;
+  // overflow: hidden;
 }
 
 .content-container {
   .title {
-    text-align: center;
+    text-align    : center;
     text-transform: uppercase;
-    font-weight: bold;
-    font-size: $base-size + 4px;
-    margin-top: 15px;
-    color: $colormain;
+    font-weight   : bold;
+    font-size     : $base-size + 4px;
+    margin-top    : 15px;
+    color         : $colormain;
   }
+
   .content {
-    margin: 15px 30px;
-    box-shadow: 2px 2px 4px 0 $box-shadow-color;
+    margin            : 15px 30px;
+    box-shadow        : 2px 2px 4px 0 $box-shadow-color;
     -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
   }
 }
 
+.ant-table-content {
+  border       : 1px solid #0697f8 !important;
+  border-radius: 10px !important;
+}
+
+.ant-table-thead>tr .ant-table-cell {
+  background: #0482d6 !important;
+  padding   : 10px !important;
+  color     : white !important;
+  border    : none !important;
+}
+
+.ant-select-selector {
+  border: 1px solid #919090 !important;
+
+  .ant-select-selection-placeholder {
+    color: #919090 !important;
+  }
+}
+
+.ant-input-affix-wrapper {
+  border: 1px solid #919090 !important;
+}

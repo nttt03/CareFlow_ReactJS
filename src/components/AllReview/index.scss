@@ -3,6 +3,24 @@
     background: #fafafa;
 }
 
+@media (max-width: 1024px) {
+    .review-section {
+        padding: 40px 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .review-section {
+        padding: 30px 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .review-section {
+        padding: 20px 30px;
+    }
+}
+
 .review-title {
     font-size    : 26px;
     font-weight  : bold;

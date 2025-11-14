@@ -269,7 +269,7 @@ class Header extends Component {
                   fontSize: "25px",
                   cursor: "pointer",
                   marginRight: 20,
-                  color: "white",
+                  color: "navy",
                 }}
               />
             </Badge>
