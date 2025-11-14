@@ -4,6 +4,8 @@ import {
   CustomerServiceOutlined,
   MessageOutlined,
 } from "@ant-design/icons";
+import Lottie from "lottie-react";
+import chatbot from "../../assets/lottie/chatbot.json";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useLocation } from "react-router-dom";
 import ChatBox from "../Chatbox/ChatBox";
@@ -41,73 +43,70 @@ const Contact = () => {
   return (
     <div
       style={{
+        display: "flex",
         flexDirection: "column",
-        gap: "12px",
+        alignItems: "center",
         position: "fixed",
-        bottom: "90px",
-        right: "18px",
+        bottom: "190px",
+        right: "-30px",
         zIndex: 10,
       }}
     >
-      <button
-        onClick={toggleChat}
-        className="
-        btn btn-primary
-        d-flex align-items-center justify-content-center
-        shadow-lg
-        scroll-top-btn pulse-float
-      "
+      <div style={{ width: 150 }}>
+        <Lottie onClick={toggleChat} animationData={chatbot} loop />
+      </div>
+      <div
         style={{
-          width: "50px",
-          height: "50px",
-          borderRadius: "50%",
-          fontSize: "20px",
-          marginBottom: "12px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          position: "fixed",
+          bottom: "90px",
+          right: "18px",
+          zIndex: 10,
         }}
-        title="Lên đầu trang"
       >
-        <CustomerServiceOutlined style={{ fontSize: "22px" }} />
-      </button>
-      {isChatOpen && <ChatBox onClose={() => setIsChatOpen(false)} />}
-      <button
-        onClick={handleCall}
-        className="
+        {isChatOpen && <ChatBox onClose={() => setIsChatOpen(false)} />}
+        <button
+          onClick={handleCall}
+          className="
         btn btn-danger
         d-flex align-items-center justify-content-center
         shadow-lg
         scroll-top-btn pulse-float
       "
-        style={{
-          width: "50px",
-          height: "50px",
-          borderRadius: "50%",
-          fontSize: "20px",
-          backgroundColor: "red",
-          borderColor: "red",
-          marginBottom: "12px",
-        }}
-        title="Lên đầu trang"
-      >
-        <PhoneOutlined style={{ fontSize: "22px" }} />
-      </button>
-      <button
-        onClick={handleZalo}
-        className="
+          style={{
+            width: "50px",
+            height: "50px",
+            borderRadius: "50%",
+            fontSize: "20px",
+            backgroundColor: "red",
+            borderColor: "red",
+            marginBottom: "12px",
+          }}
+          title="Lên đầu trang"
+        >
+          <PhoneOutlined style={{ fontSize: "22px" }} />
+        </button>
+        <button
+          onClick={handleZalo}
+          className="
         btn btn-primary
         d-flex align-items-center justify-content-center
         shadow-lg
         scroll-top-btn pulse-float
       "
-        style={{
-          width: "50px",
-          height: "50px",
-          borderRadius: "50%",
-          fontSize: "20px",
-        }}
-        title="Lên đầu trang"
-      >
-        <MessageOutlined style={{ fontSize: "22px" }} />
-      </button>
+          style={{
+            width: "50px",
+            height: "50px",
+            borderRadius: "50%",
+            fontSize: "20px",
+          }}
+          title="Lên đầu trang"
+        >
+          <MessageOutlined style={{ fontSize: "22px" }} />
+        </button>
+      </div>
     </div>
   );
 };

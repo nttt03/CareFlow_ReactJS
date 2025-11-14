@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import {
   Button,
   Table,
@@ -26,6 +26,7 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import { Buffer } from "buffer";
 import * as actions from "../../../../store/actions";
+import { showLoading, hideLoading } from "../../../../store/actions";
 import ModalAccount from "./ModalAccount";
 
 const { Option } = Select;
@@ -50,6 +51,7 @@ function ManageAccount({
     pageSize: 4,
     total: 0,
   });
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("add");
@@ -68,10 +70,22 @@ function ManageAccount({
   };
 
   useEffect(() => {
-    getAllUsers();
-    if (!roleRedux || roleRedux.length === 0) {
-      getRoleStart();
-    }
+    const fetchData = async () => {
+      try {
+        dispatch(showLoading());
+        await getAllUsers();
+        if (!roleRedux || roleRedux.length === 0) {
+          await getRoleStart();
+        }
+      } catch (error) {
+        console.log("error fetch all user: ", error);
+      } finally {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        dispatch(hideLoading());
+      }
+    };
+
+    fetchData();
   }, [getAllUsers, getRoleStart, roleRedux]);
 
   const handleDeleteUser = async (id) => {

@@ -51,8 +51,7 @@ function ManageSpecialty({ language }) {
     pageSize = 5,
     currentFilters = filters
   ) => {
-    // dispatch(showLoading());
-    setLoading(true);
+    dispatch(showLoading());
     try {
       const res = await getAllSpecialty({
         page,
@@ -73,8 +72,8 @@ function ManageSpecialty({ language }) {
     } catch (err) {
       console.error("Lỗi khi lấy danh sách chuyên khoa:", err);
     } finally {
-      setLoading(false);
-      // dispatch(hideLoading());
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      dispatch(hideLoading());
     }
   };
 

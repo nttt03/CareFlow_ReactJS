@@ -10,6 +10,7 @@ import { Buffer } from "buffer";
 import DoctorImg from "../../../assets/specialty/doctor.jpg";
 import BackButton from "../../../components/BackButton";
 import { Rate } from "antd";
+import { showLoading, hideLoading } from "../../../store/actions";
 class ListDoctor extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +20,16 @@ class ListDoctor extends Component {
   }
 
   async componentDidMount() {
-    this.props.loadTopDoctors();
+    const { showLoading, hideLoading, loadTopDoctors } = this.props;
+    showLoading();
+    try {
+      await loadTopDoctors();
+    } catch (error) {
+      console.log("Lỗi load top doctors:", error);
+    } finally {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      hideLoading();
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -132,6 +142,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     loadTopDoctors: () => dispatch(actions.fetchTopDoctor()),
+    showLoading: () => dispatch(showLoading()),
+    hideLoading: () => dispatch(hideLoading()),
   };
 };
 

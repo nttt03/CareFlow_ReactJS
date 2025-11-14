@@ -7,6 +7,7 @@ import ProfileDoctor from "../ProfileDoctor";
 import _ from "lodash";
 import DatePicker from "../../../../components/Input/DatePicker";
 import * as actions from "../../../../store/actions";
+import { showLoading, hideLoading } from "../../../../store/actions";
 import { postPatientBookingAppointment } from "../../../../services/userService";
 import moment from "moment";
 import { Spin, Alert, Modal as AntdModal } from "antd";
@@ -134,7 +135,8 @@ class BookingModal extends Component {
   };
 
   handleConfirmBooking = async () => {
-    const { language, userInfo } = this.props;
+    const { language, userInfo, showLoading, hideLoading } = this.props;
+
     if (!userInfo) {
       message.warning(
         language === "vi"
@@ -169,77 +171,72 @@ class BookingModal extends Component {
       return;
     }
 
-    this.setState({ isShowLoading: true });
-
-    let date = new Date(this.state.birthday).getTime();
-    let timeString = this.buildTimeBooking(this.props.dataTime);
-    let doctorName = this.buildDoctorName(this.props.dataTime);
-
-    let res = await postPatientBookingAppointment({
-      fullName: this.state.fullName,
-      phoneNumber: this.state.phoneNumber,
-      email: this.state.email,
-      address: this.state.address,
-      symptoms: this.state.symptoms,
-      date: this.props.dataTime.date,
-      birthday: date,
-      selectedGender: this.state.selectedGender.value,
-      doctorId: this.state.doctorId,
-      timeType: this.state.timeType,
-      language: this.props.language,
-      timeString: timeString,
-      doctorName: this.props.dataTime.doctorData.fullName,
-      hospitalId: this.props.hospitalId || userInfo?.hospitalId,
-    });
-
-    this.setState({ isShowLoading: false });
-
-    if (res && res.errCode === 0) {
-      message.success(
-        language === "vi"
-          ? "Đặt lịch hẹn thành công"
-          : "Booking a new appointment succeed"
-      );
-      this.props.closeBookingModal();
-      setTimeout(() => {
-        window.location.href = "/schedule-appointment";
-      }, 3000);
-    } else if (res && res.errCode === 2) {
-      // message.info(
-      //   language === "vi"
-      //     ? "Bạn đã có lịch khám trong khung giờ này. Vui lòng chọn giờ khác."
-      //     : "Duplicate schedule. Please choose another time."
-      // );
-      AntdModal.info({
-        title: language === "vi" ? "Cảnh báo" : "Warning",
-        content:
-          language === "vi"
-            ? "Bạn đã có lịch khám với bác sĩ khác trong khung giờ này. Vui lòng chọn giờ khác."
-            : "Duplicate schedule. Please choose another time.",
-        okText: language === "vi" ? "Đồng ý" : "OK",
+    showLoading();
+    try {
+      const date = new Date(this.state.birthday).getTime();
+      const timeString = this.buildTimeBooking(this.props.dataTime);
+      const res = await postPatientBookingAppointment({
+        fullName: this.state.fullName,
+        phoneNumber: this.state.phoneNumber,
+        email: this.state.email,
+        address: this.state.address,
+        symptoms: this.state.symptoms,
+        date: this.props.dataTime.date,
+        birthday: date,
+        selectedGender: this.state.selectedGender.value,
+        doctorId: this.state.doctorId,
+        timeType: this.state.timeType,
+        language: this.props.language,
+        timeString,
+        doctorName: this.props.dataTime.doctorData.fullName,
+        hospitalId: this.props.hospitalId || userInfo?.hospitalId,
       });
-      this.props.closeBookingModal();
-    } else if (res && res.errCode === 3) {
-      // message.info(
-      //   language === "vi"
-      //     ? "Bạn đã đặt lịch với bác sĩ này vào thời gian này rồi."
-      //     : "Booking existed"
-      // );
-      AntdModal.info({
-        title: language === "vi" ? "Cảnh báo" : "Warning",
-        content:
+
+      if (res && res.errCode === 0) {
+        message.success(
           language === "vi"
-            ? "Bạn đã đặt lịch với bác sĩ vào thời gian này rồi."
-            : "Booking existed",
-        okText: language === "vi" ? "Đồng ý" : "OK",
-      });
-      this.props.closeBookingModal();
-    } else {
+            ? "Đặt lịch hẹn thành công"
+            : "Booking a new appointment succeed"
+        );
+        this.props.closeBookingModal();
+        setTimeout(() => {
+          window.location.href = "/schedule-appointment";
+        }, 3000);
+      } else if (res && res.errCode === 2) {
+        AntdModal.info({
+          title: language === "vi" ? "Cảnh báo" : "Warning",
+          content:
+            language === "vi"
+              ? "Bạn đã có lịch khám với bác sĩ khác trong khung giờ này. Vui lòng chọn giờ khác."
+              : "Duplicate schedule. Please choose another time.",
+        });
+        this.props.closeBookingModal();
+      } else if (res && res.errCode === 3) {
+        AntdModal.info({
+          title: language === "vi" ? "Cảnh báo" : "Warning",
+          content:
+            language === "vi"
+              ? "Bạn đã đặt lịch với bác sĩ vào thời gian này rồi."
+              : "Booking existed",
+        });
+        this.props.closeBookingModal();
+      } else {
+        message.error(
+          language === "vi"
+            ? "Đặt lịch hẹn không thành công. Vui lòng thử lại!"
+            : "Booking a new appointment error!"
+        );
+      }
+    } catch (err) {
+      console.error("Lỗi đặt lịch:", err);
       message.error(
         language === "vi"
-          ? "Đặt lịch hẹn không thành công. Vui lòng thử lại!"
-          : "Booking a new appointment error!"
+          ? "Có lỗi xảy ra. Vui lòng thử lại!"
+          : "Something went wrong!"
       );
+    } finally {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      hideLoading();
     }
   };
 
@@ -430,6 +427,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getGenders: () => dispatch(actions.fetchGenderStart()),
+  showLoading: () => dispatch(showLoading()),
+  hideLoading: () => dispatch(hideLoading()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BookingModal);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Row, Statistic, Table, Select } from "antd";
+import { Card, Col, Row, Select } from "antd";
 import {
   HeartOutlined,
   TeamOutlined,
@@ -22,8 +22,9 @@ import {
   ArcElement,
 } from "chart.js";
 import { getDoctorStatistics } from "../../../../services/userService";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import dayjs from "dayjs";
+import { showLoading, hideLoading } from "../../../../store/actions";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import "../../LeaderHospital/LeaderHospitalDashboard/LeaderHospitalDashboard.scss";
 
@@ -41,6 +42,7 @@ ChartJS.register(
 );
 
 const DoctorDashboard = () => {
+  const dispatch = useDispatch();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [filterRange, setFilterRange] = useState("7days");
@@ -58,18 +60,19 @@ const DoctorDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        dispatch(showLoading());
         const res = await getDoctorStatistics(userInfo?.id);
         setStats(res?.data || {});
       } catch (err) {
         console.error("Error fetching doctor stats:", err);
       } finally {
-        setLoading(false);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        dispatch(hideLoading());
       }
     };
     if (userInfo?.id) fetchData();
   }, [userInfo?.id]);
 
-  if (loading) return <p>Đang tải dữ liệu...</p>;
   if (!stats) return <p>Không có dữ liệu thống kê.</p>;
 
   // === KPI ===

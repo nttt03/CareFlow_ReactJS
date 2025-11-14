@@ -71,9 +71,8 @@ function ManageHospital({ language }) {
     pageSize = 5,
     currentFilters = filters
   ) => {
-    // dispatch(showLoading());
-    setLoading(true);
     try {
+      dispatch(showLoading());
       const res = await getAllHospitalByAdmin({
         page,
         limit: pageSize,
@@ -93,8 +92,8 @@ function ManageHospital({ language }) {
     } catch (err) {
       console.error("Lỗi khi fetch hospitals:", err);
     } finally {
-      setLoading(false);
-      // dispatch(hideLoading());
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      dispatch(hideLoading());
     }
   };
 

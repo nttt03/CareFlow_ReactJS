@@ -7,6 +7,7 @@ import { getAllHospital } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
 import BackButton from "../../../components/BackButton";
 import { EnvironmentOutlined } from "@ant-design/icons";
+import { showLoading, hideLoading } from "../../../store/actions";
 
 class ListHospital extends Component {
   constructor(props) {
@@ -24,6 +25,25 @@ class ListHospital extends Component {
       });
     }
     // console.log('check res hospital', res);
+  }
+
+  async componentDidMount() {
+    const { showLoading, hideLoading } = this.props;
+    showLoading();
+
+    try {
+      let res = await getAllHospital();
+      if (res && res.errCode === 0) {
+        this.setState({
+          dataHospitals: res.data ? res.data : [],
+        });
+      }
+    } catch (error) {
+      console.log("Lỗi khi lấy danh sách bệnh viện:", error);
+    } finally {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      hideLoading();
+    }
   }
 
   handleViewDetailHospital = (hospital) => {
@@ -122,4 +142,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(ListHospital);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    showLoading: () => dispatch(showLoading()),
+    hideLoading: () => dispatch(hideLoading()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListHospital);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Row, Statistic, Table, Spin, message, Avatar } from "antd";
+import { Card, Col, Row, Table, message, Avatar } from "antd";
 import {
   CalendarOutlined,
   UserAddOutlined,
@@ -17,7 +17,8 @@ import { LANGUAGES } from "../../../../utils";
 import { formatDate } from "../../../../utils";
 import { Buffer } from "buffer";
 import DoctorImg from "../../../../assets/specialty/doctor.jpg";
-
+import { showLoading, hideLoading } from "../../../../store/actions";
+import { useDispatch } from "react-redux";
 import { Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -41,6 +42,7 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({});
   const [last7DaysData, setLast7DaysData] = useState([]);
@@ -56,7 +58,7 @@ const AdminDashboard = () => {
 
   const fetchAdminStats = async () => {
     try {
-      setLoading(true);
+      dispatch(showLoading());
       const res = await getAdminStatistics();
 
       if (res?.errCode === 0) {
@@ -130,7 +132,8 @@ const AdminDashboard = () => {
           : "Failed to load system statistics!"
       );
     } finally {
-      setLoading(false);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      dispatch(hideLoading());
     }
   };
 
@@ -221,21 +224,6 @@ const AdminDashboard = () => {
       dataIndex: "totalBookings",
     },
   ];
-
-  if (loading) {
-    return (
-      <div style={{ textAlign: "center", padding: 80 }}>
-        <Spin
-          size="large"
-          tip={
-            language === LANGUAGES.VI
-              ? "Đang tải thống kê hệ thống..."
-              : "Loading system statistics..."
-          }
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="vh-100 overflow-auto p-4 no-scrollbar">

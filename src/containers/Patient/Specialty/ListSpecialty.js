@@ -6,6 +6,7 @@ import HomeFooter from "../../HomePage/HomeFooter";
 import { getAllSpecialty } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
 import BackButton from "../../../components/BackButton";
+import { showLoading, hideLoading } from "../../../store/actions";
 
 class ListSpecialty extends Component {
   constructor(props) {
@@ -16,12 +17,23 @@ class ListSpecialty extends Component {
   }
 
   async componentDidMount() {
-    const res = await getAllSpecialty();
-    console.log("check getAllSpecialty: ", res);
-    if (res && res.errCode === 0) {
-      this.setState({
-        dataSpecialty: res.data ? res.data : [],
-      });
+    const { showLoading, hideLoading } = this.props;
+    showLoading();
+
+    try {
+      const res = await getAllSpecialty();
+      console.log("check getAllSpecialty: ", res);
+
+      if (res && res.errCode === 0) {
+        this.setState({
+          dataSpecialty: res.data || [],
+        });
+      }
+    } catch (error) {
+      console.log("Lỗi khi lấy danh sách chuyên khoa:", error);
+    } finally {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      hideLoading();
     }
   }
 
@@ -88,4 +100,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(ListSpecialty);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    showLoading: () => dispatch(showLoading()),
+    hideLoading: () => dispatch(hideLoading()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListSpecialty);

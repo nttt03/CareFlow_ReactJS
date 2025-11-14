@@ -335,11 +335,17 @@ export const reviewDoctor = (
   );
 };
 
-export const chatWithDatabase = async (message, history, patientId) => {
+export const chatWithDatabase = async (
+  message,
+  history,
+  patientId,
+  language
+) => {
   return await axios.post("/api/chat-with-db", {
     message,
     history,
     patientId,
+    language,
   });
 };
 

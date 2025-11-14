@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Col, Row, Statistic, Table, Spin, message } from "antd";
+import { Card, Col, Row, Table, message } from "antd";
 import {
   CalendarOutlined,
   UserAddOutlined,
@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 
 import { getHospitalStatistics } from "../../../../services/userService";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,7 +27,7 @@ import DoctorImg from "../../../../assets/specialty/doctor.jpg";
 import "./LeaderHospitalDashboard.scss";
 import { formatDate } from "../../../../utils";
 import { LANGUAGES } from "../../../../utils";
-
+import { showLoading, hideLoading } from "../../../../store/actions";
 import { Bar, Pie } from "react-chartjs-2";
 
 ChartJS.register(
@@ -41,8 +41,8 @@ ChartJS.register(
 );
 
 const LeaderHospitalDashboard = () => {
+  const dispatch = useDispatch();
   const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [appointmentsData, setAppointmentsData] = useState([]);
   const [specialtyData, setSpecialtyData] = useState([]);
   const [topDoctors, setTopDoctors] = useState([]);
@@ -55,7 +55,7 @@ const LeaderHospitalDashboard = () => {
 
   const fetchHospitalStats = async () => {
     try {
-      setLoading(true);
+      dispatch(showLoading());
       const hospitalId = userInfo?.hospitalId;
       const res = await getHospitalStatistics(hospitalId);
 
@@ -115,7 +115,8 @@ const LeaderHospitalDashboard = () => {
           : "Failed to load hospital statistics!"
       );
     } finally {
-      setLoading(false);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      dispatch(hideLoading());
     }
   };
 
@@ -182,21 +183,6 @@ const LeaderHospitalDashboard = () => {
       key: "totalBookings",
     },
   ];
-
-  if (loading) {
-    return (
-      <div style={{ textAlign: "center", padding: 80 }}>
-        <Spin
-          size="large"
-          tip={
-            language === LANGUAGES.VI
-              ? "Đang tải thống kê..."
-              : "Loading statistics..."
-          }
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="vh-100 overflow-auto p-4 no-scrollbar">
