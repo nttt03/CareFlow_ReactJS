@@ -7,6 +7,7 @@ import { getAllHospital } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
 import BackButton from "../../../components/BackButton";
 import { EnvironmentOutlined } from "@ant-design/icons";
+import { Pagination } from "antd";
 import { showLoading, hideLoading } from "../../../store/actions";
 
 class ListHospital extends Component {
@@ -14,28 +15,34 @@ class ListHospital extends Component {
     super(props);
     this.state = {
       dataHospitals: [],
+      current: 1,
+      pageSize: 8,
+      total: 0,
     };
   }
 
   async componentDidMount() {
-    let res = await getAllHospital();
-    if (res && res.errCode === 0) {
-      this.setState({
-        dataHospitals: res.data ? res.data : [],
-      });
-    }
-    // console.log('check res hospital', res);
+    this.fetchHospitals();
   }
 
-  async componentDidMount() {
+  fetchHospitals = async (
+    page = this.state.current,
+    pageSize = this.state.pageSize
+  ) => {
     const { showLoading, hideLoading } = this.props;
     showLoading();
-
     try {
-      let res = await getAllHospital();
+      const res = await getAllHospital({
+        page,
+        limit: pageSize,
+      });
+
       if (res && res.errCode === 0) {
         this.setState({
-          dataHospitals: res.data ? res.data : [],
+          dataHospitals: res.data || [],
+          current: res.pagination.page,
+          pageSize: res.pagination.limit,
+          total: res.pagination.total,
         });
       }
     } catch (error) {
@@ -44,7 +51,12 @@ class ListHospital extends Component {
       await new Promise((resolve) => setTimeout(resolve, 500));
       hideLoading();
     }
-  }
+  };
+
+  handlePageChange = (page, pageSize) => {
+    this.setState({ current: page, pageSize });
+    this.fetchHospitals(page, pageSize);
+  };
 
   handleViewDetailHospital = (hospital) => {
     if (this.props.history) {
@@ -53,8 +65,9 @@ class ListHospital extends Component {
   };
 
   render() {
-    let { dataHospitals } = this.state;
+    let { dataHospitals, current, pageSize, total } = this.state;
     let { language } = this.props;
+
     return (
       <React.Fragment>
         <HomeHeader />
@@ -68,6 +81,7 @@ class ListHospital extends Component {
             <h2 className="list-hospital__title">
               <FormattedMessage id="homeheader.list-hospital" />
             </h2>
+
             <div className="row">
               {dataHospitals &&
                 dataHospitals.length > 0 &&
@@ -127,6 +141,23 @@ class ListHospital extends Component {
                     </div>
                   );
                 })}
+            </div>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                marginTop: 24,
+                marginBottom: 24,
+              }}
+            >
+              <Pagination
+                current={current}
+                total={total}
+                pageSize={pageSize}
+                onChange={this.handlePageChange}
+                showSizeChanger={false}
+              />
             </div>
           </div>
         </div>

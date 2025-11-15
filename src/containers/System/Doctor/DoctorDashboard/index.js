@@ -242,7 +242,9 @@ const DoctorDashboard = () => {
               padding: 0,
               background: "linear-gradient(135deg, #4f46e5, #6366f1)",
             }}
-            bodyStyle={{ padding: 20 }}
+            styles={{
+              body: { padding: 20 },
+            }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div
@@ -278,7 +280,9 @@ const DoctorDashboard = () => {
               borderRadius: 14,
               background: "linear-gradient(135deg, #22c55e, #4ade80)",
             }}
-            bodyStyle={{ padding: 20 }}
+            styles={{
+              body: { padding: 20 },
+            }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div
@@ -313,7 +317,9 @@ const DoctorDashboard = () => {
               borderRadius: 14,
               background: "linear-gradient(135deg, #ef4444, #fda4af)",
             }}
-            bodyStyle={{ padding: 20 }}
+            styles={{
+              body: { padding: 20 },
+            }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div
@@ -348,7 +354,9 @@ const DoctorDashboard = () => {
               borderRadius: 14,
               background: "linear-gradient(135deg, #3b82f6, #60a5fa)",
             }}
-            bodyStyle={{ padding: 20 }}
+            styles={{
+              body: { padding: 20 },
+            }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div

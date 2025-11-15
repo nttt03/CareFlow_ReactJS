@@ -6,6 +6,7 @@ import HomeFooter from "../../HomePage/HomeFooter";
 import { getAllSpecialty } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
 import BackButton from "../../../components/BackButton";
+import { Pagination, Spin } from "antd";
 import { showLoading, hideLoading } from "../../../store/actions";
 
 class ListSpecialty extends Component {
@@ -13,29 +14,54 @@ class ListSpecialty extends Component {
     super(props);
     this.state = {
       dataSpecialty: [],
+      current: 1,
+      pageSize: 8,
+      total: 0,
+      loading: false,
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this.fetchSpecialty();
+  }
+
+  fetchSpecialty = async (
+    page = this.state.current,
+    pageSize = this.state.pageSize
+  ) => {
     const { showLoading, hideLoading } = this.props;
+    this.setState({ loading: true });
     showLoading();
 
     try {
-      const res = await getAllSpecialty();
-      console.log("check getAllSpecialty: ", res);
+      const res = await getAllSpecialty({
+        page,
+        limit: pageSize,
+      });
 
       if (res && res.errCode === 0) {
+        const { data, pagination } = res;
         this.setState({
-          dataSpecialty: res.data || [],
+          dataSpecialty: data || [],
+          current: pagination.page,
+          pageSize: pagination.limit,
+          total: pagination.total,
         });
       }
     } catch (error) {
       console.log("Lỗi khi lấy danh sách chuyên khoa:", error);
     } finally {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      this.setState({ loading: false });
+      await new Promise((resolve) => setTimeout(resolve, 600));
       hideLoading();
     }
-  }
+  };
+
+  onPageChange = (page, pageSize) => {
+    this.setState({ current: page, pageSize }, () =>
+      this.fetchSpecialty(page, pageSize)
+    );
+  };
 
   handleViewDetailSpecialty = (item) => {
     if (this.props.history) {
@@ -44,7 +70,7 @@ class ListSpecialty extends Component {
   };
 
   render() {
-    let { dataSpecialty } = this.state;
+    let { dataSpecialty, current, pageSize, total, loading } = this.state;
     let { language } = this.props;
 
     return (
@@ -57,35 +83,52 @@ class ListSpecialty extends Component {
               label={language === "vi" ? "Quay lại" : "Back"}
               style={{ color: "#0071ba" }}
             />
+
             <h2 className="list-specialty__title">
               <FormattedMessage id="homeheader.list-specialty" />
             </h2>
-            <div className="row">
-              {dataSpecialty &&
-                dataSpecialty.length > 0 &&
-                dataSpecialty.map((item, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="col-md-3 col-sm-6 col-12"
-                      onClick={() => this.handleViewDetailSpecialty(item)}
-                    >
-                      <div className="list-specialty__content">
-                        <div className="list-specialty__content__item">
-                          <div className="list-specialty__content__item__image">
-                            <img src={item.image} />
-                          </div>
-                          <div className="list-specialty__content__item__info">
-                            <div className="list-specialty__content__item__info__name">
-                              {item.name}
-                            </div>
+
+            <Spin spinning={loading}>
+              <div className="row">
+                {dataSpecialty.map((item) => (
+                  <div
+                    key={item.id}
+                    className="col-md-3 col-sm-6 col-12"
+                    onClick={() => this.handleViewDetailSpecialty(item)}
+                  >
+                    <div className="list-specialty__content">
+                      <div className="list-specialty__content__item">
+                        <div className="list-specialty__content__item__image">
+                          <img src={item.image} alt={item.name} />
+                        </div>
+                        <div className="list-specialty__content__item__info">
+                          <div className="list-specialty__content__item__info__name">
+                            {item.name}
                           </div>
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-            </div>
+                  </div>
+                ))}
+              </div>
+
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: 24,
+                }}
+              >
+                <Pagination
+                  current={current}
+                  total={total}
+                  pageSize={pageSize}
+                  onChange={this.onPageChange}
+                  showSizeChanger={false}
+                />
+              </div>
+            </Spin>
           </div>
         </div>
         <HomeFooter />

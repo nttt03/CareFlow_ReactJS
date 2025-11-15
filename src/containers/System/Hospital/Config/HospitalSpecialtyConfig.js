@@ -145,7 +145,9 @@ const HospitalSpecialtyConfig = ({
                   <Card
                     hoverable
                     className="text-center"
-                    bodyStyle={{ padding: "8px" }}
+                    styles={{
+                      body: { padding: "8px" },
+                    }}
                   >
                     <Avatar src={item.image} size={48} className="mb-2" />
                     <div>{item.name}</div>

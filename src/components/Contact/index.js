@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import {
-  PhoneOutlined,
-  CustomerServiceOutlined,
-  MessageOutlined,
-} from "@ant-design/icons";
+import { PhoneOutlined, MessageOutlined } from "@ant-design/icons";
+import { Tooltip } from "antd";
 import Lottie from "lottie-react";
 import chatbot from "../../assets/lottie/chatbot.json";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -52,7 +49,7 @@ const Contact = () => {
         zIndex: 10,
       }}
     >
-      <div style={{ width: 150 }}>
+      <div style={{ width: 150, cursor: "pointer" }}>
         <Lottie onClick={toggleChat} animationData={chatbot} loop />
       </div>
       <div
@@ -67,45 +64,73 @@ const Contact = () => {
         }}
       >
         {isChatOpen && <ChatBox onClose={() => setIsChatOpen(false)} />}
-        <button
-          onClick={handleCall}
-          className="
+        <Tooltip
+          title="Gọi hỗ trợ"
+          placement="left"
+          color="#ff7a45"
+          styles={{
+            body: {
+              color: "white",
+              fontWeight: "500",
+              fontSize: "14px",
+              borderRadius: "8px",
+              padding: "8px 12px",
+            },
+          }}
+        >
+          <button
+            onClick={handleCall}
+            className="
         btn btn-danger
         d-flex align-items-center justify-content-center
         shadow-lg
         scroll-top-btn pulse-float
       "
-          style={{
-            width: "50px",
-            height: "50px",
-            borderRadius: "50%",
-            fontSize: "20px",
-            backgroundColor: "red",
-            borderColor: "red",
-            marginBottom: "12px",
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              fontSize: "20px",
+              backgroundColor: "red",
+              borderColor: "red",
+              marginBottom: "12px",
+            }}
+          >
+            <PhoneOutlined style={{ fontSize: "22px" }} />
+          </button>
+        </Tooltip>
+        <Tooltip
+          title="Kết nối zalo"
+          placement="left"
+          color="navy"
+          styles={{
+            body: {
+              color: "white",
+              fontWeight: "500",
+              fontSize: "14px",
+              borderRadius: "8px",
+              padding: "8px 12px",
+            },
           }}
-          title="Lên đầu trang"
         >
-          <PhoneOutlined style={{ fontSize: "22px" }} />
-        </button>
-        <button
-          onClick={handleZalo}
-          className="
+          <button
+            onClick={handleZalo}
+            className="
         btn btn-primary
         d-flex align-items-center justify-content-center
         shadow-lg
         scroll-top-btn pulse-float
       "
-          style={{
-            width: "50px",
-            height: "50px",
-            borderRadius: "50%",
-            fontSize: "20px",
-          }}
-          title="Lên đầu trang"
-        >
-          <MessageOutlined style={{ fontSize: "22px" }} />
-        </button>
+            style={{
+              width: "50px",
+              height: "50px",
+              borderRadius: "50%",
+              fontSize: "20px",
+            }}
+          >
+            <MessageOutlined style={{ fontSize: "22px" }} />
+          </button>
+        </Tooltip>
       </div>
     </div>
   );

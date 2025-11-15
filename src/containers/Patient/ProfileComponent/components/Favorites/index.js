@@ -108,7 +108,9 @@ const Favorites = ({ userInfo, allFavorites, fetchUserFavorite }) => {
                   padding: "20px 16px",
                   transition: "all 0.3s ease",
                 }}
-                bodyStyle={{ padding: 0 }}
+                styles={{
+                  body: { padding: 0 },
+                }}
               >
                 <div className="d-flex justify-content-center mb-3">
                   <img

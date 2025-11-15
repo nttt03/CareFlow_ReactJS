@@ -190,7 +190,12 @@ class DoctorSchedule extends Component {
 
     return (
       <>
-        <Card className="border-0 mt-3" bodyStyle={{ padding: "20px 25px" }}>
+        <Card
+          className="border-0 mt-3"
+          styles={{
+            body: { padding: "20px 25px" },
+          }}
+        >
           <div className="d-flex align-items-center justify-content-between mb-3">
             <Title level={5} className="mb-0 text-primary">
               <CalendarOutlined className="me-2" />

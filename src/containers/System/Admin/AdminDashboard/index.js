@@ -324,7 +324,9 @@ const AdminDashboard = () => {
                 color: `${item?.color}`,
                 border: `${item?.border}`,
               }}
-              bodyStyle={{ padding: 18 }}
+              styles={{
+                body: { padding: 18 },
+              }}
             >
               <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>
                 {item.title}

@@ -250,7 +250,8 @@ class Header extends Component {
         <div className="languages">
           {/* Icon thông báo */}
           <Dropdown
-            overlay={notificationOverlay}
+            menu={{ items: [] }}
+            popupRender={() => notificationOverlay}
             trigger={["click"]}
             placement="bottomRight"
             overlayClassName="custom-notif-overlay"

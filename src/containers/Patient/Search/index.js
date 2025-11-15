@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { getAllProvince, searchAll } from "../../../services/userService";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { showLoading, hideLoading } from "../../../store/actions";
 import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
 import { LANGUAGES } from "../../../utils";
@@ -32,10 +33,11 @@ const { Option } = Select;
 const Search = () => {
   const { id } = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
   const language = useSelector((state) => state.app.language);
   const TopDoctors = useSelector((state) => state.admin.topDoctors);
   const location = useLocation();
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [provinceList, setProvinceList] = useState([]);
   const [selectedProvince, setSelectedProvince] = useState("ALL");
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -79,19 +81,23 @@ const Search = () => {
   };
 
   const handleSearch = async (keyword = "") => {
-    setLoading(true);
+    dispatch(showLoading());
+    try {
+      const res = await searchAll({
+        keyword: keyword.trim(),
+        provinceId: selectedProvince === "ALL" ? "" : selectedProvince,
+      });
 
-    const res = await searchAll({
-      keyword: keyword.trim(),
-      provinceId: selectedProvince === "ALL" ? "" : selectedProvince,
-    });
-
-    if (res && res.data && res.errCode === 0) {
-      setDoctorList(res.data?.doctors || []);
-      setHospitalList(res.data?.hospitals || []);
+      if (res && res.data && res.errCode === 0) {
+        setDoctorList(res.data?.doctors || []);
+        setHospitalList(res.data?.hospitals || []);
+      }
+    } catch (error) {
+      console.log("error search", error);
+    } finally {
+      await new Promise((resolve) => setTimeout(resolve, 400));
+      dispatch(hideLoading());
     }
-
-    setLoading(false);
   };
 
   return (
@@ -135,11 +141,25 @@ const Search = () => {
 
             <Col xs={12} md={4}>
               <Button
-                type="primary"
                 icon={<SearchOutlined />}
                 size="large"
                 block
                 onClick={() => handleSearch(searchKeyword)}
+                style={{
+                  background: "linear-gradient(135deg, #ff7a45, #ff9a62)",
+                  // borderColor: "#ff7a45",
+                  border: "none",
+                  color: "white",
+                  boxShadow: "0 4px 15px rgba(255, 122, 69, 0.3)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#ff6a30";
+                  e.currentTarget.style.borderColor = "#ff6a30";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#ff7a45";
+                  e.currentTarget.style.borderColor = "#ff7a45";
+                }}
               >
                 {language === "vi" ? "Tìm kiếm" : "Search"}
               </Button>
@@ -159,194 +179,188 @@ const Search = () => {
               </Text>{" "}
               {language === "vi" ? "kết quả." : "result"}
             </Title>
-            {loading ? (
-              <div className="text-center py-5">
-                <Spin size="large" />
-              </div>
-            ) : (
-              <>
-                {/* Danh sách bác sĩ */}
-                {doctorList && doctorList.length > 0 && (
-                  <>
-                    <Title level={4} className="fw-bold text-primary mt-4">
-                      {language === "vi" ? "Bác sĩ" : "Doctors"}
-                    </Title>
-                    <div className="doctor-list mb-5">
-                      {doctorList.map((doctor, index) => {
-                        let imageBase64 = "";
-                        if (doctor.avatar) {
-                          imageBase64 = new Buffer(
-                            doctor.avatar,
-                            "base64"
-                          ).toString("binary");
-                        }
-                        return (
-                          <div
-                            className="card doctor-card mb-4 p-3 shadow-sm border-0"
-                            key={index}
+            <>
+              {/* Danh sách bác sĩ */}
+              {doctorList && doctorList.length > 0 && (
+                <>
+                  <Title level={4} className="fw-bold text-primary mt-4">
+                    {language === "vi" ? "Bác sĩ" : "Doctors"}
+                  </Title>
+                  <div className="doctor-list mb-5">
+                    {doctorList.map((doctor, index) => {
+                      let imageBase64 = "";
+                      if (doctor.avatar) {
+                        imageBase64 = new Buffer(
+                          doctor.avatar,
+                          "base64"
+                        ).toString("binary");
+                      }
+                      return (
+                        <div
+                          className="card doctor-card mb-4 p-3 shadow-sm border-0"
+                          key={index}
+                        >
+                          <Row
+                            align="middle"
+                            gutter={[16, 16]}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
                           >
-                            <Row
-                              align="middle"
-                              gutter={[16, 16]}
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                              }}
-                            >
-                              <Col xs={24} md={18}>
-                                <Row align="middle" gutter={[16, 16]}>
-                                  <Col xs={4} md={5} className="text-center">
-                                    <img
-                                      src={imageBase64 || "/defaultImg.png"}
-                                      alt={doctor.fullName}
-                                      className="rounded-circle doctor-avatar"
-                                    />
-                                  </Col>
-                                  <Col xs={20} md={19}>
-                                    <h5 className="fw-bold mb-1">
-                                      {doctor.fullName}
-                                    </h5>
-                                    <div className="mb-2 text-secondary">
-                                      {doctor.doctorInfor?.specialty && (
-                                        <span className="badge bg-success text-white rounded-pill p-2">
-                                          {doctor.doctorInfor.specialty.name}
-                                        </span>
-                                      )}
-                                    </div>
-                                    {doctor?.doctorInfor?.hospital
-                                      ?.addressDetail && (
-                                      <p className="text-muted mb-0 text-truncate">
-                                        {doctor?.doctorInfor?.hospital
-                                          ?.addressDetail || "-"}
-                                        {doctor?.doctorInfor?.hospital
-                                          ?.provinceData?.name
-                                          ? `, ${doctor?.doctorInfor?.hospital?.provinceData.name}`
-                                          : ""}
-                                      </p>
+                            <Col xs={24} md={18}>
+                              <Row align="middle" gutter={[16, 16]}>
+                                <Col xs={4} md={5} className="text-center">
+                                  <img
+                                    src={imageBase64 || "/defaultImg.png"}
+                                    alt={doctor.fullName}
+                                    className="rounded-circle doctor-avatar"
+                                  />
+                                </Col>
+                                <Col xs={20} md={19}>
+                                  <h5 className="fw-bold mb-1">
+                                    {doctor.fullName}
+                                  </h5>
+                                  <div className="mb-2 text-secondary">
+                                    {doctor.doctorInfor?.specialty && (
+                                      <span className="badge bg-success text-white rounded-pill p-2">
+                                        {doctor.doctorInfor.specialty.name}
+                                      </span>
                                     )}
-                                  </Col>
-                                </Row>
-                              </Col>
-
-                              <Col
-                                xs={24}
-                                md={6}
-                                className="text-md-end text-center"
-                              >
-                                <Button
-                                  type="primary"
-                                  size="middle"
-                                  onClick={() =>
-                                    history.push(`/detail-doctor/${doctor.id}`)
-                                  }
-                                >
-                                  {language === "vi" ? "Đặt khám" : "Booking"}
-                                </Button>
-                              </Col>
-                            </Row>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
-
-                {/* Danh sách bệnh viện */}
-                {hospitalList && hospitalList.length > 0 && (
-                  <>
-                    <Title level={4} className="fw-bold text-success mt-5">
-                      {language === "vi" ? "Bệnh viện" : "Hospitals"}
-                    </Title>
-                    <div className="hospital-list">
-                      {hospitalList.map((hospital, index) => {
-                        let imageBase64 = "";
-                        if (hospital.image) {
-                          imageBase64 = new Buffer(
-                            hospital.image,
-                            "base64"
-                          ).toString("binary");
-                        }
-                        return (
-                          <div
-                            className="card hospital-card mb-4 p-3 shadow-sm border-0"
-                            key={index}
-                          >
-                            <Row
-                              align="middle"
-                              gutter={[16, 16]}
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                              }}
-                            >
-                              <Col xs={24} md={18}>
-                                <Row align="middle" gutter={[16, 16]}>
-                                  <Col xs={4} md={5} className="text-center">
-                                    <img
-                                      src={imageBase64 || "/defaultImg.png"}
-                                      alt={hospital.name}
-                                      className="rounded hospital-avatar"
-                                    />
-                                  </Col>
-                                  <Col xs={20} md={19}>
-                                    <h5 className="fw-bold mb-1">
-                                      {hospital.name}
-                                    </h5>
-                                    <p className="text-muted mb-0">
-                                      {hospital?.addressDetail || "-"}
-                                      {hospital?.provinceData?.name
-                                        ? `, ${hospital?.provinceData.name}`
+                                  </div>
+                                  {doctor?.doctorInfor?.hospital
+                                    ?.addressDetail && (
+                                    <p className="text-muted mb-0 text-truncate">
+                                      {doctor?.doctorInfor?.hospital
+                                        ?.addressDetail || "-"}
+                                      {doctor?.doctorInfor?.hospital
+                                        ?.provinceData?.name
+                                        ? `, ${doctor?.doctorInfor?.hospital?.provinceData.name}`
                                         : ""}
                                     </p>
-                                  </Col>
-                                </Row>
-                              </Col>
+                                  )}
+                                </Col>
+                              </Row>
+                            </Col>
 
-                              <Col
-                                xs={24}
-                                md={6}
-                                className="text-md-end text-center"
+                            <Col
+                              xs={24}
+                              md={6}
+                              className="text-md-end text-center"
+                            >
+                              <Button
+                                type="primary"
+                                size="middle"
+                                onClick={() =>
+                                  history.push(`/detail-doctor/${doctor.id}`)
+                                }
                               >
-                                <Button
-                                  type="default"
-                                  size="middle"
-                                  onClick={() =>
-                                    history.push(
-                                      `/detail-hospital/${hospital.id}`
-                                    )
-                                  }
-                                >
-                                  {language === "vi"
-                                    ? "Xem chi tiết"
-                                    : "See details"}
-                                </Button>
-                              </Col>
-                            </Row>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
-
-                {doctorList.length === 0 && hospitalList.length === 0 && (
-                  <div className="py-5">
-                    <Empty
-                      description={
-                        <span>
-                          {language === "vi"
-                            ? "Không tìm thấy kết quả phù hợp."
-                            : "No matching results found."}
-                        </span>
-                      }
-                      image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    />
+                                {language === "vi" ? "Đặt khám" : "Booking"}
+                              </Button>
+                            </Col>
+                          </Row>
+                        </div>
+                      );
+                    })}
                   </div>
-                )}
-              </>
-            )}
+                </>
+              )}
+
+              {/* Danh sách bệnh viện */}
+              {hospitalList && hospitalList.length > 0 && (
+                <>
+                  <Title level={4} className="fw-bold text-success mt-5">
+                    {language === "vi" ? "Bệnh viện" : "Hospitals"}
+                  </Title>
+                  <div className="hospital-list">
+                    {hospitalList.map((hospital, index) => {
+                      let imageBase64 = "";
+                      if (hospital.image) {
+                        imageBase64 = new Buffer(
+                          hospital.image,
+                          "base64"
+                        ).toString("binary");
+                      }
+                      return (
+                        <div
+                          className="card hospital-card mb-4 p-3 shadow-sm border-0"
+                          key={index}
+                        >
+                          <Row
+                            align="middle"
+                            gutter={[16, 16]}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Col xs={24} md={18}>
+                              <Row align="middle" gutter={[16, 16]}>
+                                <Col xs={4} md={5} className="text-center">
+                                  <img
+                                    src={imageBase64 || "/defaultImg.png"}
+                                    alt={hospital.name}
+                                    className="rounded hospital-avatar"
+                                  />
+                                </Col>
+                                <Col xs={20} md={19}>
+                                  <h5 className="fw-bold mb-1">
+                                    {hospital.name}
+                                  </h5>
+                                  <p className="text-muted mb-0">
+                                    {hospital?.addressDetail || "-"}
+                                    {hospital?.provinceData?.name
+                                      ? `, ${hospital?.provinceData.name}`
+                                      : ""}
+                                  </p>
+                                </Col>
+                              </Row>
+                            </Col>
+
+                            <Col
+                              xs={24}
+                              md={6}
+                              className="text-md-end text-center"
+                            >
+                              <Button
+                                type="default"
+                                size="middle"
+                                onClick={() =>
+                                  history.push(
+                                    `/detail-hospital/${hospital.id}`
+                                  )
+                                }
+                              >
+                                {language === "vi"
+                                  ? "Xem chi tiết"
+                                  : "See details"}
+                              </Button>
+                            </Col>
+                          </Row>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+
+              {doctorList.length === 0 && hospitalList.length === 0 && (
+                <div className="py-5">
+                  <Empty
+                    description={
+                      <span>
+                        {language === "vi"
+                          ? "Không tìm thấy kết quả phù hợp."
+                          : "No matching results found."}
+                      </span>
+                    }
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  />
+                </div>
+              )}
+            </>
           </Col>
           {/* Cột phải - Top Doctors */}
           <Col xs={24} md={7}>

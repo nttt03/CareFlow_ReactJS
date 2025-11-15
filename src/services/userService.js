@@ -47,6 +47,10 @@ const getTopDoctorHomeService = (limit) => {
   return axios.get(`/api/top-doctor-home?limit=${limit}`);
 };
 
+export const getListDoctor = (params) => {
+  return axios.get(`/api/top-doctor-home`, { params });
+};
+
 const getAllDoctors = () => {
   return axios.get(`/api/get-all-doctor`);
 };
@@ -103,8 +107,8 @@ const createNewHospital = (data) => {
   return axios.post(`/api/create-new-hospital`, data);
 };
 
-const getAllHospital = () => {
-  return axios.get(`/api/get-all-hospital`);
+const getAllHospital = (params) => {
+  return axios.get(`/api/get-all-hospital-by-admin`, { params });
 };
 
 const getAllDetailHospitalById = (data) => {
@@ -339,12 +343,14 @@ export const chatWithDatabase = async (
   message,
   history,
   patientId,
+  fullName,
   language
 ) => {
   return await axios.post("/api/chat-with-db", {
     message,
     history,
     patientId,
+    fullName,
     language,
   });
 };

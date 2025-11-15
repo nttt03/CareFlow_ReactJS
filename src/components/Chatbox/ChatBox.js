@@ -13,6 +13,7 @@ import { Buffer } from "buffer";
 export default function ChatBox({ onClose }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const inputRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const language = useSelector((state) => state.app.language);
@@ -25,12 +26,19 @@ export default function ChatBox({ onClose }) {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    if (!isLoading) {
+      inputRef.current?.focus();
+    }
+  }, [messages, isLoading]);
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage = { from: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    inputRef.current?.focus();
     setIsLoading(true);
 
     try {
@@ -38,6 +46,7 @@ export default function ChatBox({ onClose }) {
         input,
         messages,
         userInfor?.id,
+        userInfor?.fullName,
         language
       );
       const botMessage = { from: "bot", text: response.text };
@@ -53,7 +62,7 @@ export default function ChatBox({ onClose }) {
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -81,7 +90,7 @@ export default function ChatBox({ onClose }) {
       <div
         style={{
           width: "100%",
-          maxWidth: "500px",
+          maxWidth: "700px",
           height: "80vh",
           maxHeight: "700px",
           backgroundColor: "#fff",
@@ -97,7 +106,7 @@ export default function ChatBox({ onClose }) {
         {/* Header */}
         <div
           style={{
-            padding: "14px 16px",
+            padding: "10px 16px",
             background: "linear-gradient(135deg, #06a9e9, #74efff)",
             color: "white",
             fontWeight: "bold",
@@ -154,7 +163,6 @@ export default function ChatBox({ onClose }) {
           )}
 
           {messages.map((msg, i) => {
-            console.log(userInfor);
             let userAvatar = null;
             if (userInfor?.avatar) {
               userAvatar = Buffer.from(userInfor?.avatar, "base64").toString(
@@ -283,10 +291,11 @@ export default function ChatBox({ onClose }) {
         >
           <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
             <input
+              ref={inputRef}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyDown}
               placeholder="Nhập tin nhắn..."
               disabled={isLoading}
               style={{

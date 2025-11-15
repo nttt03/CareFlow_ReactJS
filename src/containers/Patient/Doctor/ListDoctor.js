@@ -3,42 +3,60 @@ import { connect } from "react-redux";
 import "./ListDoctor.scss";
 import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
-import * as actions from "../../../store/actions";
 import { LANGUAGES } from "../../../utils";
 import { FormattedMessage } from "react-intl";
 import { Buffer } from "buffer";
 import DoctorImg from "../../../assets/specialty/doctor.jpg";
 import BackButton from "../../../components/BackButton";
-import { Rate } from "antd";
+import { Rate, Pagination } from "antd";
 import { showLoading, hideLoading } from "../../../store/actions";
+import { getListDoctor } from "../../../services/userService";
+
 class ListDoctor extends Component {
   constructor(props) {
     super(props);
     this.state = {
       arrDoctors: [],
+      current: 1,
+      pageSize: 8,
+      total: 0,
     };
   }
 
   async componentDidMount() {
-    const { showLoading, hideLoading, loadTopDoctors } = this.props;
+    this.fetchDoctors();
+  }
+
+  fetchDoctors = async (
+    page = this.state.current,
+    limit = this.state.pageSize
+  ) => {
+    const { showLoading, hideLoading } = this.props;
     showLoading();
+
     try {
-      await loadTopDoctors();
+      let res = await getListDoctor({ page, limit });
+
+      if (res && res.errCode === 0) {
+        this.setState({
+          arrDoctors: res.data || [],
+          current: res.pagination.page,
+          pageSize: res.pagination.limit,
+          total: res.pagination.total,
+        });
+      }
     } catch (error) {
-      console.log("Lỗi load top doctors:", error);
+      console.log("Lỗi load danh sách bác sĩ:", error);
     } finally {
       await new Promise((resolve) => setTimeout(resolve, 500));
       hideLoading();
     }
-  }
+  };
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.topDoctorsRedux !== this.props.topDoctorsRedux) {
-      this.setState({
-        arrDoctors: this.props.topDoctorsRedux,
-      });
-    }
-  }
+  handlePageChange = (page, pageSize) => {
+    this.setState({ current: page, pageSize });
+    this.fetchDoctors(page, pageSize);
+  };
 
   handleViewDetailDoctor = (doctor) => {
     if (this.props.history) {
@@ -47,8 +65,9 @@ class ListDoctor extends Component {
   };
 
   render() {
-    let arrDoctors = this.state.arrDoctors;
+    let { arrDoctors, current, pageSize, total } = this.state;
     const { language } = this.props;
+
     return (
       <React.Fragment>
         <HomeHeader />
@@ -62,68 +81,81 @@ class ListDoctor extends Component {
             <h2 className="section-title mt-1">
               <FormattedMessage id="homeheader.list-doctor" />
             </h2>
-            {arrDoctors && arrDoctors.length > 0 ? (
-              arrDoctors.map((item, index) => {
-                let imageBase64 = "";
-                if (item.avatar) {
-                  imageBase64 = Buffer.from(item.avatar, "base64").toString(
-                    "binary"
-                  );
-                }
 
-                let nameVi = `${item.positionData?.valueVi || "Bác sĩ"}, ${
-                  item.fullName
-                }`;
-                let nameEn = `${item.positionData?.valueEn || "Doctor"}, ${
-                  item.fullName
-                }`;
+            <div className="row">
+              {arrDoctors && arrDoctors.length > 0 ? (
+                arrDoctors.map((item, index) => {
+                  let imageBase64 = "";
+                  if (item.avatar) {
+                    imageBase64 = Buffer.from(item.avatar, "base64").toString(
+                      "binary"
+                    );
+                  }
 
-                // Kiểm tra và hiển thị tên chuyên khoa, nếu không có thì hiển thị "Chưa xác định"
-                const specialtyName =
-                  item.doctorInfor &&
-                  item.doctorInfor.specialty &&
-                  item.doctorInfor.specialty.name
-                    ? item.doctorInfor.specialty.name
-                    : "Chưa xác định";
+                  let name =
+                    language === LANGUAGES.VI
+                      ? `${item.positionData?.valueVi || "Bác sĩ"}, ${
+                          item.fullName
+                        }`
+                      : `${item.positionData?.valueEn || "Doctor"}, ${
+                          item.fullName
+                        }`;
 
-                return (
-                  <div
-                    className="doctor-item"
-                    key={index}
-                    onClick={() => this.handleViewDetailDoctor(item)}
-                  >
+                  const specialtyName =
+                    item.doctorInfor?.specialty?.name || "Chưa xác định";
+
+                  return (
                     <div
-                      className="doctor-image"
-                      style={{
-                        backgroundImage: `url(${imageBase64 || DoctorImg})`,
-                      }}
-                    ></div>
-                    <div className="doctor-info">
-                      <div className="doctor-name">
-                        {language === LANGUAGES.VI ? nameVi : nameEn}
-                      </div>
-                      <div className="doctor-specialty mb-2">
-                        {specialtyName}
-                      </div>
-                      {item.doctorInfor?.rating && (
-                        <Rate
-                          disabled
-                          allowHalf
-                          value={Number(item.doctorInfor?.rating) || 0}
+                      className="col-12 col-sm-6 col-md-4"
+                      key={index}
+                      onClick={() => this.handleViewDetailDoctor(item)}
+                    >
+                      <div className="doctor-item">
+                        <div
+                          className="doctor-image"
                           style={{
-                            color: "#FFD700",
-                            fontSize: "18px",
-                            margin: "auto",
+                            backgroundImage: `url(${imageBase64 || DoctorImg})`,
                           }}
-                        />
-                      )}
+                        ></div>
+                        <div className="doctor-info text-center">
+                          <div className="doctor-name">{name}</div>
+                          <div className="doctor-specialty mb-2">
+                            {specialtyName}
+                          </div>
+                          {item.doctorInfor?.rating && (
+                            <Rate
+                              disabled
+                              allowHalf
+                              value={Number(item.doctorInfor.rating) || 0}
+                            />
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                );
-              })
-            ) : (
-              <p>Không có bác sĩ nào để hiển thị.</p>
-            )}
+                  );
+                })
+              ) : (
+                <p>Không có bác sĩ nào để hiển thị.</p>
+              )}
+            </div>
+
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                marginTop: 24,
+                marginBottom: 24,
+              }}
+            >
+              <Pagination
+                current={current}
+                total={total}
+                pageSize={pageSize}
+                onChange={this.handlePageChange}
+                showSizeChanger={false}
+              />
+            </div>
           </div>
         </div>
         <HomeFooter />
@@ -132,19 +164,13 @@ class ListDoctor extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    language: state.app.language,
-    topDoctorsRedux: state.admin.topDoctors,
-  };
-};
+const mapStateToProps = (state) => ({
+  language: state.app.language,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    loadTopDoctors: () => dispatch(actions.fetchTopDoctor()),
-    showLoading: () => dispatch(showLoading()),
-    hideLoading: () => dispatch(hideLoading()),
-  };
-};
+const mapDispatchToProps = (dispatch) => ({
+  showLoading: () => dispatch(showLoading()),
+  hideLoading: () => dispatch(hideLoading()),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListDoctor);

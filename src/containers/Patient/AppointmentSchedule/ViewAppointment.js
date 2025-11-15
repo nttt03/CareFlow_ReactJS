@@ -69,7 +69,9 @@ export default function ViewAppointment() {
       <>
         <HomeHeader />
         <div className="d-flex justify-content-center align-items-center py-5">
-          <Spin size="large" tip="Đang tải thông tin..." />
+          <Spin size="large" tip="Đang tải thông tin...">
+            <div style={{ width: 0, height: 0 }}></div>
+          </Spin>
         </div>
         <HomeFooter />
       </>

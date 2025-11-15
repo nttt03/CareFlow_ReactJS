@@ -11,7 +11,7 @@ import {
   UserOutlined,
   LockOutlined,
   LogoutOutlined,
-  BellOutlined,
+  BellFilled,
   CheckCircleOutlined,
   CloseCircleOutlined,
   ClockCircleOutlined,
@@ -428,7 +428,8 @@ class HomeHeader extends Component {
               {isLoggedIn && (
                 <div className="notification-wrapper me-3">
                   <Dropdown
-                    overlay={notificationOverlay}
+                    menu={{ items: [] }}
+                    popupRender={() => notificationOverlay}
                     trigger={["click"]}
                     placement="bottomRight"
                     overlayClassName="custom-notif-overlay"
@@ -439,7 +440,7 @@ class HomeHeader extends Component {
                       count={notifications.filter((n) => !n.isRead).length}
                       offset={[-16, -2]}
                     >
-                      <BellOutlined
+                      <BellFilled
                         className={
                           notifications.some((n) => !n.isRead)
                             ? "bell-icon bell-animate"
@@ -449,7 +450,7 @@ class HomeHeader extends Component {
                           fontSize: "25px",
                           cursor: "pointer",
                           marginRight: 10,
-                          color: "#2563eb",
+                          color: "#ffa70c",
                         }}
                       />
                     </Badge>

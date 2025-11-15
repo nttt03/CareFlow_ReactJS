@@ -308,7 +308,9 @@ const DoctorConfig = ({
                 <Card
                   hoverable
                   className="text-center"
-                  bodyStyle={{ padding: 8 }}
+                  styles={{
+                    body: { padding: "8px" },
+                  }}
                 >
                   <Avatar
                     src={item.avatar || "/defaultimg.png"}
