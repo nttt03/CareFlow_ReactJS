@@ -38,6 +38,12 @@ const ChangePassword = () => {
             ? "Đổi mật khẩu thành công!"
             : "Password changed successfully!"
         );
+      } else if (res.errCode === 3) {
+        message.error(
+          language === "vi"
+            ? "Mật khẩu hiện tại không đúng!"
+            : "Current password is incorrect!"
+        );
       } else {
         message.error(
           language === "vi"
