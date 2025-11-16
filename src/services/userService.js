@@ -149,6 +149,10 @@ export const updateBookingStatus = (data) => {
   return axios.put("/api/update-booking-status", data);
 };
 
+export const rejectBookingByPatient = (data) => {
+  return axios.put("/api/reject-booking-by-patient", data);
+};
+
 const postSendRemedy = (data) => {
   return axios.post(`/api/send-remedy`, data);
 };

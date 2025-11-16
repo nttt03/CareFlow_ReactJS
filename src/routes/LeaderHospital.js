@@ -13,6 +13,7 @@ import { leaderHospitalMenu } from "../containers/Header/menuApp";
 import EditHospital from "../containers/System/Hospital/EditHospital";
 import ManageDoctor from "../containers/System/Admin/ManageDoctor";
 import CalendarSchedule from "../components/CalendarSchedule";
+import ViewAppointment from "../containers/Patient/AppointmentSchedule/ViewAppointment";
 
 class LeaderHospital extends Component {
   render() {
@@ -86,6 +87,10 @@ class LeaderHospital extends Component {
                 <Route
                   path="/leader-hospital/schedule"
                   component={CalendarSchedule}
+                />
+                <Route
+                  path="/leader-hospital/view-appointment/:bookingId"
+                  component={ViewAppointment}
                 />
               </Switch>
             </div>

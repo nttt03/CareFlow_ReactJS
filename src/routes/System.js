@@ -23,6 +23,7 @@ import MedicalRecord from "../containers/System/Doctor/MedicalRecord";
 import ManagePatient from "../containers/System/Doctor/ManagePatient";
 import WaitingApproval from "../containers/System/Doctor/WaitingApproval";
 import CalendarSchedule from "../components/CalendarSchedule";
+import ViewAppointment from "../containers/Patient/AppointmentSchedule/ViewAppointment";
 
 class System extends Component {
   render() {
@@ -113,7 +114,10 @@ class System extends Component {
                   path="/system/manage-hospital"
                   component={ManageHospital}
                 />
-
+                <Route
+                  path="/system/view-appointment/:bookingId"
+                  component={ViewAppointment}
+                />
                 <Route
                   component={() => {
                     return <Redirect to={systemMenuPath} />;

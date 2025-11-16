@@ -8,10 +8,12 @@ import { FormattedMessage } from "react-intl";
 import {
   getNewAppointment,
   getDoneAppointment,
+  rejectBookingByPatient,
 } from "../../../services/userService";
 import emptyImg from "../../../assets/empty.png";
 import { Card, Row, Col, Empty, Tabs, Pagination, message } from "antd";
 import moment from "moment";
+import ModalReject from "../../../components/ModalReject";
 
 const { TabPane } = Tabs;
 
@@ -25,8 +27,85 @@ class NewAppointment extends Component {
       activeTab: "new",
       currentPage: 1,
       itemsPerPage: 3,
+      isOpenCancelModal: false,
+      cancelBookingId: null,
+      doctorId: null,
+      hospitalId: null,
+      fullNameDoctor: null,
     };
   }
+
+  handleOpenCancelModal = (item) => {
+    this.setState({
+      isOpenCancelModal: true,
+      cancelBookingId: item?.id,
+      doctorId: item?.doctorInfoData?.doctorId,
+      hospitalId: item?.doctorInfoData?.hospitalId,
+      fullNameDoctor: item?.infoDataDoctor?.fullName,
+    });
+  };
+
+  handleCloseCancelModal = () => {
+    this.setState({
+      isOpenCancelModal: false,
+      cancelBookingId: null,
+      doctorId: null,
+      hospitalId: null,
+      fullNameDoctor: null,
+    });
+  };
+
+  handleCancel = (item) => {
+    this.handleOpenCancelModal(item);
+  };
+
+  handleSubmitCancel = async (reason) => {
+    const { cancelBookingId, doctorId, hospitalId, fullNameDoctor } =
+      this.state;
+    const { language, userInfo } = this.props;
+
+    if (!reason.trim()) {
+      message.error(
+        language === "vi"
+          ? "Vui lòng nhập lý do hủy!"
+          : "Please enter cancel reason!"
+      );
+      return;
+    }
+
+    this.setState({ isSubmitting: true });
+
+    try {
+      let res = await rejectBookingByPatient({
+        bookingId: cancelBookingId,
+        status: "S5",
+        rejectReason: reason.trim(),
+        doctorId,
+        hospitalId,
+        fullNameDoctor,
+        fullNamePatient: userInfo?.fullName,
+      });
+
+      if (res && res.errCode === 0) {
+        message.success(
+          language === "vi"
+            ? "Hủy lịch thành công!"
+            : "Appointment cancelled successfully!"
+        );
+        this.handleCloseCancelModal();
+        await this.fetchAppointments("new");
+      } else {
+        message.error(
+          res.errMessage ||
+            (language === "vi" ? "Hủy thất bại!" : "Cancellation failed!")
+        );
+      }
+    } catch (error) {
+      message.error(language === "vi" ? "Lỗi hệ thống!" : "System error!");
+    } finally {
+      this.setState({ isSubmitting: false });
+    }
+  };
 
   componentDidMount() {
     this.fetchAppointments("new");
@@ -118,6 +197,7 @@ class NewAppointment extends Component {
       activeTab,
       currentPage,
       itemsPerPage,
+      isOpenCancelModal,
     } = this.state;
     const { language } = this.props;
     const isVietnamese = language === "vi";
@@ -222,6 +302,14 @@ class NewAppointment extends Component {
                           {a.rejectReason}
                         </p>
                       )}
+                      {(a.statusId === "S1" || a.statusId === "S2") && (
+                        <div
+                          onClick={() => this.handleCancel(a)}
+                          className="text-danger fw-bold text-end"
+                        >
+                          Hủy lịch
+                        </div>
+                      )}
                     </div>
                   </Card>
                 </Col>
@@ -248,6 +336,12 @@ class NewAppointment extends Component {
               />
             </div>
           )}
+
+          <ModalReject
+            isOpenCancelModal={isOpenCancelModal}
+            onCancel={this.handleCloseCancelModal}
+            onSubmit={this.handleSubmitCancel}
+          />
         </div>
         <HomeFooter />
       </>

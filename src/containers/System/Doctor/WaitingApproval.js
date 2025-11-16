@@ -12,6 +12,7 @@ import { LANGUAGES } from "../../../utils";
 import RemedyModal from "./RemedyModal";
 import { toast } from "react-toastify";
 import { Spin, Modal, Input, Form } from "antd";
+import ModalReject from "../../../components/ModalReject";
 
 class WaitingApproval extends Component {
   constructor(props) {
@@ -151,6 +152,27 @@ class WaitingApproval extends Component {
     }
   };
 
+  handleDetail = (item) => {
+    const { user } = this.props;
+    let url = null;
+
+    switch (user?.roleId) {
+      case "R1":
+        url = `/system/view-appointment/${item?.id}`;
+        break;
+
+      case "R2":
+        url = `/doctor/view-appointment/${item?.id}`;
+        break;
+
+      case "R4":
+        url = `/leader-hospital/view-appointment/${item?.id}`;
+        break;
+    }
+
+    this.props.history.push(url);
+  };
+
   render() {
     let {
       dataPatient,
@@ -200,7 +222,11 @@ class WaitingApproval extends Component {
                           : item?.timeTypeDataPatient?.valueEn;
                       let formatDate = moment(+item.date).format("DD/MM/YYYY");
                       return (
-                        <tr key={index}>
+                        <tr
+                          style={{ cursor: "pointer" }}
+                          key={index}
+                          onClick={() => this.handleDetail(item)}
+                        >
                           <td>{index + 1}</td>
                           <td>{formatDate}</td>
                           <td>{time}</td>
@@ -215,14 +241,20 @@ class WaitingApproval extends Component {
                           <td>
                             <button
                               className="mp-btn-confirm"
-                              onClick={() => this.handleConfirm(item)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                this.handleConfirm(item);
+                              }}
                             >
                               {language === "vi" ? "Xác nhận" : "Approve"}
                             </button>
 
                             <button
                               className="mp-btn-cancel"
-                              onClick={() => this.handleCancel(item)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                this.handleCancel(item);
+                              }}
                             >
                               {language === "vi" ? "Hủy lịch" : "Cancel"}
                             </button>
@@ -248,79 +280,11 @@ class WaitingApproval extends Component {
           closeRemedyModal={this.closeRemedyModal}
           sendRemedy={this.sendRemedy}
         />
-        <Modal
-          title={
-            <span style={{ color: "#d4380d" }}>
-              {language === "vi"
-                ? "Xác nhận hủy lịch hẹn"
-                : "Confirm Appointment Cancellation"}
-            </span>
-          }
-          open={isOpenCancelModal}
+        <ModalReject
+          isOpenCancelModal={isOpenCancelModal}
           onCancel={this.handleCloseCancelModal}
-          footer={null}
-          width={500}
-          centered
-        >
-          <Form layout="vertical">
-            <Form.Item
-              label={
-                language === "vi" ? "Lý do hủy lịch" : "Cancellation Reason"
-              }
-              required
-              tooltip={language === "vi" ? "Bắt buộc nhập" : "Required"}
-            >
-              <Input.TextArea
-                rows={4}
-                placeholder={
-                  language === "vi"
-                    ? "Ví dụ: Bệnh nhân không đến, lịch trùng, yêu cầu hủy..."
-                    : "E.g., Patient no-show, schedule conflict, patient request..."
-                }
-                value={this.state.cancelReason}
-                onChange={(e) =>
-                  this.setState({ cancelReason: e.target.value })
-                }
-                disabled={this.state.isSubmitting}
-              />
-            </Form.Item>
-
-            <div className="text-right">
-              <button
-                className="mp-btn-cancel border-0 rounded-2 px-3 py-1"
-                py-2
-                onClick={this.handleCloseCancelModal}
-                disabled={this.state.isSubmitting}
-                style={{ marginRight: 8 }}
-              >
-                {language === "vi" ? "Đóng" : "Close"}
-              </button>
-              <button
-                className="mp-btn-confirm border-0 rounded-2 px-3 py-1 text-white"
-                onClick={this.handleSubmitCancel}
-                disabled={
-                  this.state.isSubmitting || !this.state.cancelReason.trim()
-                }
-                style={{
-                  background: "#d4380d",
-                  borderColor: "#d4380d",
-                  opacity:
-                    this.state.isSubmitting || !this.state.cancelReason.trim()
-                      ? 0.6
-                      : 1,
-                }}
-              >
-                {this.state.isSubmitting ? (
-                  <Spin size="small" />
-                ) : language === "vi" ? (
-                  "Xác nhận hủy"
-                ) : (
-                  "Confirm Cancel"
-                )}
-              </button>
-            </div>
-          </Form>
-        </Modal>
+          onSubmit={this.handleSubmitCancel}
+        />
       </Spin>
     );
   }

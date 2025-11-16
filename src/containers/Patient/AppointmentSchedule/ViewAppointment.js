@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useHistory } from "react-router-dom";
 import { getViewAppointmentForNoti } from "../../../services/userService";
 import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
@@ -12,13 +12,23 @@ import {
   MedicineBoxOutlined,
   AlertOutlined,
 } from "@ant-design/icons";
-import "./ViewAppointment.scss"; // 👉 Thêm file CSS mới
+import "./ViewAppointment.scss";
+import BackButton from "../../../components/BackButton";
 
 export default function ViewAppointment() {
+  const history = useHistory();
+  const language = useSelector((state) => state.app.language);
+  const user = useSelector((state) => state.user.userInfo);
+  const location = useLocation();
   const { bookingId } = useParams();
   const [dataAppoinment, setDataAppoinment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const isSystemPage =
+    location.pathname.startsWith("/system") ||
+    location.pathname.startsWith("/doctor") ||
+    location.pathname.startsWith("/leader-hospital");
 
   const fetchAppoinmentForNoti = async () => {
     try {
@@ -64,34 +74,47 @@ export default function ViewAppointment() {
     return <span className={className}>{text}</span>;
   };
 
+  const handleBack = () => {
+    switch (user?.roleId) {
+      case "R1":
+        return "/system/waiting-approval";
+      case "R2":
+        return "/doctor/waiting-approval";
+      case "R4":
+        return "/leader-hospital/waiting-approval";
+      default:
+        return "/";
+    }
+  };
+
   if (loading)
     return (
       <>
-        <HomeHeader />
+        {!isSystemPage && <HomeHeader />}
         <div className="d-flex justify-content-center align-items-center py-5">
           <Spin size="large" tip="Đang tải thông tin...">
             <div style={{ width: 0, height: 0 }}></div>
           </Spin>
         </div>
-        <HomeFooter />
+        {!isSystemPage && <HomeFooter />}
       </>
     );
 
   if (error)
     return (
       <>
-        <HomeHeader />
+        {!isSystemPage && <HomeHeader />}
         <div className="container py-5">
           <Alert message="Lỗi" description={error} type="error" showIcon />
         </div>
-        <HomeFooter />
+        {!isSystemPage && <HomeFooter />}
       </>
     );
 
   if (!dataAppoinment)
     return (
       <>
-        <HomeHeader />
+        {!isSystemPage && <HomeHeader />}
         <div className="container py-5">
           <Alert
             message="Không tìm thấy"
@@ -100,7 +123,7 @@ export default function ViewAppointment() {
             showIcon
           />
         </div>
-        <HomeFooter />
+        {!isSystemPage && <HomeFooter />}
       </>
     );
 
@@ -109,9 +132,14 @@ export default function ViewAppointment() {
 
   return (
     <>
-      <HomeHeader />
+      {!isSystemPage && <HomeHeader />}
 
       <div className="container h-100 view-appointment-container">
+        <BackButton
+          to={() => handleBack()}
+          label={language === "vi" ? "Quay lại" : "Back"}
+          style={{ color: "#0071ba" }}
+        />
         <div className="text-center mb-4">
           <h2 className="page-title">
             <CalendarOutlined /> Chi tiết lịch hẹn
@@ -179,7 +207,7 @@ export default function ViewAppointment() {
         </div>
       </div>
 
-      <HomeFooter />
+      {!isSystemPage && <HomeFooter />}
     </>
   );
 }
