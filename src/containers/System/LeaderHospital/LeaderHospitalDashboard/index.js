@@ -101,8 +101,8 @@ const LeaderHospitalDashboard = () => {
         setTopDoctors(
           data.topDoctors?.map((doc, i) => ({
             key: i + 1,
-            doctorName: doc.infoDataDoctor?.fullName || "---",
-            doctorAvatar: doc.infoDataDoctor?.avatar,
+            doctorName: doc?.doctorName || "---",
+            doctorAvatar: doc?.avatar,
             totalBookings: doc.totalBookings,
           })) || []
         );
