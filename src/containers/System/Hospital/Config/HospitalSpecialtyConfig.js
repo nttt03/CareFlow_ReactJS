@@ -31,7 +31,7 @@ const HospitalSpecialtyConfig = ({
 
   const fetchAllSpecialty = async () => {
     try {
-      const res = await getAllSpecialty();
+      const res = await getAllSpecialty({ limit: 9999 });
       if (res && res.data && res.errCode === 0) {
         setSpecialties(res.data || []);
       }

@@ -81,6 +81,7 @@ const DetailSpecialty = () => {
         className="container"
         style={{
           paddingTop: "85px",
+          paddingBottom: "85px",
           minHeight: "90vh",
         }}
       >

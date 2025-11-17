@@ -39,7 +39,7 @@ export default function ResetPassword() {
             ? "Đặt lại mật khẩu thành công!"
             : "Password reset successfully!"
         );
-        setTimeout(() => history.push("/login"), 1500);
+        // setTimeout(() => history.push("/login"), 1500);
       } else {
         message.error(
           res?.errMessage ||
