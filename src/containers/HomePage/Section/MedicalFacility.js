@@ -7,21 +7,30 @@ import { FormattedMessage } from "react-intl";
 import { getAllHospital } from "../../../services/userService";
 import { withRouter } from "react-router";
 import "./Slider.scss";
+import SpecialtySkeleton from "../../Patient/Specialty/SkeletonListSpecialty";
 
 class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       dataHospitals: [],
+      isLoading: false,
     };
   }
 
   async componentDidMount() {
-    let res = await getAllHospital();
-    if (res && res.errCode === 0) {
-      this.setState({
-        dataHospitals: res.data || [],
-      });
+    try {
+      this.setState({ isLoading: true });
+      let res = await getAllHospital();
+      if (res && res.errCode === 0) {
+        this.setState({
+          dataHospitals: res.data || [],
+        });
+      }
+    } catch (error) {
+      console.log("Lỗi khi lấy danh sách bệnh viện:", error);
+    } finally {
+      this.setState({ isLoading: false });
     }
   }
 
@@ -38,9 +47,29 @@ class HomePage extends Component {
   };
 
   render() {
-    const { dataHospitals } = this.state;
+    const { dataHospitals, isLoading } = this.state;
 
-    return (
+    return isLoading ? (
+      <div className="section-share section-medical-facility">
+        <div className="section-container">
+          <div className="section-header">
+            <span className="fw-bold mb-4" style={{ color: "#064580" }}>
+              <FormattedMessage id="homepage.medical-facility-outstanding" />
+            </span>
+            <button
+              className="btn btn-secondary px-3"
+              onClick={this.handleViewListHospital}
+            >
+              <FormattedMessage id="homepage.more-infor" />
+            </button>
+          </div>
+
+          <div className="section-body mb-5">
+            <SpecialtySkeleton />
+          </div>
+        </div>
+      </div>
+    ) : (
       <div className="section-share section-medical-facility">
         <div className="section-container">
           <div className="section-header">

@@ -6,8 +6,9 @@ import HomeFooter from "../../HomePage/HomeFooter";
 import { getAllSpecialty } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
 import BackButton from "../../../components/BackButton";
-import { Pagination, Spin } from "antd";
+import { Pagination } from "antd";
 import { showLoading, hideLoading } from "../../../store/actions";
+import SpecialtySkeleton from "./SkeletonListSpecialty";
 
 class ListSpecialty extends Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class ListSpecialty extends Component {
       current: 1,
       pageSize: 8,
       total: 0,
-      loading: false,
+      isLoading: false,
     };
   }
 
@@ -30,7 +31,7 @@ class ListSpecialty extends Component {
     pageSize = this.state.pageSize
   ) => {
     const { showLoading, hideLoading } = this.props;
-    this.setState({ loading: true });
+    this.setState({ isLoading: true });
     showLoading();
 
     try {
@@ -51,7 +52,7 @@ class ListSpecialty extends Component {
     } catch (error) {
       console.log("Lỗi khi lấy danh sách chuyên khoa:", error);
     } finally {
-      this.setState({ loading: false });
+      this.setState({ isLoading: false });
       await new Promise((resolve) => setTimeout(resolve, 600));
       hideLoading();
     }
@@ -70,7 +71,7 @@ class ListSpecialty extends Component {
   };
 
   render() {
-    let { dataSpecialty, current, pageSize, total, loading } = this.state;
+    let { dataSpecialty, current, pageSize, total, isLoading } = this.state;
     let { language } = this.props;
 
     return (
@@ -88,9 +89,11 @@ class ListSpecialty extends Component {
               <FormattedMessage id="homeheader.list-specialty" />
             </h2>
 
-            <Spin spinning={loading}>
-              <div className="row">
-                {dataSpecialty.map((item) => (
+            <div className="row">
+              {isLoading ? (
+                <SpecialtySkeleton count={pageSize} />
+              ) : (
+                dataSpecialty.map((item) => (
                   <div
                     key={item.id}
                     className="col-md-3 col-sm-6 col-12"
@@ -109,26 +112,26 @@ class ListSpecialty extends Component {
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                ))
+              )}
+            </div>
 
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: 24,
-                }}
-              >
-                <Pagination
-                  current={current}
-                  total={total}
-                  pageSize={pageSize}
-                  onChange={this.onPageChange}
-                  showSizeChanger={false}
-                />
-              </div>
-            </Spin>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                marginTop: 24,
+              }}
+            >
+              <Pagination
+                current={current}
+                total={total}
+                pageSize={pageSize}
+                onChange={this.onPageChange}
+                showSizeChanger={false}
+              />
+            </div>
           </div>
         </div>
         <HomeFooter />

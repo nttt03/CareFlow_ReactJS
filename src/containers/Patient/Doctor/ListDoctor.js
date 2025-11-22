@@ -11,6 +11,7 @@ import BackButton from "../../../components/BackButton";
 import { Rate, Pagination } from "antd";
 import { showLoading, hideLoading } from "../../../store/actions";
 import { getListDoctor } from "../../../services/userService";
+import DoctorSkeleton from "./DoctorSkeleton";
 
 class ListDoctor extends Component {
   constructor(props) {
@@ -18,8 +19,9 @@ class ListDoctor extends Component {
     this.state = {
       arrDoctors: [],
       current: 1,
-      pageSize: 8,
+      pageSize: 9,
       total: 0,
+      isLoading: false,
     };
   }
 
@@ -32,6 +34,7 @@ class ListDoctor extends Component {
     limit = this.state.pageSize
   ) => {
     const { showLoading, hideLoading } = this.props;
+    this.setState({ isLoading: true });
     showLoading();
 
     try {
@@ -48,6 +51,7 @@ class ListDoctor extends Component {
     } catch (error) {
       console.log("Lỗi load danh sách bác sĩ:", error);
     } finally {
+      this.setState({ isLoading: false });
       await new Promise((resolve) => setTimeout(resolve, 500));
       hideLoading();
     }
@@ -65,7 +69,7 @@ class ListDoctor extends Component {
   };
 
   render() {
-    let { arrDoctors, current, pageSize, total } = this.state;
+    let { arrDoctors, current, pageSize, total, isLoading } = this.state;
     const { language } = this.props;
 
     return (
@@ -83,7 +87,9 @@ class ListDoctor extends Component {
             </h2>
 
             <div className="row">
-              {arrDoctors && arrDoctors.length > 0 ? (
+              {isLoading ? (
+                <DoctorSkeleton count={6} />
+              ) : arrDoctors && arrDoctors.length > 0 ? (
                 arrDoctors.map((item, index) => {
                   let imageBase64 = "";
                   if (item.avatar) {

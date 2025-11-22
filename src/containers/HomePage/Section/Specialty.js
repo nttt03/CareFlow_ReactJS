@@ -4,6 +4,7 @@ import { getAllSpecialty } from "../../../services/userService";
 import { FormattedMessage } from "react-intl";
 import { withRouter } from "react-router";
 import "../HomePage.scss";
+import SpecialtySkeleton from "../Skeletons/SpecialtySkeleton";
 
 class Specialty extends Component {
   constructor(props) {
@@ -11,15 +12,23 @@ class Specialty extends Component {
     this.state = {
       dataSpecialty: [],
       showAll: false,
+      isLoading: false,
     };
   }
 
   async componentDidMount() {
-    const res = await getAllSpecialty();
-    if (res && res.errCode === 0) {
-      this.setState({
-        dataSpecialty: res.data ? res.data : [],
-      });
+    try {
+      this.setState({ isLoading: true });
+      const res = await getAllSpecialty();
+      if (res && res.errCode === 0) {
+        this.setState({
+          dataSpecialty: res.data ? res.data : [],
+        });
+      }
+    } catch (error) {
+      console.log("Lỗi khi lấy danh sách chuyên khoa:", error);
+    } finally {
+      this.setState({ isLoading: false });
     }
   }
 
@@ -30,7 +39,7 @@ class Specialty extends Component {
   };
 
   render() {
-    const { dataSpecialty, showAll } = this.state;
+    const { dataSpecialty, showAll, isLoading } = this.state;
     const { language } = this.props;
     const displayData = showAll ? dataSpecialty : dataSpecialty.slice(0, 6);
 
@@ -42,7 +51,10 @@ class Specialty extends Component {
           </h2>
 
           <div className="row justify-content-center gy-4">
-            {displayData &&
+            {isLoading ? (
+              <SpecialtySkeleton count={6} />
+            ) : (
+              displayData &&
               displayData.map((item, index) => (
                 <div
                   className="col-6 col-md-4 col-lg-2"
@@ -59,7 +71,8 @@ class Specialty extends Component {
                     <p className="fw-semibold text-dark m-0">{item.name}</p>
                   </div>
                 </div>
-              ))}
+              ))
+            )}
           </div>
 
           <button

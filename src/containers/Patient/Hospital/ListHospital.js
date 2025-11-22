@@ -9,6 +9,7 @@ import BackButton from "../../../components/BackButton";
 import { EnvironmentOutlined } from "@ant-design/icons";
 import { Pagination } from "antd";
 import { showLoading, hideLoading } from "../../../store/actions";
+import SpecialtySkeleton from "../Specialty/SkeletonListSpecialty";
 
 class ListHospital extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class ListHospital extends Component {
       current: 1,
       pageSize: 8,
       total: 0,
+      isLoading: false,
     };
   }
 
@@ -30,6 +32,7 @@ class ListHospital extends Component {
     pageSize = this.state.pageSize
   ) => {
     const { showLoading, hideLoading } = this.props;
+    this.setState({ isLoading: true });
     showLoading();
     try {
       const res = await getAllHospital({
@@ -48,6 +51,7 @@ class ListHospital extends Component {
     } catch (error) {
       console.log("Lỗi khi lấy danh sách bệnh viện:", error);
     } finally {
+      this.setState({ isLoading: false });
       await new Promise((resolve) => setTimeout(resolve, 500));
       hideLoading();
     }
@@ -65,7 +69,7 @@ class ListHospital extends Component {
   };
 
   render() {
-    let { dataHospitals, current, pageSize, total } = this.state;
+    let { dataHospitals, current, pageSize, total, isLoading } = this.state;
     let { language } = this.props;
 
     return (
@@ -83,65 +87,68 @@ class ListHospital extends Component {
             </h2>
 
             <div className="row">
-              {dataHospitals &&
+              {isLoading ? (
+                <SpecialtySkeleton count={pageSize} />
+              ) : (
+                dataHospitals &&
                 dataHospitals.length > 0 &&
-                dataHospitals.map((item, index) => {
-                  return (
+                dataHospitals.map((item, index) => (
+                  <div
+                    className="col-12 col-md-3"
+                    key={index}
+                    onClick={() => this.handleViewDetailHospital(item)}
+                  >
                     <div
-                      className="col-12 col-md-3"
-                      key={index}
-                      onClick={() => this.handleViewDetailHospital(item)}
+                      className="card hoverable m-2 d-flex flex-column justify-content-between"
+                      style={{
+                        height: 320,
+                        borderRadius: 12,
+                        overflow: "hidden",
+                      }}
                     >
-                      <div
-                        className="card hoverable m-2 d-flex flex-column justify-content-between"
-                        style={{
-                          height: 320,
-                          borderRadius: 12,
-                          overflow: "hidden",
-                        }}
-                      >
-                        <div className="position-relative">
-                          <img
-                            src="/bg-hospital.jpg"
-                            alt={item.name}
-                            className="w-100"
-                            style={{ height: 120, objectFit: "cover" }}
-                          />
-                          <img
-                            src={item.logo || item.image}
-                            alt="Logo"
-                            className="position-absolute bg-white border"
-                            style={{
-                              bottom: -25,
-                              left: "22%",
-                              transform: "translateX(-50%)",
-                              width: 100,
-                              height: 100,
-                              borderRadius: 8,
-                              padding: 10,
-                              objectFit: "cover",
-                              borderColor: "#ccc",
-                            }}
-                          />
-                        </div>
+                      <div className="position-relative">
+                        <img
+                          src="/bg-hospital.jpg"
+                          alt={item.name}
+                          className="w-100"
+                          style={{ height: 120, objectFit: "cover" }}
+                        />
+                        <img
+                          src={item.logo || item.image}
+                          alt="Logo"
+                          className="position-absolute bg-white border"
+                          style={{
+                            bottom: -25,
+                            left: "22%",
+                            transform: "translateX(-50%)",
+                            width: 100,
+                            height: 100,
+                            borderRadius: 8,
+                            padding: 10,
+                            objectFit: "cover",
+                            borderColor: "#ccc",
+                          }}
+                        />
+                      </div>
 
-                        <div
-                          className="card-body text-center"
-                          style={{ marginTop: 30 }}
+                      <div
+                        className="card-body text-center"
+                        style={{ marginTop: 30 }}
+                      >
+                        <h5 className="bold">{item.name}</h5>
+                        <p
+                          className="text-muted small mt-n2"
+                          style={{ fontSize: 14 }}
                         >
-                          <h5 className="bold">{item.name}</h5>
-                          <p
-                            className="text-muted small mt-n2"
-                            style={{ fontSize: 14 }}
-                          >
-                            <EnvironmentOutlined /> {item.addressDetail}
-                          </p>
-                        </div>
+                          <EnvironmentOutlined /> {item.addressDetail}
+                        </p>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ))
+              )}
             </div>
+
             <div
               style={{
                 width: "100%",

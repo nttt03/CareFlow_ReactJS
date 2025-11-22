@@ -12,11 +12,14 @@ import _ from "lodash";
 import { LANGUAGES } from "../../../utils";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Buffer } from "buffer";
+import { showLoading, hideLoading } from "../../../store/actions";
+import DetailSpecialtySkeleton from "./DetailSpecialtySkeleton";
 
 const { Option } = Select;
 const { Title, Paragraph, Text } = Typography;
 
 const DetailSpecialty = () => {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const history = useHistory();
   const language = useSelector((state) => state.app.language);
@@ -36,12 +39,20 @@ const DetailSpecialty = () => {
   // Lấy chi tiết chuyên khoa
   const fetchData = async (location) => {
     setLoading(true);
-    let res = await getAllDetailSpecialtyById({ id, location });
-    if (res && res.errCode === 0) {
-      setSpecialty(res.data);
-      setHospitalList(res.data.hospitalSpecialties || []);
+    dispatch(showLoading());
+    try {
+      let res = await getAllDetailSpecialtyById({ id, location });
+      if (res && res.errCode === 0) {
+        setSpecialty(res.data);
+        setHospitalList(res.data.hospitalSpecialties || []);
+      }
+    } catch (err) {
+      console.error("Error fetching data detail specialty:", err);
+    } finally {
+      setLoading(false);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      dispatch(hideLoading());
     }
-    setLoading(false);
   };
 
   // Lấy danh sách tỉnh
@@ -87,7 +98,7 @@ const DetailSpecialty = () => {
       >
         {loading ? (
           <div className="text-center my-5">
-            <Spin size="small" />
+            <DetailSpecialtySkeleton hospitalCount={4} />
           </div>
         ) : (
           <>
