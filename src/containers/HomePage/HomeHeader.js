@@ -46,7 +46,7 @@ class HomeHeader extends Component {
       keyword: "",
       reviewSocketBooking: null,
       notifDropdownOpen: false,
-      isMobile: window.innerWidth < 992,
+      isMobile: window.innerWidth < 1285,
     };
     this.toggleMenu = this.toggleMenu.bind(this);
   }
@@ -139,7 +139,7 @@ class HomeHeader extends Component {
   };
 
   handleResize = () => {
-    this.setState({ isMobile: window.innerWidth < 992 });
+    this.setState({ isMobile: window.innerWidth < 1285 });
   };
 
   componentDidMount() {
@@ -381,7 +381,7 @@ class HomeHeader extends Component {
         <Menu
           mode="inline"
           selectedKeys={[activeMainMenu]}
-          style={{ borderRight: 0, flex: 1 }}
+          style={{ borderRight: 0 }}
         >
           {[
             {
@@ -784,7 +784,7 @@ class HomeHeader extends Component {
               </div>
             </div>
 
-            <div className="content-down d-none d-md-block">
+            <div className="content-down d-none d-lg-block">
               <StatsSection />
             </div>
           </div>

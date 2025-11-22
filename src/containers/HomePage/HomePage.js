@@ -119,7 +119,7 @@ const HomePage = () => {
           setShowReviewModal(true);
         }}
       />
-      <div className="d-block d-md-none">
+      <div className="d-block d-lg-none">
         <StatsSection />
       </div>
       <FeaturesSection />

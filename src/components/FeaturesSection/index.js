@@ -77,7 +77,7 @@ export default function FeaturesSection() {
         {features.map((item, index) => {
           const content = language === "vi" ? item.vi : item.en;
           return (
-            <Col xs={24} md={6} key={index}>
+            <Col xs={24} md={12} lg={6} key={index}>
               <Card
                 hoverable
                 className="feature-card fade-up"

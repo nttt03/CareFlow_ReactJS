@@ -103,3 +103,21 @@
     }
 
 }
+
+@media (max-width: 768px) {
+    .each-doctor {
+        display       : flex;
+        flex-direction: column;
+
+        .detail-content-left {
+            width  : 100% !important;
+            padding: 15px;
+        }
+
+        .detail-content-right {
+            width  : 100% !important;
+            padding: 15px;
+        }
+    }
+
+}

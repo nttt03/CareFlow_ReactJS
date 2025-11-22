@@ -109,8 +109,7 @@ export default function StatsSection() {
   return (
     <div
       ref={sectionRef}
-      className="container text-center pt-5"
-      style={{ maxWidth: "65%" }}
+      className="container-fluid container-lg px-4 pt-5 text-center"
     >
       <div className="row g-4 justify-content-center">
         {stats.map((item, i) => (
