@@ -119,7 +119,9 @@ const HomePage = () => {
           setShowReviewModal(true);
         }}
       />
-      <StatsSection />
+      <div className="d-block d-md-none">
+        <StatsSection />
+      </div>
       <FeaturesSection />
       <Specialty settings={settings} />
       <MedicalFacility settings={settings} />

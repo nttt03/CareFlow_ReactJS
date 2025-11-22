@@ -50,10 +50,7 @@ class OutStandingDoctor extends Component {
       <div className="section-share section-outstanding-doctor">
         <div className="section-container">
           <div className="section-header">
-            <span
-              className="fw-bold mb-4 fs-6 fs-md-5 fs-lg-4"
-              style={{ color: "#064580" }}
-            >
+            <span className="fw-bold mb-4" style={{ color: "#064580" }}>
               <FormattedMessage id="homepage.outstanding-doctor" />
             </span>
             <button

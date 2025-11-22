@@ -234,6 +234,16 @@
     }
 }
 
+@media (max-width: 576px) {
+    .ant-dropdown.custom-notif-overlay {
+        inset: 50px 25px auto auto !important;
+    }
+
+    .custom-notif-dropdown {
+        width: 350px;
+    }
+}
+
 .notif-header {
     font-weight     : 600;
     padding         : 15px 12px;

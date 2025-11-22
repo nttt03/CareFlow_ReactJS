@@ -1,5 +1,5 @@
-import React from "react";
-import { Layout, Menu, Avatar, Empty } from "antd";
+import React, { useState, useEffect } from "react";
+import { Layout, Avatar, Menu } from "antd";
 import {
   UserOutlined,
   LockOutlined,
@@ -14,55 +14,62 @@ import Favorites from "./components/Favorites";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../../store/actions";
 import { useHistory, useLocation } from "react-router-dom";
-import bg from "../../../assets/background.png";
-import { showLoading, hideLoading } from "../../../store/actions";
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 const ProfileComponent = () => {
   const userInfo = useSelector((state) => state.user.userInfo);
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
+  const language = useSelector((state) => state.app.language);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
   const queryParams = new URLSearchParams(location.search);
   const currentTab = queryParams.get("tab") || "info";
-  const language = useSelector((state) => state.app.language);
 
-  if (!userInfo) {
-    dispatch(showLoading());
-    return <Empty />;
-  }
-  dispatch(hideLoading());
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 992);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!userInfo) {
+      history.push("/home");
+    }
+  }, [userInfo, history]);
 
   const handleLogout = () => {
     dispatch(actions.processLogout());
     history.push("/home");
   };
 
-  const sideBarTabs = [
+  const handleProfileTab = (tab) => {
+    history.push(`/profile-user/${userInfo.id}?tab=${tab}`);
+  };
+
+  // Menu tài khoản cá nhân
+  const profileMenuItems = [
     {
       key: "info",
       label: language === "vi" ? "Hồ sơ cá nhân" : "Personal profile",
-      path: `profile-user/${userInfo.id}?tab=info`,
       icon: <UserOutlined />,
     },
     {
       key: "favorites",
       label: language === "vi" ? "Danh sách yêu thích" : "Favorites list",
-      path: `profile-user/${userInfo.id}?tab=favorites`,
       icon: <HeartOutlined />,
     },
     {
       key: "changePassword",
       label: language === "vi" ? "Đổi mật khẩu" : "Change password",
-      path: `profile-user/${userInfo.id}?tab=changePassword`,
       icon: <LockOutlined />,
     },
     {
       key: "logout",
       label: language === "vi" ? "Đăng xuất" : "Logout",
-      onClick: handleLogout,
       icon: <LogoutOutlined />,
+      onClick: handleLogout,
     },
   ];
 
@@ -75,76 +82,90 @@ const ProfileComponent = () => {
       case "changePassword":
         return <ChangePassword />;
       default:
-        return <Empty />;
+        return <Profile />;
     }
   };
 
   return (
-    <div
-      className="profile-container "
-      style={{
-        // backgroundImage: `url(${bg})`,
-        backgroundColor: "#f5f5f5",
-        minHeight: "100vh",
-        width: "100%",
-      }}
-    >
+    <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
       <HomeHeader />
+
       <Layout
-        className="profile-body"
         style={{
+          margin: isMobile ? 0 : "0 10%",
+          paddingTop: isMobile ? "12%" : "7%",
           minHeight: "100vh",
-          paddingTop: window.innerWidth < 970 ? "12%" : "7%",
-          margin: "0 10%",
-          background: "none",
         }}
       >
-        <Layout className="gap-3" style={{ background: "none" }}>
-          {/* Sidebar */}
-          <Sider
-            theme="light"
-            className="rounded-3"
-            breakpoint="lg"
-            collapsedWidth="0"
-            style={{
-              height: "100%",
-            }}
-          >
-            <div className="d-flex flex-column align-items-center p-3 text-white">
-              <Avatar
-                size={60}
-                src={
-                  userInfo?.avatar ||
-                  "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                }
-                className="border border-2 border-primary rounded-circle"
-              />
-              <div className="mt-2 fw-bold text-primary">
-                {userInfo?.fullName || "Người dùng"}
-              </div>
-            </div>
-
-            <Menu theme="light" mode="inline" selectedKeys={[currentTab]}>
-              {sideBarTabs.map((tab) => (
-                <Menu.Item
-                  key={tab.key}
-                  icon={tab.icon}
-                  onClick={() =>
-                    tab.onClick ? tab.onClick() : history.push(`/${tab.path}`)
+        <Layout
+          style={{
+            background: "none",
+            flexDirection: isMobile ? "column" : "row",
+            gap: 24,
+          }}
+        >
+          {/* Sidebar desktop */}
+          {!isMobile && (
+            <Layout.Sider
+              width={280}
+              theme="light"
+              className="rounded-3 shadow-sm"
+              style={{
+                background: "#fff",
+                marginBottom: isMobile ? 0 : 24,
+                height: 300,
+              }}
+            >
+              <div style={{ padding: "24px 20px", textAlign: "center" }}>
+                <Avatar
+                  size={80}
+                  src={
+                    userInfo?.avatar ||
+                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                   }
+                />
+                <div
+                  style={{
+                    marginTop: 12,
+                    fontSize: 18,
+                    fontWeight: "bold",
+                    color: "#0775d5",
+                  }}
                 >
-                  {tab.label}
-                </Menu.Item>
-              ))}
-            </Menu>
-          </Sider>
+                  {userInfo?.fullName}
+                </div>
+              </div>
+              <Menu
+                mode="inline"
+                selectedKeys={[currentTab]}
+                style={{ borderRight: 0 }}
+              >
+                {profileMenuItems.map((item) => (
+                  <Menu.Item
+                    key={item.key}
+                    icon={item.icon}
+                    onClick={() =>
+                      item.onClick?.() || handleProfileTab(item.key)
+                    }
+                  >
+                    {item.label}
+                  </Menu.Item>
+                ))}
+              </Menu>
+            </Layout.Sider>
+          )}
 
           {/* Nội dung chính */}
           <Layout
-            className="shadow-sm rounded-3 mb-5"
-            style={{ padding: "1% 4%", background: "#fff" }}
+            style={{
+              background: "#fff",
+              borderRadius: 12,
+              boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+              padding: isMobile ? 16 : 32,
+              marginBottom: isMobile ? 0 : 24,
+            }}
           >
-            <Content className="profile-content">{renderTabContent()}</Content>
+            <Content>{renderTabContent()}</Content>
           </Layout>
         </Layout>
       </Layout>

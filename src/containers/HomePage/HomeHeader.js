@@ -15,8 +15,14 @@ import {
   CheckCircleOutlined,
   CloseCircleOutlined,
   ClockCircleOutlined,
+  HeartOutlined,
+  HomeOutlined,
+  MedicineBoxOutlined,
+  TeamOutlined,
+  CalendarOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
-import { Dropdown, Badge, message } from "antd";
+import { Dropdown, Badge, message, Drawer, Avatar, Menu } from "antd";
 import { getNotifications, markAsRead } from "../../services/userService";
 import { io } from "socket.io-client";
 import StatsSection from "../../components/StatsSection";
@@ -40,10 +46,35 @@ class HomeHeader extends Component {
       keyword: "",
       reviewSocketBooking: null,
       notifDropdownOpen: false,
-      isMobile: window.innerWidth < 768,
+      isMobile: window.innerWidth < 992,
     };
     this.toggleMenu = this.toggleMenu.bind(this);
   }
+
+  // ==== Các hàm xử lý Drawer ====
+  toggleMenu = () => {
+    this.setState((prev) => ({ mobileMenu: !prev.mobileMenu }));
+  };
+
+  handleNavigate = (path) => {
+    this.props.history.push(path);
+    this.setState({ mobileMenu: false });
+  };
+
+  handleProfileTab = (tab) => {
+    const { userInfo } = this.props;
+    if (userInfo?.id) {
+      this.props.history.push(`/profile-user/${userInfo.id}?tab=${tab}`);
+      this.setState({ mobileMenu: false });
+    }
+  };
+
+  handleLogout = () => {
+    this.props.processLogout();
+    this.props.history.push("/home");
+    this.setState({ mobileMenu: false });
+  };
+
   openReviewModal = (socketBooking = null) => {
     this.setState({
       reviewModalVisible: true,
@@ -108,7 +139,7 @@ class HomeHeader extends Component {
   };
 
   handleResize = () => {
-    this.setState({ isMobile: window.innerWidth < 768 });
+    this.setState({ isMobile: window.innerWidth < 992 });
   };
 
   componentDidMount() {
@@ -188,55 +219,25 @@ class HomeHeader extends Component {
     }
   };
 
-  handleViewListSpecialty = () => {
-    if (this.props.history) {
-      this.props.history.push(`/list-specialty`);
-    }
-  };
-
-  handleViewListHospital = () => {
-    if (this.props.history) {
-      this.props.history.push(`/list-hospital`);
-    }
-  };
-
-  handleViewListDoctor = () => {
-    if (this.props.history) {
-      this.props.history.push(`/list-doctor`);
-    }
-  };
-
-  handleViewNewAppointment = () => {
-    if (this.props.history) {
-      this.props.history.push(`/schedule-appointment`);
-    }
-  };
-
-  handleViewHome = () => {
-    if (this.props.history) {
-      this.props.history.push(`/home`);
-    }
-  };
-
-  toggleMenu = () => {
-    this.setState((prevState) => ({
-      mobileMenu: !prevState.mobileMenu,
-    }));
-  };
-
   render() {
-    const { notifications } = this.state;
-    const currentPath = this.props.location.pathname;
-    const { intl } = this.props;
+    const { mobileMenu, notifications, isMobile, keyword } = this.state;
+    const { language, isLoggedIn, userInfo, location, intl } = this.props;
+    const currentPath = location.pathname;
     const placeholderText = intl.formatMessage({ id: "banner.placeholder" });
-    // console.log('check: ', this.props)
-    let language = this.props.language;
-    const { userInfo, processLogout, isLoggedIn } = this.props;
 
-    const handleLogout = () => {
-      processLogout();
-      this.props.history.push("/home");
-    };
+    let activeMainMenu = "";
+    if (currentPath === "/home") activeMainMenu = "/home";
+    else if (currentPath === "/list-specialty")
+      activeMainMenu = "/list-specialty";
+    else if (currentPath === "/list-hospital")
+      activeMainMenu = "/list-hospital";
+    else if (currentPath === "/list-doctor") activeMainMenu = "/list-doctor";
+    else if (currentPath === "/schedule-appointment")
+      activeMainMenu = "/schedule-appointment";
+
+    const isProfilePage = location.pathname.includes("/profile-user/");
+    const query = new URLSearchParams(location.search);
+    const currentTab = isProfilePage ? query.get("tab") || "info" : "";
 
     const baseTabs = [
       {
@@ -266,7 +267,7 @@ class HomeHeader extends Component {
       sideBarTabs.push({
         key: "logout",
         label: language === "vi" ? "Đăng xuất" : "Logout",
-        onClick: handleLogout,
+        onClick: this.props.handleLogout,
         icon: <LogoutOutlined />,
       });
     }
@@ -287,9 +288,9 @@ class HomeHeader extends Component {
 
       return (
         <div
+          key={item.id}
           onClick={() => this.handleNotificationClick(item.url, item.id)}
           className={`notif-item ${item.isRead ? "read" : "unread"}`}
-          key={item.id}
         >
           <div className="notif-icon">{icon}</div>
           <div className="notif-content">
@@ -306,7 +307,7 @@ class HomeHeader extends Component {
         <div className="notif-container">
           {/* HEADER: Chỉ tiêu đề */}
           <div className="notif-header">
-            <span>Thông báo</span>
+            <span>{language === "vi" ? "Thông báo" : "Notification"}</span>
           </div>
 
           {/* DANH SÁCH CUỘN */}
@@ -315,7 +316,9 @@ class HomeHeader extends Component {
               notifications.map((item) => renderNotificationItem(item))
             ) : (
               <div className="text-center p-3 text-muted">
-                Không có thông báo nào
+                {language === "vi"
+                  ? "Không có thông báo nào"
+                  : "No announcements"}
               </div>
             )}
           </div>
@@ -327,13 +330,166 @@ class HomeHeader extends Component {
               onClick={this.handleMarkAllAsRead}
               style={{ cursor: "pointer" }}
             >
-              Đánh dấu tất cả là đã đọc
+              {language === "vi"
+                ? "Đánh dấu tất cả là đã đọc"
+                : "Mark all as read"}
             </div>
           )}
         </div>
       </div>
     );
 
+    // Drawer Menu Mobile
+    const drawerMenu = (
+      <div
+        style={{ height: "100vh", display: "flex", flexDirection: "column" }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: "20px 24px",
+            textAlign: "center",
+            borderBottom: "1px solid #f0f0f0",
+          }}
+        >
+          <div
+            className="header-logo"
+            style={{
+              height: 50,
+              background: `url(${require("../../assets/careFlow_logo.png")}) center/contain no-repeat`,
+              marginBottom: 16,
+            }}
+            onClick={() => this.handleNavigate("/home")}
+          />
+          {isLoggedIn && userInfo && (
+            <>
+              <Avatar
+                size={64}
+                src={
+                  userInfo.avatar ||
+                  "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                }
+              />
+              <div style={{ marginTop: 8, fontWeight: "bold", fontSize: 16 }}>
+                {userInfo.fullName || "Người dùng"}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Menu Chính */}
+        <Menu
+          mode="inline"
+          selectedKeys={[activeMainMenu]}
+          style={{ borderRight: 0, flex: 1 }}
+        >
+          {[
+            {
+              icon: <HomeOutlined />,
+              label: <FormattedMessage id="homeheader.home" />,
+              path: "/home",
+            },
+            {
+              icon: <MedicineBoxOutlined />,
+              label: <FormattedMessage id="homeheader.speciality" />,
+              path: "/list-specialty",
+            },
+            {
+              icon: <HomeOutlined />,
+              label: <FormattedMessage id="homeheader.health-facility" />,
+              path: "/list-hospital",
+            },
+            {
+              icon: <TeamOutlined />,
+              label: <FormattedMessage id="homeheader.doctor" />,
+              path: "/list-doctor",
+            },
+            {
+              icon: <CalendarOutlined />,
+              label: <FormattedMessage id="homeheader.package" />,
+              path: "/schedule-appointment",
+            },
+          ].map((item) => (
+            <Menu.Item
+              key={item.path}
+              icon={item.icon}
+              onClick={() => this.handleNavigate(item.path)}
+            >
+              {item.label}
+            </Menu.Item>
+          ))}
+        </Menu>
+
+        {/* Menu Tài khoản */}
+        {isLoggedIn && userInfo && (
+          <>
+            <div style={{ borderTop: "1px solid #f0f0f0" }} />
+            <Menu
+              mode="inline"
+              selectedKeys={currentTab ? [currentTab] : []}
+              style={{ borderRight: 0 }}
+            >
+              <Menu.Item
+                key="info"
+                icon={<UserOutlined />}
+                onClick={() => this.handleProfileTab("info")}
+              >
+                {language === "vi" ? "Hồ sơ cá nhân" : "Personal profile"}
+              </Menu.Item>
+              <Menu.Item
+                key="favorites"
+                icon={<HeartOutlined />}
+                onClick={() => this.handleProfileTab("favorites")}
+              >
+                {language === "vi" ? "Danh sách yêu thích" : "Favorites list"}
+              </Menu.Item>
+              <Menu.Item
+                key="changePassword"
+                icon={<LockOutlined />}
+                onClick={() => this.handleProfileTab("changePassword")}
+              >
+                {language === "vi" ? "Đổi mật khẩu" : "Change password"}
+              </Menu.Item>
+              <Menu.Item
+                key="logout"
+                icon={<LogoutOutlined />}
+                onClick={this.handleLogout}
+                style={{ color: "#ff4d4f" }}
+              >
+                {language === "vi" ? "Đăng xuất" : "Logout"}
+              </Menu.Item>
+            </Menu>
+          </>
+        )}
+
+        <div
+          style={{
+            padding: 16,
+            borderTop: "1px solid #f0f0f0",
+            textAlign: "center",
+          }}
+        >
+          <span
+            className={`mx-3 cursor-pointer ${
+              language === LANGUAGES.VI ? "fw-bold text-danger" : ""
+            }`}
+            onClick={() => this.changeLanguage(LANGUAGES.VI)}
+          >
+            VN
+          </span>
+          <span
+            className={`mx-3 cursor-pointer ${
+              language === LANGUAGES.EN ? "fw-bold text-primary" : ""
+            }`}
+            onClick={() => this.changeLanguage(LANGUAGES.EN)}
+          >
+            EN
+          </span>
+        </div>
+      </div>
+    );
+
+    // Banner
     const desktopBanners = [
       require("../../assets/images/banner2.png"),
       require("../../assets/images/homepage_banner.jpg"),
@@ -344,33 +500,32 @@ class HomeHeader extends Component {
       require("../../assets/images/bannerPhone2.png"),
       require("../../assets/images/bannerPhone3.png"),
     ];
-
-    const banners = this.state.isMobile ? mobileBanners : desktopBanners;
+    const banners = isMobile ? mobileBanners : desktopBanners;
 
     return (
       <React.Fragment>
+        {/* HEADER */}
         <div className="home-header-container">
           <div className="home-header-content gap-3">
             <div className="left-content">
               <i
                 className="fas fa-bars menu-icon"
-                onClick={() => this.toggleMenu()}
+                onClick={this.toggleMenu}
               ></i>
-              <div
-                className="header-logo"
-                onClick={() => this.returnToHome()}
-              ></div>
+              <div className="header-logo" onClick={this.returnToHome}></div>
             </div>
+
+            {/* Menu ngang (desktop + tablet) */}
             <div
               className={`center-content text-uppercase ${
-                !this.state.mobileMenu ? "hide-mobile-menu" : ""
+                !mobileMenu && isMobile ? "hide-mobile-menu" : ""
               }`}
             >
               <div
                 className={`child-content ${
                   currentPath === "/home" ? "active" : ""
                 }`}
-                onClick={() => this.handleViewHome()}
+                onClick={() => this.handleNavigate("/home")}
               >
                 <div className="sub-title">
                   <b>
@@ -382,7 +537,7 @@ class HomeHeader extends Component {
                 className={`child-content ${
                   currentPath === "/list-specialty" ? "active" : ""
                 }`}
-                onClick={() => this.handleViewListSpecialty()}
+                onClick={() => this.handleNavigate("/list-specialty")}
               >
                 <div className="sub-title">
                   <b>
@@ -397,7 +552,7 @@ class HomeHeader extends Component {
                 className={`child-content ${
                   currentPath === "/list-hospital" ? "active" : ""
                 }`}
-                onClick={() => this.handleViewListHospital()}
+                onClick={() => this.handleNavigate("/list-hospital")}
               >
                 <div className="sub-title">
                   <b>
@@ -412,7 +567,7 @@ class HomeHeader extends Component {
                 className={`child-content ${
                   currentPath === "/list-doctor" ? "active" : ""
                 }`}
-                onClick={() => this.handleViewListDoctor()}
+                onClick={() => this.handleNavigate("/list-doctor")}
               >
                 <div className="sub-title">
                   <b>
@@ -427,7 +582,7 @@ class HomeHeader extends Component {
                 className={`child-content ${
                   currentPath === "/schedule-appointment" ? "active" : ""
                 }`}
-                onClick={() => this.handleViewNewAppointment()}
+                onClick={() => this.handleNavigate("/schedule-appointment")}
               >
                 <div className="sub-title">
                   <b>
@@ -439,6 +594,8 @@ class HomeHeader extends Component {
                 </div>
               </div>
             </div>
+
+            {/* Right content */}
             <div className="right-content">
               {isLoggedIn && (
                 <div className="notification-wrapper me-3">
@@ -462,7 +619,7 @@ class HomeHeader extends Component {
                             : "bell-icon"
                         }
                         style={{
-                          fontSize: "25px",
+                          fontSize: 25,
                           cursor: "pointer",
                           marginRight: 10,
                           color: "#ffa70c",
@@ -478,18 +635,18 @@ class HomeHeader extends Component {
                   <span className="text-nowrap">
                     <FormattedMessage id="homeheader.welcome" />,{" "}
                     <strong className="text-success">
-                      {userInfo && userInfo.fullName ? userInfo.fullName : ""}
+                      {userInfo?.fullName}
                     </strong>
                   </span>
                   <img
                     className="avatar object-fit-cover rounded-circle border border-2 border-primary"
                     alt="avatar"
                     src={
-                      userInfo && userInfo.avatar
-                        ? `${userInfo.avatar}`
-                        : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                      userInfo?.avatar ||
+                      "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                     }
                   />
+                  {/* sub-menu */}
                   <div className="sub-menu rounded-2 shadow-md">
                     {sideBarTabs.map((tab) => (
                       <div
@@ -556,12 +713,25 @@ class HomeHeader extends Component {
             </div>
           </div>
         </div>
-        {this.props.isShowBanner === true && (
+
+        {/* DRAWER MOBILE */}
+        <Drawer
+          placement="left"
+          open={isMobile && mobileMenu}
+          onClose={() => this.setState({ mobileMenu: false })}
+          width={280}
+          styles={{ body: { padding: 0 }, header: { display: "none" } }}
+        >
+          {drawerMenu}
+        </Drawer>
+
+        {/* Banner */}
+        {this.props.isShowBanner && (
           <div className="home-header-banner">
             <Swiper
               modules={[Autoplay, Pagination]}
               autoplay={{ delay: 3500, disableOnInteraction: false }}
-              loop={true}
+              loop
               pagination={{ clickable: true }}
               speed={900}
               className="banner-swiper"
@@ -589,7 +759,6 @@ class HomeHeader extends Component {
               >
                 <FormattedMessage id="banner.title1" />
               </div>
-
               <div
                 className={`title2 ${
                   this.state.activeSlide === 0 || this.state.activeSlide === 2
@@ -608,7 +777,7 @@ class HomeHeader extends Component {
                 <input
                   type="text"
                   placeholder={placeholderText}
-                  value={this.state.keyword}
+                  value={keyword}
                   onChange={(e) => this.setState({ keyword: e.target.value })}
                   onKeyDown={(e) => e.key === "Enter" && this.handleSearch()}
                 />
