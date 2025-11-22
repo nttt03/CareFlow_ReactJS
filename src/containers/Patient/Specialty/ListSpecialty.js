@@ -32,7 +32,7 @@ class ListSpecialty extends Component {
   ) => {
     const { showLoading, hideLoading } = this.props;
     this.setState({ isLoading: true });
-    showLoading();
+    // showLoading();
 
     try {
       const res = await getAllSpecialty({
@@ -53,8 +53,8 @@ class ListSpecialty extends Component {
       console.log("Lỗi khi lấy danh sách chuyên khoa:", error);
     } finally {
       this.setState({ isLoading: false });
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      hideLoading();
+      // await new Promise((resolve) => setTimeout(resolve, 600));
+      // hideLoading();
     }
   };
 

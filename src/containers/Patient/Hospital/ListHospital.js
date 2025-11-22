@@ -33,7 +33,7 @@ class ListHospital extends Component {
   ) => {
     const { showLoading, hideLoading } = this.props;
     this.setState({ isLoading: true });
-    showLoading();
+    // showLoading();
     try {
       const res = await getAllHospital({
         page,
@@ -52,8 +52,8 @@ class ListHospital extends Component {
       console.log("Lỗi khi lấy danh sách bệnh viện:", error);
     } finally {
       this.setState({ isLoading: false });
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      hideLoading();
+      // await new Promise((resolve) => setTimeout(resolve, 500));
+      // hideLoading();
     }
   };
 

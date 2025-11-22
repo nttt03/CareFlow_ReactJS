@@ -35,8 +35,7 @@ class ListDoctor extends Component {
   ) => {
     const { showLoading, hideLoading } = this.props;
     this.setState({ isLoading: true });
-    showLoading();
-
+    // showLoading();
     try {
       let res = await getListDoctor({ page, limit });
 
@@ -52,8 +51,8 @@ class ListDoctor extends Component {
       console.log("Lỗi load danh sách bác sĩ:", error);
     } finally {
       this.setState({ isLoading: false });
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      hideLoading();
+      // await new Promise((resolve) => setTimeout(resolve, 500));
+      // hideLoading();
     }
   };
 

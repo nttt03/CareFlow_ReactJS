@@ -39,7 +39,7 @@ const DetailSpecialty = () => {
   // Lấy chi tiết chuyên khoa
   const fetchData = async (location) => {
     setLoading(true);
-    dispatch(showLoading());
+    // dispatch(showLoading());
     try {
       let res = await getAllDetailSpecialtyById({ id, location });
       if (res && res.errCode === 0) {
@@ -50,8 +50,8 @@ const DetailSpecialty = () => {
       console.error("Error fetching data detail specialty:", err);
     } finally {
       setLoading(false);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      dispatch(hideLoading());
+      // await new Promise((resolve) => setTimeout(resolve, 1000));
+      // dispatch(hideLoading());
     }
   };
 
