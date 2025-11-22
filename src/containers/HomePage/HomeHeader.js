@@ -29,12 +29,6 @@ import moment from "moment";
 import "moment/locale/vi";
 moment.locale("vi");
 
-const bannerImages = [
-  require("../../assets/images/banner2.png"),
-  require("../../assets/images/homepage_banner.jpg"),
-  require("../../assets/images/banner3.png"),
-];
-
 class HomeHeader extends Component {
   socket = null;
   constructor(props) {
@@ -46,6 +40,7 @@ class HomeHeader extends Component {
       keyword: "",
       reviewSocketBooking: null,
       notifDropdownOpen: false,
+      isMobile: window.innerWidth < 768,
     };
     this.toggleMenu = this.toggleMenu.bind(this);
   }
@@ -112,7 +107,12 @@ class HomeHeader extends Component {
     }
   };
 
+  handleResize = () => {
+    this.setState({ isMobile: window.innerWidth < 768 });
+  };
+
   componentDidMount() {
+    window.addEventListener("resize", this.handleResize);
     const { userInfo } = this.props;
     this.loadNotifications();
 
@@ -145,6 +145,7 @@ class HomeHeader extends Component {
   }
 
   componentWillUnmount() {
+    window.removeEventListener("resize", this.handleResize);
     if (this.socket && this.props.userInfo?.id) {
       this.socket.emit("leaveCustomerRoom", this.props.userInfo.id);
       this.socket.disconnect();
@@ -332,6 +333,20 @@ class HomeHeader extends Component {
         </div>
       </div>
     );
+
+    const desktopBanners = [
+      require("../../assets/images/banner2.png"),
+      require("../../assets/images/homepage_banner.jpg"),
+      require("../../assets/images/banner3.png"),
+    ];
+    const mobileBanners = [
+      require("../../assets/images/bannerPhone1.png"),
+      require("../../assets/images/bannerPhone2.png"),
+      require("../../assets/images/bannerPhone3.png"),
+    ];
+
+    const banners = this.state.isMobile ? mobileBanners : desktopBanners;
+
     return (
       <React.Fragment>
         <div className="home-header-container">
@@ -554,13 +569,11 @@ class HomeHeader extends Component {
                 this.setState({ activeSlide: swiper.realIndex })
               }
             >
-              {bannerImages.map((img, i) => (
+              {banners.map((banner, i) => (
                 <SwiperSlide key={i}>
                   <div
                     className="banner-slide"
-                    style={{
-                      backgroundImage: `url(${img})`,
-                    }}
+                    style={{ backgroundImage: `url(${banner})` }}
                   ></div>
                 </SwiperSlide>
               ))}
@@ -602,7 +615,7 @@ class HomeHeader extends Component {
               </div>
             </div>
 
-            <div className="content-down">
+            <div className="content-down d-none d-md-block">
               <StatsSection />
             </div>
           </div>

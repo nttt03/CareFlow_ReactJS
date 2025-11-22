@@ -9,6 +9,7 @@ import HomeFooter from "./HomeFooter";
 import FeaturesSection from "../../components/FeaturesSection";
 import Review from "../../components/Review";
 import AllReview from "../../components/AllReview";
+import StatsSection from "../../components/StatsSection";
 import { getAppointmentNeedReview } from "../../services/userService";
 import { io } from "socket.io-client";
 
@@ -118,6 +119,7 @@ const HomePage = () => {
           setShowReviewModal(true);
         }}
       />
+      <StatsSection />
       <FeaturesSection />
       <Specialty settings={settings} />
       <MedicalFacility settings={settings} />
