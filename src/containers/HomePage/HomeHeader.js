@@ -517,7 +517,7 @@ class HomeHeader extends Component {
 
             {/* Menu ngang (desktop + tablet) */}
             <div
-              className={`center-content text-uppercase ${
+              className={`center-content ${
                 !mobileMenu && isMobile ? "hide-mobile-menu" : ""
               }`}
             >
