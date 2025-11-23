@@ -267,7 +267,7 @@ class HomeHeader extends Component {
       sideBarTabs.push({
         key: "logout",
         label: language === "vi" ? "Đăng xuất" : "Logout",
-        onClick: this.props.handleLogout,
+        onClick: this.handleLogout,
         icon: <LogoutOutlined />,
       });
     }
@@ -653,11 +653,15 @@ class HomeHeader extends Component {
                         className="sub-menu-item"
                         key={tab.key}
                         icon={tab.icon}
-                        onClick={() =>
-                          tab.onClick
-                            ? tab.onClick()
-                            : this.props.history.push(`/${tab.path}`)
-                        }
+                        onClick={() => {
+                          if (tab.onClick) {
+                            tab.onClick();
+                            return;
+                          }
+                          if (tab.path) {
+                            this.props.history.push(tab.path);
+                          }
+                        }}
                       >
                         {tab.label}
                       </div>

@@ -256,27 +256,31 @@ class DetailHospital extends Component {
               </>
             )}
             {/* Chuyên khoa */}
-            <div className="specialties-section mt-4">
-              <h2 className="specialties-title text-primary">
-                {language === "vi"
-                  ? "Chọn Chuyên khoa cần khám"
-                  : "Select Specialties"}
-              </h2>
-              <div className="d-flex flex-nowrap overflow-x-auto pb-3">
-                {(() => {
-                  const specialties = dataDetailHospital?.specialties || [];
-                  const doctors = dataDetailHospital?.doctors || [];
+            {(() => {
+              const specialties = dataDetailHospital?.specialties || [];
+              const doctors = dataDetailHospital?.doctors || [];
 
-                  // Lọc ra những chuyên khoa có ít nhất 1 bác sĩ
-                  const filteredSpecialties = specialties.filter((spec) =>
-                    doctors.some((doc) => doc.specialtyId === spec.specialtyId)
-                  );
+              const filteredSpecialties = specialties.filter((spec) =>
+                doctors.some((doc) => doc.specialtyId === spec.specialtyId)
+              );
 
-                  return filteredSpecialties.length > 0 ? (
-                    filteredSpecialties.map((specialty, index) => (
+              if (filteredSpecialties.length === 0) return null;
+
+              return (
+                <div className="specialties-section mt-4">
+                  <h2 className="specialties-title text-primary">
+                    {language === "vi"
+                      ? "Chọn Chuyên khoa cần khám"
+                      : "Select Specialties"}
+                  </h2>
+                  <div className="d-flex flex-nowrap overflow-x-auto pb-3">
+                    {filteredSpecialties.map((specialty) => (
                       <div
                         className="specialty-item p-2 flex-shrink-0"
-                        key={index}
+                        key={specialty.specialtyId}
+                        onClick={() =>
+                          this.handleSpecialtyClick(specialty.specialtyId)
+                        }
                       >
                         <div
                           className={`card specialty-card shadow-sm border-0 text-center ${
@@ -284,9 +288,6 @@ class DetailHospital extends Component {
                               ? "bg-light shadow"
                               : ""
                           }`}
-                          onClick={() =>
-                            this.handleSpecialtyClick(specialty.specialtyId)
-                          }
                           style={{
                             cursor: "pointer",
                             minWidth: "180px",
@@ -307,39 +308,24 @@ class DetailHospital extends Component {
                                 objectFit: "cover",
                               }}
                             />
-
                             <h6
-                              className="fw-semibold text-dark text-truncate"
+                              className="fw-semibold text-dark text-truncate mt-2"
                               style={{ maxWidth: "150px" }}
-                              title={specialty?.specialty?.name}
                             >
                               {specialty?.specialty?.name}
                             </h6>
-
-                            <span
-                              className="badge bg-success-subtle text-success fw-semibold mt-2 px-3 py-2"
-                              style={{
-                                borderRadius: "20px",
-                                fontSize: "0.9rem",
-                              }}
-                            >
+                            <span className="badge bg-success-subtle text-success fw-semibold mt-2 px-3 py-2">
                               {language === "vi" ? "Giá: " : "Price: "}
                               {this.formatPrice(specialty.price)}
                             </span>
                           </div>
                         </div>
                       </div>
-                    ))
-                  ) : (
-                    <p className="text-muted text-center w-100">
-                      {language === "vi"
-                        ? "Không có chuyên khoa nào có bác sĩ."
-                        : "No specialties with doctors available."}
-                    </p>
-                  );
-                })()}
-              </div>
-            </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             <div className="list-doctor">
               {arrDoctorId &&

@@ -13,6 +13,7 @@ class Login extends Component {
       password: "",
       isShowPassword: false,
       errMessage: "",
+      isLoading: false,
     };
   }
 
@@ -34,6 +35,7 @@ class Login extends Component {
     });
 
     try {
+      this.setState({ isLoading: true });
       let data = await handleLoginApi(this.state.username, this.state.password);
       if (data && data.errCode !== 0) {
         this.setState({
@@ -42,11 +44,13 @@ class Login extends Component {
               ? data.message
               : data.messageEn || data.message,
         });
+        this.setState({ isLoading: false });
       }
       if (data && data.errCode === 0) {
         this.props.userLoginSuccess(data.user);
       }
     } catch (e) {
+      this.setState({ isLoading: false });
       let errorMsg = "Đã có lỗi xảy ra, vui lòng thử lại!";
       if (e.response && e.response.data) {
         errorMsg =
@@ -121,8 +125,25 @@ class Login extends Component {
             <div className="col-12 err-message">{this.state.errMessage}</div>
 
             <div className="col-12">
-              <button className="btn-login" onClick={this.handleLogin}>
-                {lang === "vi" ? "Đăng nhập" : "Login"}
+              <button
+                className="btn-login"
+                onClick={this.handleLogin}
+                disabled={this.state.isLoading}
+                style={{
+                  opacity: this.state.isLoading ? 0.7 : 1,
+                  cursor: this.state.isLoading ? "not-allowed" : "pointer",
+                }}
+              >
+                {this.state.isLoading ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin me-2"></i>
+                    {lang === "vi" ? "Đang đăng nhập..." : "Logging in..."}
+                  </>
+                ) : lang === "vi" ? (
+                  "Đăng nhập"
+                ) : (
+                  "Login"
+                )}
               </button>
             </div>
 
