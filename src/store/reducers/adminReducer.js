@@ -11,6 +11,7 @@ const initialState = {
   allScheduleTime: [],
   allFavorites: [],
   allRequiredDoctorInfor: [],
+  statsData: [],
 };
 
 const adminReducer = (state = initialState, action) => {
@@ -114,6 +115,16 @@ const adminReducer = (state = initialState, action) => {
       };
     case actionTypes.FETCH_ALL_FAVORITE_FAILED:
       state.allFavorites = [];
+      return {
+        ...state,
+      };
+    case actionTypes.FETCH_STATS_SUCCESS:
+      state.statsData = action.stats;
+      return {
+        ...state,
+      };
+    case actionTypes.FETCH_STATS_FAILED:
+      state.statsData = [];
       return {
         ...state,
       };

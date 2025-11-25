@@ -11,6 +11,7 @@ import {
   getAllSpecialty,
   getAllHospital,
   getFavorites,
+  getAdminStatistics,
 } from "../../services/userService";
 import { toast } from "react-toastify";
 import { dispatch } from "../../redux";
@@ -387,4 +388,29 @@ export const fetchAllUserFavoriteSuccess = (data) => ({
 
 export const fetchAllUserFavoriteFailed = () => ({
   type: actionTypes.FETCH_ALL_FAVORITE_FAILED,
+});
+
+export const fetchStatsDataStart = () => {
+  return async (dispatch, getState) => {
+    try {
+      let res = await getAdminStatistics();
+      if (res && res.errCode === 0) {
+        dispatch(fetchStatsDataSuccess(res?.data?.overview));
+      } else {
+        dispatch(fetchStatsDataFailed());
+      }
+    } catch (e) {
+      dispatch(fetchStatsDataFailed());
+      console.log("fetchStatsDataFailed error: ", e);
+    }
+  };
+};
+
+export const fetchStatsDataSuccess = (data) => ({
+  type: actionTypes.FETCH_STATS_SUCCESS,
+  stats: data,
+});
+
+export const fetchStatsDataFailed = () => ({
+  type: actionTypes.FETCH_STATS_FAILED,
 });

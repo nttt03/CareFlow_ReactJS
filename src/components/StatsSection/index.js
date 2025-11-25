@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getAdminStatistics } from "../../services/userService";
-import { useSelector } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
+import { fetchStatsDataStart } from "../../store/actions";
 import {
   CalendarOutlined,
   UserOutlined,
@@ -12,52 +11,53 @@ import {
 } from "@ant-design/icons";
 
 export default function StatsSection() {
+  const dispatch = useDispatch();
   const [stats, setStats] = useState(null);
   const [counts, setCounts] = useState([]);
   const sectionRef = useRef(null);
   const language = useSelector((state) => state.app.language);
+  const statsData = useSelector((state) => state.admin.statsData);
 
-  const fetchAdminStats = async () => {
-    try {
-      const res = await getAdminStatistics();
-      if (res?.errCode === 0) {
-        const data = res.data.overview;
+  useEffect(() => {
+    if (!statsData || Object.keys(statsData).length === 0) return;
 
-        const formattedStats = [
-          {
-            to: data.totalBookings,
-            label: language === "vi" ? "Lượt đặt lịch" : "Appointments",
-            icon: <CalendarOutlined />,
-          },
-          {
-            to: data.totalHospitals,
-            label: language === "vi" ? "Bệnh viện" : "Hospitals",
-            icon: <HomeOutlined />,
-          },
-          {
-            to: data.totalDoctors,
-            label: language === "vi" ? "Bác sĩ hợp tác" : "Doctors",
-            icon: <UserOutlined />,
-          },
-          {
-            to: data.totalPatients,
-            label: language === "vi" ? "Khách hàng" : "Patients",
-            icon: <TeamOutlined />,
-          },
-          {
-            to: 4.8,
-            label: language === "vi" ? "Mức độ hài lòng" : "Rating",
-            icon: <StarFilled />,
-          },
-        ];
+    const formattedStats = [
+      {
+        to: statsData.totalBookings,
+        label: language === "vi" ? "Lượt đặt lịch" : "Appointments",
+        icon: <CalendarOutlined />,
+      },
+      {
+        to: statsData.totalHospitals,
+        label: language === "vi" ? "Bệnh viện" : "Hospitals",
+        icon: <HomeOutlined />,
+      },
+      {
+        to: statsData.totalDoctors,
+        label: language === "vi" ? "Bác sĩ hợp tác" : "Doctors",
+        icon: <UserOutlined />,
+      },
+      {
+        to: statsData.totalPatients,
+        label: language === "vi" ? "Khách hàng" : "Patients",
+        icon: <TeamOutlined />,
+      },
+      {
+        to: 4.8,
+        label: language === "vi" ? "Mức độ hài lòng" : "Rating",
+        icon: <StarFilled />,
+      },
+    ];
 
-        setStats(formattedStats);
-        setCounts(formattedStats.map(() => 0));
-      }
-    } catch (error) {
-      console.error("Error fetching admin stats:", error);
+    setStats(formattedStats);
+    setCounts(formattedStats.map(() => 0));
+  }, [statsData, language]);
+
+  useEffect(() => {
+    if (!statsData || Object.keys(statsData).length === 0) {
+      dispatch(fetchStatsDataStart());
     }
-  };
+  }, []);
 
   const startCounter = () => {
     const duration = 2000; // tổng thời gian chạy
@@ -86,10 +86,6 @@ export default function StatsSection() {
 
     animate();
   };
-
-  useEffect(() => {
-    fetchAdminStats();
-  }, [language]);
 
   useEffect(() => {
     if (!stats) return;
