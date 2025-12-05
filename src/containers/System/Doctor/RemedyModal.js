@@ -106,7 +106,7 @@ class RemedyModal extends Component {
   };
 
   render() {
-    const { isOpenModal, closeRemedyModal } = this.props;
+    const { isOpenModal, closeRemedyModal, isShowLoading, language } = this.props;
     const { email, fileName, imgPreview, isImage } = this.state;
 
     return (
@@ -116,7 +116,7 @@ class RemedyModal extends Component {
         size="lg"
         centered
       >
-        <ModalHeader>Gửi hóa đơn & đơn thuốc</ModalHeader>
+        <ModalHeader>Gửi kết quả đơn thuốc</ModalHeader>
 
         <ModalBody style={{ minHeight: "70vh" }}>
           <div className="row">
@@ -199,7 +199,12 @@ class RemedyModal extends Component {
             onClick={this.handleSendRemedy}
             disabled={!fileName}
           >
-            Gửi
+            {isShowLoading ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin me-2"></i>
+                    {language === "vi" ? "Đang gửi..." : "Sending..."}
+                  </>
+                ) : language === "vi" ? "Gửi" : "Send"}
           </Button>
           <Button color="secondary" onClick={closeRemedyModal}>
             Hủy

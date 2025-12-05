@@ -160,15 +160,15 @@ export const deleteUserStart = (userId) => {
     try {
       let res = await deleteUserService(userId);
       if (res && res.errCode === 0) {
-        toast.success("Delete user success!");
+        // toast.success("Delete user success!");
         dispatch(deleteUserSuccess());
         dispatch(fetchAllUsersStart());
       } else {
-        toast.error("Delete user error!");
+        // toast.error("Delete user error!");
         dispatch(deleteUserFailed());
       }
     } catch (e) {
-      toast.error("Delete user error!");
+      // toast.error("Delete user error!");
       dispatch(deleteUserFailed());
       console.log("deleteUserFailed error: ", e);
     }
