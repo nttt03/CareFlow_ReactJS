@@ -22,6 +22,7 @@ class ManageSchedule extends Component {
       currentDate: "",
       rangeTime: [],
       maxNumber: 10,
+      isLoading: false,
     };
   }
 
@@ -183,7 +184,7 @@ class ManageSchedule extends Component {
         return;
       }
     }
-
+    this.setState({ isLoading: true });
     let res = await saveBulkScheduleDoctor({
       arrSchedule: result,
       doctorId: selectedDoctor.value,
@@ -195,6 +196,7 @@ class ManageSchedule extends Component {
           ? "Lưu thông tin lịch khám thành công!"
           : "Save schedule successfully!"
       );
+      this.setState({ isLoading: false });
     } else {
       message.error(
         language === "vi"
@@ -202,6 +204,7 @@ class ManageSchedule extends Component {
           : "Save schedule failed!"
       );
       console.log("Error saveBulkScheduleDoctor >>> res: ", res);
+      this.setState({ isLoading: false });
     }
 
     // console.log('check state khi click lưu thông tin:', this.state)
@@ -222,17 +225,22 @@ class ManageSchedule extends Component {
         </div>
         <div className="container">
           <div className="row">
-            <div className="col-6 form-group">
-              <label>
-                <FormattedMessage id="manage-schedule.choose-doctor" />
-              </label>
-              <Select
-                value={this.state.selectedDoctor}
-                onChange={this.handleChangeSelect}
-                options={this.state.listDoctors}
-                isDisabled={isDoctor}
-              />
-            </div>
+            {
+              !isDoctor ? (
+                <div className="col-6 form-group">
+                  <label>
+                    <FormattedMessage id="manage-schedule.choose-doctor" />
+                  </label>
+                  <Select
+                    value={this.state.selectedDoctor}
+                    onChange={this.handleChangeSelect}
+                    options={this.state.listDoctors}
+                    isDisabled={isDoctor}
+                  />
+                </div>
+              ) : ""
+            }
+            
             <div className="col-6 form-group">
               <label>
                 <FormattedMessage id="manage-schedule.choose-date" />
@@ -284,7 +292,13 @@ class ManageSchedule extends Component {
                 className="btn btn-primary btn-save-schedule"
                 onClick={() => this.handleSaveShedule()}
               >
-                <FormattedMessage id="manage-schedule.save" />
+                {this.state.isLoading ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin me-2"></i>
+                    {language === "vi" ? "Đang lưu..." : "Saving..."}
+                  </>
+                ) : (<FormattedMessage id="manage-schedule.save" />)}
+                
               </button>
             </div>
           </div>
