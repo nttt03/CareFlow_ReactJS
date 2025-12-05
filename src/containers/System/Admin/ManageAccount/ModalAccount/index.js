@@ -11,6 +11,7 @@ export default function ModalAccount({
   mode,
   initialValues,
 }) {
+  const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const language = useSelector((state) => state.app.language);
@@ -30,13 +31,15 @@ export default function ModalAccount({
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-
+      setIsLoading(true)
       if (mode === "add") {
         const res = await dispatch(actions.createNewUser(values));
         if (res?.errCode === 0) {
           onClose();
           form.resetFields();
+          setIsLoading(false)
         }
+        setIsLoading(false)
       } else if (mode === "edit") {
         const payload = { ...values, id: initialValues.id };
         if (!payload.password) {
@@ -46,10 +49,13 @@ export default function ModalAccount({
         if (res?.errCode === 0) {
           onClose();
           form.resetFields();
+          setIsLoading(false)
         }
       }
+      setIsLoading(false)
     } catch (error) {
       console.log("Validation Failed:", error);
+      setIsLoading(false)
     }
   };
 
@@ -67,7 +73,12 @@ export default function ModalAccount({
       open={visible}
       onCancel={onClose}
       onOk={handleSubmit}
-      okText={language === "vi" ? "Lưu" : "Save"}
+      okText={isLoading ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin me-2"></i>
+                    {language === "vi" ? "Đang lưu..." : "Saving..."}
+                  </>
+                ) : language === "vi" ? "Lưu" : "Save"}
       cancelText={language === "vi" ? "Hủy" : "Cancel"}
       width={700}
     >

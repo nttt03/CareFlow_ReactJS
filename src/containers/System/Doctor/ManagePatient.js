@@ -250,11 +250,12 @@ const ManagePatient = () => {
                   <Col xs={24} sm={12}>
                     <Form.Item
                       label={
-                        language === "vi" ? "Chiều cao (cm)" : "Height (cm)"
+                        language === "vi" ? "Chiều cao" : "Height"
                       }
                       name="height"
                     >
                       <Input
+                        type="number"
                         value={recordForm.height}
                         onChange={(e) =>
                           setRecordForm({
@@ -273,6 +274,7 @@ const ManagePatient = () => {
                       name="weight"
                     >
                       <Input
+                        type="number"
                         value={recordForm.weight}
                         onChange={(e) =>
                           setRecordForm({
@@ -494,20 +496,15 @@ const ManagePatient = () => {
 
   return (
     <>
-      <Spin
-        style={{ zIndex: "1600" }}
-        spinning={isShowLoading}
-        tip="Loading..."
-      >
-        {renderScreen()}
+      {renderScreen()}
 
         <RemedyModal
           isOpenModal={isOpenRemedyModal}
           dataModal={dataModal}
           closeRemedyModal={closeRemedyModal}
           sendRemedy={sendRemedy}
+          isShowLoading={isShowLoading}
         />
-      </Spin>
     </>
   );
 };
