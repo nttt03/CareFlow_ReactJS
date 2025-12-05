@@ -5,7 +5,6 @@ import {
   UserAddOutlined,
   CloseCircleOutlined,
   CheckCircleOutlined,
-  StarOutlined,
   TeamOutlined,
   ShopOutlined,
   TrophyOutlined,
@@ -43,7 +42,7 @@ ChartJS.register(
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({});
   const [last7DaysData, setLast7DaysData] = useState([]);
   const [topHospitals, setTopHospitals] = useState([]);
@@ -314,7 +313,12 @@ const AdminDashboard = () => {
             border: "1px solid #fca5a5",
           },
         ].map((item, i) => (
-          <Col span={6} key={i}>
+          <Col key={i} 
+            xs={24}
+            sm={12}
+            md={8}
+            lg={6}
+          >
             <Card
               hoverable
               style={{
@@ -350,9 +354,12 @@ const AdminDashboard = () => {
       </Row>
 
       {/* Charts & Tables */}
-      <Row gutter={16} style={{ marginTop: 24 }}>
+      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
         {/* Left: Top Hospitals + Top Doctors */}
-        <Col span={12}>
+        <Col
+          md={24}
+          lg={12}
+        >
           {/* Top 1 Hospital */}
           {topHospitals.length > 0 && (
             <div
@@ -494,9 +501,10 @@ const AdminDashboard = () => {
               </span>
             }
             style={{
-              height: 399,
+              height: 'calc(100% - 220px)',
               border: "1px solid #74d8fd",
               borderRadius: 10,
+              overflowY: 'auto' 
             }}
           >
             <Table
@@ -509,7 +517,10 @@ const AdminDashboard = () => {
         </Col>
 
         {/* Right: Charts */}
-        <Col span={12}>
+        <Col 
+          md={24}
+          lg={12}
+        >
           <Card
             title={
               language === LANGUAGES.VI

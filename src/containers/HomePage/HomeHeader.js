@@ -20,7 +20,6 @@ import {
   MedicineBoxOutlined,
   TeamOutlined,
   CalendarOutlined,
-  MenuOutlined,
 } from "@ant-design/icons";
 import { Dropdown, Badge, message, Drawer, Avatar, Menu } from "antd";
 import { getNotifications, markAsRead } from "../../services/userService";

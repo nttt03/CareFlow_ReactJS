@@ -257,7 +257,7 @@ function ManageAccount({
   ];
 
   return (
-    <div className="container mt-3 manage-account-container">
+    <div className="mx-5 mt-3 manage-account-container">
       <div className="title py-2">
         <FormattedMessage id="admin.manage-account.title" />
       </div>

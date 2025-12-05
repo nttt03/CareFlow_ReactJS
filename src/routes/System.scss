@@ -21,3 +21,19 @@
         width: 100%;
     }
 }
+
+@media (max-width: 930px) {
+    .body-container {
+        position: relative;
+
+        .header-container {
+            position: absolute;
+            display: none;
+
+        }
+
+        .system-container {
+            width: 100%;
+        }
+    }
+}

@@ -303,3 +303,10 @@
 .unread .notif-text {
     font-weight: 600;
 }
+
+@media (max-width: 930px) {
+    .logo-header {
+        display: none;
+    }
+
+}
