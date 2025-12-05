@@ -27,6 +27,7 @@ import { PlusOutlined, UserOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
 import { FormattedMessage } from "react-intl";
+import { validateCCCD } from "../../../utils";
 
 const { Option } = Select;
 
@@ -112,6 +113,11 @@ const ProfileUser = () => {
   const handleSubmit = async (values) => {
     try {
       dispatch(showLoading());
+
+      if (!validateCCCD(values.CCCD)) {
+        message.error("Số CCCD không hợp lệ!");
+        return;
+      }
 
       const updatedData = {
         fullName: values.fullName,
