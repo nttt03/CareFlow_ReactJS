@@ -49,6 +49,11 @@ class DoctorExtraInfor extends Component {
     }`;
     const note = extraInfor?.note || "";
 
+    // Lấy giá đúng chuyên khoa
+    const specialtyPrice = extraInfor?.hospital?.hospital_specialties?.find(
+      hs => hs.specialtyId === extraInfor.specialtyId
+    )?.price;
+
     return (
       <div className="doctor-extra-infor-container container p-4 rounded shadow-sm bg-light mt-3">
         <h5 className="fw-bold text-primary mb-3">
@@ -114,16 +119,16 @@ class DoctorExtraInfor extends Component {
                   defaultMessage={language === "vi" ? "Giá khám:" : "Price:"}
                 />
               </span>
-              {extraInfor?.price && (
+              {specialtyPrice != null && (
                 <NumberFormat
                   className="fw-bold text-success"
-                  value={extraInfor.price}
+                  value={specialtyPrice}
                   displayType={"text"}
                   thousandSeparator={true}
                   suffix={" VNĐ"}
                 />
               )}
-              <button
+              {/* <button
                 className="btn btn-link p-0 ms-2"
                 onClick={() => this.showHideDetailInfor(true)}
               >
@@ -133,7 +138,7 @@ class DoctorExtraInfor extends Component {
                     language === "vi" ? "Xem chi tiết" : "See details"
                   }
                 />
-              </button>
+              </button> */}
             </div>
           ) : (
             <div className="border-top pt-3">
