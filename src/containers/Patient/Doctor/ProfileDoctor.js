@@ -149,7 +149,7 @@ class ProfileDoctor extends Component {
           </div>
         )}
         {/* price */}
-        {isShowPrice === true && (
+        {/* {isShowPrice === true && (
           <div className="price">
             <FormattedMessage id="patient.booking-modal.price" />
             {dataProfile &&
@@ -173,7 +173,7 @@ class ProfileDoctor extends Component {
                 />
               )}
           </div>
-        )}
+        )} */}
       </div>
     );
   }
