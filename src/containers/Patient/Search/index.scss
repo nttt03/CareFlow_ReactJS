@@ -11,7 +11,19 @@
 }
 
 .result-container {
-    margin: 0 230px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    @media (max-width: 1024px) {
+        padding: 0 35px;
+    }
+
+    @media (max-width: 768px) {
+        margin: 120px 10px 0 10px !important;
+        padding: 0 10px;
+    }
 }
 
 .doctor-card {
@@ -82,10 +94,6 @@
         }
     }
 
-    .result-container {
-        margin: 120px 10px 0 10px !important;
-    }
-
     .doctor-avatar,
     .hospital-avatar {
         width : 60px !important;
@@ -93,9 +101,9 @@
     }
 }
 
-@media (min-width: 768px) {
-    .result-container {
-        margin: 0 50px !important;
+// @media (min-width: 768px) {
+//     .result-container {
+//         margin: 0 50px !important;
 
-    }
-}
+//     }
+// }
