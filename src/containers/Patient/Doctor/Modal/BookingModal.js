@@ -260,6 +260,7 @@ class BookingModal extends Component {
           size="xl"
           centered
           toggle={closeBookingModal}
+          fullscreen="sm"
         >
           <div className="booking-modal-content">
             <div className="booking-modal-header">

@@ -103,3 +103,9 @@
         }
     }
 }
+
+@media (min-width: 768px) and (max-width: 1000px) {
+  .booking-modal-container {
+    max-width: 700px;
+  }
+}
