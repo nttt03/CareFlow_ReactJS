@@ -113,6 +113,7 @@ class ProfileDoctor extends Component {
                 {language === "vi" ? "Chuyên khoa:" : "Specialty:"}{" "}
                 {dataProfile?.doctorInfor?.specialty?.name}
               </span>
+              <br />
               {dataProfile?.doctorInfor?.rating && (
                 <Rate
                   disabled
