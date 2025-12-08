@@ -154,8 +154,30 @@
             "price": "Price:",
             "doctor": "Doctor:",
             "reason": "Reason:",
-            "hospital": "Hospital:"
+            "hospital": "Hospital:",
+            "symptoms": "Symptoms:",
+            "cancel": "Cancel schedule",
+            "medical-result": "Medical results:",
+            "view-detail": "View detail",
+            "medicalResult": "Medical Result/Diagnosis",
+            "medical-record-detail": "Medical Record Details",
+            "attached-file": "Attached Medical Record File",
+            "view-file": "View Attached File",
+            "hide-file": "Hide Attached File",
+            "patient-profile": "Patient Profile (Health Information)",
+            "download-summary": "Download Medical Summary"
+        },
+        "profile": {
+            "height": "Height",
+            "weight": "Weight",
+            "underlying-diseases": "Underlying Diseases",
+            "allergies": "Allergies",
+            "medical-history": "Other Medical History"
         }
+    },
+    "common": {
+        "close": "Close",
+        "download": "Download"
     },
     "admin": {
         "manage-doctor": {

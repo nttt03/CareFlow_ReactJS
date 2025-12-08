@@ -14,6 +14,7 @@ import emptyImg from "../../../assets/empty.png";
 import { Card, Row, Col, Empty, Tabs, Pagination, message } from "antd";
 import moment from "moment";
 import ModalReject from "../../../components/ModalReject";
+import ModalMedicalRecord from "./ModalMedicalRecord";
 
 const { TabPane } = Tabs;
 
@@ -32,8 +33,42 @@ class NewAppointment extends Component {
       doctorId: null,
       hospitalId: null,
       fullNameDoctor: null,
+      isOpenMedicalRecordModal: false,
+      selectedMedicalRecord: null, // Lưu dữ liệu hồ sơ bệnh án
+      selectedPatientProfile: null, // Lưu dữ liệu profile bệnh nhân
     };
   }
+
+  // BỔ SUNG: Hàm xử lý mở modal hồ sơ bệnh án
+  handleOpenMedicalRecordModal = (item) => {
+      // Dữ liệu hồ sơ bệnh án và profile nằm trong item trả về từ API
+      const medicalRecord = item?.medicalRecordData;
+      const patientProfile = item?.patientData?.patientProfile;
+
+      if (!medicalRecord && !patientProfile) {
+          message.warning(
+              this.props.language === "vi"
+                  ? "Không tìm thấy hồ sơ bệnh án chi tiết."
+                  : "No detailed medical record found."
+          );
+          return;
+      }
+
+      this.setState({
+          isOpenMedicalRecordModal: true,
+          selectedMedicalRecord: medicalRecord,
+          selectedPatientProfile: patientProfile,
+      });
+  };
+
+  // BỔ SUNG: Hàm xử lý đóng modal hồ sơ bệnh án
+  handleCloseMedicalRecordModal = () => {
+      this.setState({
+          isOpenMedicalRecordModal: false,
+          selectedMedicalRecord: null,
+          selectedPatientProfile: null,
+      });
+  };
 
   handleOpenCancelModal = (item) => {
     this.setState({
@@ -198,6 +233,9 @@ class NewAppointment extends Component {
       currentPage,
       itemsPerPage,
       isOpenCancelModal,
+      isOpenMedicalRecordModal,
+      selectedMedicalRecord,
+      selectedPatientProfile,
     } = this.state;
     const { language } = this.props;
     const isVietnamese = language === "vi";
@@ -294,6 +332,28 @@ class NewAppointment extends Component {
                           ? `, ${a.doctorInfoData.hospital.provinceData.name}`
                           : ""}
                       </p>
+                      <p>
+                        <b>
+                          <FormattedMessage id="patient.appointment-patient.symptoms" />
+                        </b>{" "}
+                        {a?.symptoms || "Không có"}
+                      </p>
+                      {activeTab === "done" && (
+                        <>
+                          <p className="text-success">
+                            <b>
+                              <FormattedMessage id="patient.appointment-patient.medical-result" />
+                            </b>{" "}
+                            {a?.medicalRecordData?.description || "Không có"}
+                          </p>
+                          <div
+                              onClick={() => this.handleOpenMedicalRecordModal(a)} // <--- THÊM DÒNG NÀY
+                              className="text-primary fw-bold text-end cursor-pointer" // Thêm class để dễ nhận biết là nút
+                          >
+                              <FormattedMessage id="patient.appointment-patient.view-detail" />
+                          </div>
+                        </>
+                      )}
                       {a?.rejectReason && (
                         <p className="text-danger fw-bold">
                           <b>
@@ -307,7 +367,7 @@ class NewAppointment extends Component {
                           onClick={() => this.handleCancel(a)}
                           className="text-danger fw-bold text-end"
                         >
-                          Hủy lịch
+                          <FormattedMessage id="patient.appointment-patient.cancel" />
                         </div>
                       )}
                     </div>
@@ -341,6 +401,13 @@ class NewAppointment extends Component {
             isOpenCancelModal={isOpenCancelModal}
             onCancel={this.handleCloseCancelModal}
             onSubmit={this.handleSubmitCancel}
+          />
+          <ModalMedicalRecord
+            isOpen={isOpenMedicalRecordModal}
+            onClose={this.handleCloseMedicalRecordModal}
+            medicalRecordData={selectedMedicalRecord}
+            patientProfileData={selectedPatientProfile}
+            language={language}
           />
         </div>
         <HomeFooter />

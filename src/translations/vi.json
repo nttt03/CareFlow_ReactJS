@@ -154,8 +154,30 @@
             "price": "Giá khám:",
             "doctor": "Bác sĩ:",
             "reason": "Lý do:",
-            "hospital": "Bệnh viện:"
+            "hospital": "Bệnh viện:",
+            "symptoms": "Triệu chứng:",
+            "cancel": "Hủy lịch",
+            "medical-result": "Kết quả khám bệnh:",
+            "view-detail": "Xem chi tiết",
+            "medicalResult": "Kết quả khám bệnh/Chẩn đoán",
+            "medical-record-detail": "Chi tiết Hồ sơ Bệnh án",
+            "attached-file": "Tệp đính kèm Hồ sơ Bệnh án",
+            "view-file": "Xem tệp đính kèm",
+            "hide-file": "Ẩn tệp đính kèm",
+            "patient-profile": "Thông tin cá nhân (Hồ sơ bệnh)",
+            "download-summary": "Tải về Tóm tắt Bệnh án"
+        },
+        "profile": {
+            "height": "Chiều cao",
+            "weight": "Cân nặng",
+            "underlying-diseases": "Bệnh nền",
+            "allergies": "Dị ứng",
+            "medical-history": "Lịch sử bệnh án khác"
         }
+    },
+    "common": {
+        "close": "Đóng",
+        "download": "Tải về"
     },
     "admin": {
         "manage-doctor": {
