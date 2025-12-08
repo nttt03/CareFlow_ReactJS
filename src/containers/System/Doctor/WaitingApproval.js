@@ -109,8 +109,8 @@ class WaitingApproval extends Component {
     this.handleOpenCancelModal(item);
   };
 
-  handleSubmitCancel = async () => {
-    const { cancelBookingId, cancelReason } = this.state;
+  handleSubmitCancel = async (cancelReason) => {
+    const { cancelBookingId } = this.state;
     const { language } = this.props;
 
     if (!cancelReason.trim()) {
