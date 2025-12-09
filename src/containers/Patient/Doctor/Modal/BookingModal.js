@@ -30,11 +30,13 @@ class BookingModal extends Component {
       timeType: "",
       isShowLoading: false,
     };
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
   async componentDidMount() {
     this.props.getGenders();
     this.fillUserInfo(); // Điền thông tin khi component mount
+    document.addEventListener("keydown", this.handleKeyPress);
   }
 
   async componentDidUpdate(prevProps) {
@@ -61,6 +63,19 @@ class BookingModal extends Component {
       this.fillUserInfo();
     }
   }
+
+  // Xóa Event Listener khi component unmount
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyPress);
+  }
+
+  // Xử lý sự kiện nhấn phím
+  handleKeyPress = (event) => {
+    // Chỉ xử lý khi Modal đang mở và phím Enter được nhấn
+    if (this.props.isOpenModal && event.key === "Enter") {
+      this.handleConfirmBooking();
+    }
+  };
 
   buildDataGender = (data) => {
     let result = [];
@@ -396,6 +411,12 @@ class BookingModal extends Component {
                       </div>
                     </div>
                     <div className="card-footer text-end">
+                      {/* <button
+                        className="btn btn-success me-2"
+                        onClick={() => this.handleConfirmBooking()}
+                      >
+                        <FormattedMessage id="patient.booking-modal.confirm" />
+                      </button> */}
                       <button
                         className="btn btn-success me-2"
                         onClick={() => this.handleConfirmBooking()}

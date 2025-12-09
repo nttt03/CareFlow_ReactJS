@@ -176,7 +176,7 @@ class DetailHospital extends Component {
         >
           <div className="description-specialty container px-3 px-md-5">
             <BackButton
-              to="/home"
+              to="/list-hospital"
               label={language === "vi" ? "Quay lại" : "Back"}
               style={{ color: "#0071ba" }}
             />

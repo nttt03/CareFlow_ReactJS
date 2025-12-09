@@ -15,6 +15,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Buffer } from "buffer";
 import { message, Rate } from "antd";
 import { HeartFilled } from "@ant-design/icons";
+import BackButton from "../../../components/BackButton";
 
 class DetailDoctor extends Component {
   constructor(props) {
@@ -114,6 +115,11 @@ class DetailDoctor extends Component {
           className="container px-0 px-lg-5"
           style={{ paddingTop: "5%", minHeight: "100vh" }}
         >
+          <BackButton
+              to="/list-doctor"
+              label={language === "vi" ? "Quay lại" : "Back"}
+              style={{ color: "#0071ba" }}
+            />
           <div className="container my-4">
             <div className="bg-white p-4 rounded-3 shadow-sm intro-doctor">
               <div className="row align-items-center g-3">

@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { LeftOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useHistory } from "react-router-dom";
 
@@ -17,7 +17,7 @@ const BackButton = ({ to, label = "Quay lại", style, className }) => {
   return (
     <Button
       type="text"
-      icon={<ArrowLeftOutlined />}
+      icon={<LeftOutlined />}
       onClick={handleClick}
       className={`d-flex align-items-center gap-1 ${className || ""}`}
       style={{ padding: 0, fontSize: 17, ...style }}
