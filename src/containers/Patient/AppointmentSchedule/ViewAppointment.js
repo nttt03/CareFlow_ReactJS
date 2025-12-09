@@ -5,7 +5,8 @@ import { getViewAppointmentForNoti } from "../../../services/userService";
 import HomeHeader from "../../HomePage/HomeHeader";
 import HomeFooter from "../../HomePage/HomeFooter";
 import moment from "moment";
-import { Spin, Alert } from "antd";
+import { Spin, Alert, message } from "antd";
+import { FormattedMessage } from "react-intl";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
@@ -14,6 +15,7 @@ import {
 } from "@ant-design/icons";
 import "./ViewAppointment.scss";
 import BackButton from "../../../components/BackButton";
+import ModalMedicalRecord from "./ModalMedicalRecord";
 
 export default function ViewAppointment() {
   const history = useHistory();
@@ -24,6 +26,9 @@ export default function ViewAppointment() {
   const [dataAppoinment, setDataAppoinment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isOpenMedicalRecordModal, setIsOpenMedicalRecordModal] = useState(false);
+  const [selectedMedicalRecord, setSelectedMedicalRecord] = useState(null);
+  const [selectedPatientProfile, setSelectedPatientProfile] = useState(null);
 
   const isSystemPage =
     location.pathname.startsWith("/system") ||
@@ -45,6 +50,32 @@ export default function ViewAppointment() {
     fetchAppoinmentForNoti();
   }, [bookingId]);
 
+  // --- XỬ LÝ MODAL HỒ SƠ BỆNH ÁN ---
+  const handleOpenMedicalRecordModal = (item) => {
+    // Lấy dữ liệu từ item (dataAppoinment)
+    const medicalRecord = item?.medicalRecordData;
+    const patientProfile = item?.patientData?.patientProfile;
+
+    if (!medicalRecord && !patientProfile) {
+      message.warning(
+        language === "vi"
+          ? "Không tìm thấy hồ sơ bệnh án chi tiết."
+          : "No detailed medical record found."
+      );
+      return;
+    }
+
+    setIsOpenMedicalRecordModal(true);
+    setSelectedMedicalRecord(medicalRecord);
+    setSelectedPatientProfile(patientProfile);
+  };
+
+  const handleCloseMedicalRecordModal = () => {
+    setIsOpenMedicalRecordModal(false);
+    setSelectedMedicalRecord(null);
+    setSelectedPatientProfile(null);
+  };
+
   const renderStatus = (status) => {
     let className = "status-badge ";
     let text = "";
@@ -52,19 +83,19 @@ export default function ViewAppointment() {
     switch (status) {
       case "S2":
         className += "status-confirmed";
-        text = "Đã xác nhận";
+        text = language === 'vi' ? 'Đã xác nhận' : 'Confirmed';
         break;
       case "S5":
         className += "status-cancel";
-        text = "Đã hủy";
+        text = language === 'vi' ? 'Đã hủy' : 'Canceled';
         break;
       case "S1":
         className += "status-waiting";
-        text = "Chờ duyệt";
+        text = language === 'vi' ? 'Chờ duyệt' : 'Waiting for approval';
         break;
       case "S4":
         className += "status-success";
-        text = "Đã hoàn thành";
+        text = language === 'vi' ? 'Đã hoàn thành' : 'Completed';
         break;
       default:
         className += "status-default";
@@ -91,8 +122,8 @@ export default function ViewAppointment() {
     return (
       <>
         {!isSystemPage && <HomeHeader />}
-        <div className="d-flex justify-content-center align-items-center py-5">
-          <Spin size="large" tip="Đang tải thông tin...">
+        <div className="d-flex justify-content-center align-items-center py-5 h-100">
+          <Spin size="medium">
             <div style={{ width: 0, height: 0 }}></div>
           </Spin>
         </div>
@@ -142,7 +173,7 @@ export default function ViewAppointment() {
         />
         <div className="text-center mb-4">
           <h2 className="page-title">
-            <CalendarOutlined /> Chi tiết lịch hẹn
+            <CalendarOutlined /> {language === 'vi' ? 'Chi tiết lịch hẹn' : 'Appointment details'}
           </h2>
           <div className="mt-2">{renderStatus(dataAppoinment.statusId)}</div>
         </div>
@@ -159,22 +190,39 @@ export default function ViewAppointment() {
           </div>
         )}
 
+        {/* --- HIỂN THỊ HỒ SƠ BỆNH ÁN VÀ NÚT XEM CHI TIẾT --- */}
+        {dataAppoinment.statusId === "S4" && (
+            <div className="info-card equal-card flex-fill mb-4 p-4">
+                <p className="text-success fw-bold">
+                    <FormattedMessage id="patient.appointment-patient.medical-result" />{" "}
+                    {dataAppoinment?.medicalRecordData?.description || (language === 'vi' ? "Chưa có kết quả chẩn đoán cuối cùng" : "No final diagnosis result")}
+                </p>
+                <div
+                    onClick={() => handleOpenMedicalRecordModal(dataAppoinment)}
+                    className="text-primary fw-bold text-end cursor-pointer"
+                    style={{ cursor: "pointer" }}
+                >
+                    <FormattedMessage id="patient.appointment-patient.view-detail" />
+                </div>
+            </div>
+        )}
+
         <div className="row g-4 align-items-stretch">
           <div className="col-lg-6 d-flex">
             <div className="info-card equal-card flex-fill">
               <div className="info-header info-header-blue">
-                <ClockCircleOutlined /> Thông tin đặt lịch
+                <ClockCircleOutlined /> {language === 'vi' ? 'Thông tin đặt lịch' : 'Scheduling information'}
               </div>
               <div className="info-body">
                 <p>
-                  <b>Ngày khám:</b>{" "}
+                  <b><FormattedMessage id="patient.appointment-patient.date" /></b>{" "}
                   {moment(+dataAppoinment.date).format("dddd, DD/MM/YYYY")}
                 </p>
                 <p>
-                  <b>Giờ khám:</b> {timeTypeDataPatient?.valueVi}
+                  <b><FormattedMessage id="patient.appointment-patient.time" /></b> {language === 'vi' ? timeTypeDataPatient?.valueVi : timeTypeDataPatient?.valueEn}
                 </p>
                 <p>
-                  <b>Triệu chứng:</b> {dataAppoinment.symptoms || "Không có"}
+                  <b><FormattedMessage id="patient.appointment-patient.symptoms" /></b> {dataAppoinment.symptoms || "Không có"}
                 </p>
               </div>
             </div>
@@ -182,23 +230,23 @@ export default function ViewAppointment() {
           <div className="col-lg-6 d-flex">
             <div className="info-card equal-card flex-fill">
               <div className="info-header">
-                <MedicineBoxOutlined /> Thông tin bác sĩ
+                <MedicineBoxOutlined /> {language === 'vi' ? 'Thông tin bác sĩ' : 'Doctor information'}
               </div>
               <div className="info-body">
                 <p>
-                  <b>Bác sĩ:</b> {infoDataDoctor?.fullName}
+                  <b><FormattedMessage id="patient.appointment-patient.doctor" /></b> {infoDataDoctor?.fullName}
                 </p>
                 <p>
-                  <b>Chức danh:</b> {infoDataDoctor?.positionData?.valueVi}
+                  <b><FormattedMessage id="patient.appointment-patient.position" /></b> {language === 'vi' ? infoDataDoctor?.positionData?.valueVi : infoDataDoctor?.positionData?.valueEn}
                 </p>
                 <p>
-                  <b>Chuyên khoa:</b> {doctorInfoData?.specialtyData?.name}
+                  <b><FormattedMessage id="patient.appointment-patient.specialty" /></b> {doctorInfoData?.specialtyData?.name}
                 </p>
                 <p>
-                  <b>Bệnh viện:</b> {doctorInfoData?.hospital?.name}
+                  <b><FormattedMessage id="patient.appointment-patient.hospital" /></b> {doctorInfoData?.hospital?.name}
                 </p>
                 <p>
-                  <b>Địa chỉ:</b> {doctorInfoData?.hospital?.addressDetail},{" "}
+                  <b><FormattedMessage id="patient.appointment-patient.address" /></b> {doctorInfoData?.hospital?.addressDetail},{" "}
                   {doctorInfoData?.hospital?.provinceData?.name}
                 </p>
               </div>
@@ -206,6 +254,15 @@ export default function ViewAppointment() {
           </div>
         </div>
       </div>
+    
+      <ModalMedicalRecord
+          isOpen={isOpenMedicalRecordModal}
+          onClose={handleCloseMedicalRecordModal}
+          medicalRecordData={selectedMedicalRecord}
+          patientProfileData={selectedPatientProfile}
+          language={language}
+          userInfo={user}
+      />
 
       {!isSystemPage && <HomeFooter />}
     </>
