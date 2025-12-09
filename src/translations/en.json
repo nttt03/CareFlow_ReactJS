@@ -172,7 +172,13 @@
             "weight": "Weight",
             "underlying-diseases": "Underlying Diseases",
             "allergies": "Allergies",
-            "medical-history": "Other Medical History"
+            "medical-history": "Other Medical History",
+            "fullname": "Full Name",
+            "email": "Email",
+            "phone": "Phone Number",
+            "address": "Detailed Address",
+            "dob": "Date of Birth",
+            "cccd": "National ID (CCCD/CMND)"
         }
     },
     "common": {
