@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Drawer, Descriptions, Button, message, Divider } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
-// import "./ModalMedicalRecord.scss"; // Nếu bạn có file CSS riêng
+import moment from "moment";
+// import "./ModalMedicalRecord.scss"; 
 
 // --- HÀM XỬ LÝ DỮ LIỆU TỆP ĐÍNH KÈM (BÊN NGOÀI COMPONENT) ---
 
 /**
  * Chuyển đổi Buffer sang Base64 URL và xác định loại MIME.
- * @param {Object} fileBuffer - Dữ liệu file (Sequelize Buffer: { type: 'Buffer', data: [...] })
- * @returns {Object} { url, isDisplayable, mimeType }
  */
 const getBase64Data = (fileBuffer) => {
     if (!fileBuffer || !fileBuffer.data || fileBuffer.data.length === 0) {
@@ -26,7 +25,6 @@ const getBase64Data = (fileBuffer) => {
         let mimeType = "application/octet-stream";
         let isDisplayable = false;
 
-        // Logic kiểm tra MIME type đơn giản (dựa trên header bytes)
         if (binary.substring(0, 4) === "%PDF") {
             mimeType = "application/pdf";
             isDisplayable = true;
@@ -85,10 +83,9 @@ const renderFileViewer = (url, mimeType) => {
 // --- COMPONENT CHÍNH (SỬ DỤNG HOOKS) ---
 
 const ModalMedicalRecord = (props) => {
-    const { isOpen, onClose, medicalRecordData, patientProfileData, language } = props;
+    const { isOpen, onClose, medicalRecordData, patientProfileData, language, userInfo } = props;
     const isVietnamese = language === "vi";
     
-    // State để điều khiển việc xem trước file
     const [showFilePreview, setShowFilePreview] = useState(false);
 
     // Xử lý dữ liệu đầu vào
@@ -102,6 +99,16 @@ const ModalMedicalRecord = (props) => {
         medical_history,
     } = patientProfileData || {};
     const description = medicalRecordData?.description;
+
+    // Lấy thông tin cá nhân (userInfo)
+    const {
+        fullName,
+        email,
+        phoneNumber,
+        addressDetail,
+        dateOfBirth,
+        CCCD,
+    } = userInfo || {};
 
     // Reset state khi Drawer mở
     useEffect(() => {
@@ -158,13 +165,13 @@ const ModalMedicalRecord = (props) => {
             className="d-flex justify-content-end align-items-center"
         >
             {/* NÚT TẢI VỀ TÓM TẮT/IN BÁO CÁO */}
-            <Button
+            {/* <Button
                 key="print-summary"
                 onClick={handlePrintSummary}
                 style={{ marginRight: 8 }}
             >
                 <FormattedMessage id="patient.appointment-patient.download-summary" />
-            </Button>
+            </Button> */}
             
             {/* NÚT ĐÓNG */}
             <Button key="close" onClick={onClose}>
@@ -172,6 +179,8 @@ const ModalMedicalRecord = (props) => {
             </Button>
         </div>
     );
+
+    const formattedDateOfBirth = dateOfBirth ? moment(dateOfBirth).format('DD/MM/YYYY') : (isVietnamese ? "Không có" : "N/A");
 
     return (
         <Drawer
@@ -183,7 +192,6 @@ const ModalMedicalRecord = (props) => {
             placement="right"
             width={650}
             footer={drawerFooter}
-            // KHẮC PHỤC LỖI DEPRECATED VÀ RESIZE OBSERVER
             destroyOnHidden={true} 
         >
             <h5 className="text-primary">
@@ -192,10 +200,31 @@ const ModalMedicalRecord = (props) => {
             <strong>{description || (isVietnamese ? "Không có" : "N/A")}</strong>
 
             <Divider><FormattedMessage id="patient.appointment-patient.patient-profile" /></Divider>
-
+            
             <Descriptions bordered column={1} size="small" style={{ marginBottom: 20 }}>
+                {/* THÔNG TIN CÁ NHÂN */}
+                <Descriptions.Item label={<FormattedMessage id="patient.profile.fullname" />}>
+                    {fullName || (isVietnamese ? "Không có" : "N/A")}
+                </Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="patient.profile.email" />}>
+                    {email || (isVietnamese ? "Không có" : "N/A")}
+                </Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="patient.profile.dob" />}>
+                    {formattedDateOfBirth}
+                </Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="patient.profile.cccd" />}>
+                    {CCCD || (isVietnamese ? "Không có" : "N/A")}
+                </Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="patient.profile.phone" />}>
+                    {phoneNumber || (isVietnamese ? "Không có" : "N/A")}
+                </Descriptions.Item>
+                <Descriptions.Item label={<FormattedMessage id="patient.profile.address" />}>
+                    {addressDetail || (isVietnamese ? "Không có" : "N/A")}
+                </Descriptions.Item>
+                
+                {/* THÔNG TIN SỨC KHỎE */}
                 <Descriptions.Item label={<FormattedMessage id="patient.profile.height" />}>
-                    {height ? `${height} cm` : (isVietnamese ? "Không có" : "N/A")} 
+                    {height ? `${height} m` : (isVietnamese ? "Không có" : "N/A")} 
                 </Descriptions.Item>
                 <Descriptions.Item label={<FormattedMessage id="patient.profile.weight" />}>
                     {weight ? `${weight} kg` : (isVietnamese ? "Không có" : "N/A")}
@@ -215,9 +244,10 @@ const ModalMedicalRecord = (props) => {
                 <FormattedMessage id="patient.appointment-patient.attached-file" />
             </Divider>
 
+            {/*TỆP ĐÍNH KÈM */}
             {hasFile ? (
                 <div>
-                    <div className="file-control-area mb-3">
+                    <div className="file-control-area mb-3 d-flex align-items-center">
                         {isDisplayable && (
                             <Button 
                                 onClick={handleTogglePreview} 
@@ -231,8 +261,17 @@ const ModalMedicalRecord = (props) => {
                                 )}
                             </Button>
                         )}
+                        {/* Nút Tải về file đính kèm */}
+                        <Button
+                            key="download"
+                            type="primary"
+                            onClick={handleDownload}
+                            style={{ marginRight: 8 }}
+                        >
+                            <FormattedMessage id="common.download" />
+                        </Button>
                         {!isDisplayable && (
-                            <p className="text-warning">
+                            <p className="text-warning mb-0">
                                 <FormattedMessage 
                                     id="patient.appointment-patient.cannot-display" 
                                     defaultMessage="Không thể hiển thị trực tiếp. Vui lòng tải về để xem." 
@@ -240,14 +279,6 @@ const ModalMedicalRecord = (props) => {
                             </p>
                         )}
                     </div>
-                    <Button
-                        key="download"
-                        type="primary"
-                        onClick={handleDownload}
-                        style={{ marginRight: 8 }}
-                    >
-                        <FormattedMessage id="common.download" />
-                    </Button>
                 </div>
             ) : (
                 <p>{isVietnamese ? "Không có tệp đính kèm" : "No attached file"}</p>

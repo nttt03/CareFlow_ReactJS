@@ -237,7 +237,7 @@ class NewAppointment extends Component {
       selectedMedicalRecord,
       selectedPatientProfile,
     } = this.state;
-    const { language } = this.props;
+    const { language, userInfo } = this.props;
     const isVietnamese = language === "vi";
 
     const dataToShow = activeTab === "new" ? newAppointments : doneAppointments;
@@ -408,6 +408,7 @@ class NewAppointment extends Component {
             medicalRecordData={selectedMedicalRecord}
             patientProfileData={selectedPatientProfile}
             language={language}
+            userInfo={userInfo}
           />
         </div>
         <HomeFooter />

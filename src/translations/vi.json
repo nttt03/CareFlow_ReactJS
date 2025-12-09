@@ -172,7 +172,13 @@
             "weight": "Cân nặng",
             "underlying-diseases": "Bệnh nền",
             "allergies": "Dị ứng",
-            "medical-history": "Lịch sử bệnh án khác"
+            "medical-history": "Lịch sử bệnh án khác",
+            "fullname": "Họ và Tên",
+            "email": "Email",
+            "phone": "Số Điện thoại",
+            "address": "Địa chỉ chi tiết",
+            "dob": "Ngày sinh",
+            "cccd": "CCCD/CMND"
         }
     },
     "common": {
