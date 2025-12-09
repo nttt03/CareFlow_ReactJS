@@ -35,6 +35,7 @@ const ManagePatient = () => {
   const [isOpenRemedyModal, setIsOpenRemedyModal] = useState(false);
   const [dataModal, setDataModal] = useState({});
   const [isShowLoading, setIsShowLoading] = useState(false);
+  const [loadingMedicalRecord, setLoadingMedicalRecord] = useState(false);
   const [screen, setScreen] = useState("LIST");
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [recordForm, setRecordForm] = useState({
@@ -60,6 +61,7 @@ const ManagePatient = () => {
     formData.append("medical_history", recordForm.medical_history);
     if (recordForm.file) formData.append("file", recordForm.file);
     formData.append("updateBy", user?.id);
+    setLoadingMedicalRecord(true)
     let res = await postMedicalRecord(formData);
 
     if (res && res.errCode === 0) {
@@ -69,7 +71,9 @@ const ManagePatient = () => {
           : "Medical record saved successfully!"
       );
       setScreen("LIST");
+      setIsOpenRemedyModal(false)
     } else {
+      setIsOpenRemedyModal(false)
       message.error(
         language === "vi"
           ? "Lưu hồ sơ bệnh án thất bại!"
@@ -382,9 +386,19 @@ const ManagePatient = () => {
 
                 <Form.Item>
                   <Button type="primary" htmlType="submit">
-                    {language === "vi"
+                    {loadingMedicalRecord ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin me-2"></i>
+                        {language === "vi" ? "Đang lưu..." : "Saving..."}
+                      </>
+                    ) : language === "vi" ? (
+                      "Lưu hồ sơ bệnh án"
+                    ) : (
+                      "Save Medical Record"
+                    )}
+                    {/* {language === "vi"
                       ? "Lưu hồ sơ bệnh án"
-                      : "Save medical record"}
+                      : "Save medical record"} */}
                   </Button>
                 </Form.Item>
               </Form>

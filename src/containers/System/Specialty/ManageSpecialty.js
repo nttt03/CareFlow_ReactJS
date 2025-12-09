@@ -237,7 +237,7 @@ function ManageSpecialty({ language }) {
   ];
 
   return (
-    <div className="container mt-3 manage-specialty-container">
+    <div className="m-5 manage-specialty-container ">
       <div className="title py-2">
         <FormattedMessage id="admin.manage-specialty.title" />
       </div>

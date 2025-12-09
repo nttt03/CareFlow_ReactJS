@@ -273,7 +273,7 @@ export default function ChatBox({ onClose }) {
                   spin
                   style={{ fontSize: "15px" }}
                 />
-                <span>Đang suy nghĩ...</span>
+                <span>Chatbot đang nhập...</span>
               </div>
             </div>
           )}
