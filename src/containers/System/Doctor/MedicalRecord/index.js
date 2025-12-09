@@ -508,9 +508,19 @@ const MedicalRecord = () => {
                 </Form.Item>
                 <Form.Item>
                   <Button type="primary" htmlType="submit">
-                    {language === LANGUAGES.VI
+                    {isShowLoading ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin me-2"></i>
+                        {language === "vi" ? "Đang lưu..." : "Saving..."}
+                      </>
+                    ) : language === "vi" ? (
+                      "Lưu hồ sơ bệnh án"
+                    ) : (
+                      "Save Medical Record"
+                    )}
+                    {/* {language === LANGUAGES.VI
                       ? "Lưu hồ sơ bệnh án"
-                      : "Save Medical Record"}
+                      : "Save Medical Record"} */}
                   </Button>
                 </Form.Item>
               </Form>
@@ -1049,9 +1059,10 @@ const MedicalRecord = () => {
   };
 
   return (
-    <Spin style={{ zIndex: "1600" }} spinning={isShowLoading} tip="Loading...">
-      {renderScreen()}
-    </Spin>
+    // <Spin style={{ zIndex: "1600" }} spinning={isShowLoading} tip="Loading...">
+    //   {renderScreen()}
+    // </Spin>
+    <>{renderScreen()}</>
   );
 };
 

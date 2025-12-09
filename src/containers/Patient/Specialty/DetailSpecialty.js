@@ -14,6 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Buffer } from "buffer";
 import { showLoading, hideLoading } from "../../../store/actions";
 import DetailSpecialtySkeleton from "./DetailSpecialtySkeleton";
+import BackButton from "../../../components/BackButton";
 
 const { Option } = Select;
 const { Title, Paragraph, Text } = Typography;
@@ -96,6 +97,11 @@ const DetailSpecialty = () => {
           minHeight: "90vh",
         }}
       >
+        <BackButton
+          to="/list-specialty"
+          label={language === "vi" ? "Quay lại" : "Back"}
+          style={{ color: "#0071ba" }}
+        />
         {loading ? (
           <div className="text-center my-5">
             <DetailSpecialtySkeleton hospitalCount={4} />
