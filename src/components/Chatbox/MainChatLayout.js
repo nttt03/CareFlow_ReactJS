@@ -273,7 +273,7 @@ export default function CenteredChatModal({ onClose }) {
                 closable
                 onClose={() => setShowLoginPrompt(false)}
                 action={
-                  <Button size="small" type="primary" onClick={() => { onClose(); history.push("/login"); }}>
+                  <Button className="my-2 my-lg-0" size="small" type="primary" onClick={() => { onClose(); history.push("/login"); }}>
                     Đăng nhập ngay
                   </Button>
                 }
