@@ -359,6 +359,14 @@ export const chatWithDatabase = async (
   });
 };
 
+export const getConversations = (userId) => {
+    return axios.get(`/api/conversations?userId=${userId}`);
+};
+
+export const getConversationDetail = (id) => {
+    return axios.get(`/api/conversations/${id}`);
+};
+
 export const getAllReview = () => {
   return axios.get(`/api/reviews`);
 };

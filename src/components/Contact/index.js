@@ -6,6 +6,7 @@ import chatbot from "../../assets/lottie/chatbot.json";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useLocation } from "react-router-dom";
 import ChatBox from "../Chatbox/ChatBox";
+import MainChatLayout from "../Chatbox/MainChatLayout";
 
 const Contact = () => {
   const location = useLocation();
@@ -63,7 +64,8 @@ const Contact = () => {
           zIndex: 10,
         }}
       >
-        {isChatOpen && <ChatBox onClose={() => setIsChatOpen(false)} />}
+        {/* {isChatOpen && <ChatBox onClose={() => setIsChatOpen(false)} />} */}
+        {isChatOpen && <MainChatLayout onClose={() => setIsChatOpen(false)} />}
         <Tooltip
           title="Gọi hỗ trợ"
           placement="left"
