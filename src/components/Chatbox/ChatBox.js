@@ -4,6 +4,8 @@ import {
   CloseOutlined,
   CustomerServiceOutlined,
   LoadingOutlined,
+  CopyOutlined,
+  SendOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { chatWithDatabase } from "../../services/userService";
@@ -18,6 +20,9 @@ export default function ChatBox({ onClose }) {
   const messagesEndRef = useRef(null);
   const language = useSelector((state) => state.app.language);
   const userInfor = useSelector((state) => state.user.userInfo);
+  const [copiedMessageIndex, setCopiedMessageIndex] = useState(null);
+  const [hoveredMessageIndex, setHoveredMessageIndex] = useState(null);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -67,6 +72,16 @@ export default function ChatBox({ onClose }) {
       e.preventDefault();
       handleSend();
     }
+  };
+
+  // Hàm xử lý sao chép
+  const handleCopy = (text, index) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedMessageIndex(index);
+      setTimeout(() => setCopiedMessageIndex(null), 2000); // Reset trạng thái sau 2 giây
+    }).catch(err => {
+      console.error('Could not copy text: ', err);
+    });
   };
 
   return (
@@ -157,7 +172,7 @@ export default function ChatBox({ onClose }) {
               }}
             >
               {language === "vi"
-                ? "Xin chào! Tôi có thể giúp gì cho bạn?"
+                ? "Xin chào! Tôi có thể giúp gì cho bạn hôm nay?"
                 : "Hello! How can I help you?"}
             </div>
           )}
@@ -170,6 +185,15 @@ export default function ChatBox({ onClose }) {
               );
             }
 
+            // Xác định vị trí nút Copy (dựa vào người gửi)
+            const isUser = msg.from === "user";
+            // Logic hiển thị nút copy
+            const showCopyButton = isUser ? 
+              (hoveredMessageIndex === i || copiedMessageIndex === i) :
+              true;
+
+            const copyButtonPosition = isUser ? { top: "-8px", left: "-8px" } : { top: "-8px", right: "-8px" };
+
             return (
               <div
                 key={i}
@@ -177,10 +201,13 @@ export default function ChatBox({ onClose }) {
                   margin: "12px 0",
                   display: "flex",
                   justifyContent:
-                    msg.from === "user" ? "flex-end" : "flex-start",
+                    isUser ? "flex-end" : "flex-start",
                   alignItems: "flex-end",
                   gap: "10px",
                 }}
+                // Xử lý sự kiện hover cho tin nhắn User
+                onMouseEnter={() => isUser && setHoveredMessageIndex(i)}
+                onMouseLeave={() => isUser && setHoveredMessageIndex(null)}
               >
                 {/* Avatar Bot */}
                 {msg.from === "bot" && (
@@ -205,23 +232,50 @@ export default function ChatBox({ onClose }) {
                     padding: "11px 15px",
                     borderRadius: "20px",
                     backgroundColor:
-                      msg.from === "user" ? "#1890ff" : "#ffffff",
-                    color: msg.from === "user" ? "white" : "#333",
+                      isUser ? "#1890ff" : "#ffffff",
+                    color: isUser ? "white" : "#333",
                     boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
                     border: msg.from === "bot" ? "1px solid #e1e5e9" : "none",
                     fontSize: "14.5px",
                     lineHeight: "1.5",
+                    position: "relative",
                   }}
                 >
-                  {msg.from === "bot" ? (
-                    <ReactMarkdown>{msg.text}</ReactMarkdown>
-                  ) : (
+                  {isUser ? (
                     <span style={{ whiteSpace: "pre-wrap" }}>{msg.text}</span>
+                  ) : (
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  )}
+                  
+                  {/* Nút Copy */}
+                  {(showCopyButton || !isUser) && (
+                    <button
+                      onClick={() => handleCopy(msg.text, i)}
+                      style={{
+                        position: "absolute",
+                        ...copyButtonPosition,
+                        background: isUser ? "#1890ff" : "#fff",
+                        border: isUser ? "1px solid #1890ff" : "1px solid #d9d9d9",
+                        borderRadius: "50%",
+                        width: "24px",
+                        height: "24px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        color: copiedMessageIndex === i ? (isUser ? "#f1ff00" : "#52c41a") : (isUser ? "white" : "#8c8c8c"),
+                        boxShadow: "0 1px 4px rgba(0,0,0,0.15)",
+                        transition: "all 0.2s",
+                      }}
+                      title={copiedMessageIndex === i ? "Đã sao chép!" : "Sao chép"}
+                    >
+                      <CopyOutlined style={{ fontSize: "12px" }} />
+                    </button>
                   )}
                 </div>
 
                 {/* Avatar User */}
-                {msg.from === "user" && (
+                {isUser && (
                   <img
                     src={userInfor?.avatar || "/defaultImg.png"}
                     alt="You"
@@ -296,7 +350,7 @@ export default function ChatBox({ onClose }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Nhập tin nhắn..."
+              placeholder="Nhập câu hỏi..."
               disabled={isLoading}
               style={{
                 flex: 1,
@@ -312,7 +366,7 @@ export default function ChatBox({ onClose }) {
               onClick={handleSend}
               disabled={isLoading}
               style={{
-                padding: "10px 20px",
+                padding: "10px 10px",
                 backgroundColor: isLoading ? "#ccc" : "#1890ff",
                 color: "white",
                 border: "none",
@@ -320,10 +374,10 @@ export default function ChatBox({ onClose }) {
                 cursor: isLoading ? "not-allowed" : "pointer",
                 fontSize: "15px",
                 fontWeight: "500",
-                minWidth: "70px",
+                minWidth: "60px",
               }}
             >
-              Gửi
+              <SendOutlined className="rotate-45"/>
             </button>
           </div>
         </div>
