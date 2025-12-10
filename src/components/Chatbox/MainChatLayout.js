@@ -1,133 +1,35 @@
-import React, { useState, useRef, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useHistory } from "react-router-dom";
 import {
     CloseOutlined,
     LoadingOutlined,
-    CopyOutlined,
     SendOutlined,
     MenuOutlined,
+    PlusCircleOutlined
 } from "@ant-design/icons";
+import { Alert, Button, Space } from 'antd';
 import { useSelector } from "react-redux";
 import { chatWithDatabase, getConversations, getConversationDetail } from "../../services/userService"; 
 import iconChatbot from "../../assets/images/iconChatbot.png";
 import logoCareflow from "../../assets/careFlow_logo.png";
+import ChatBubble from "./ChatBubble";
 
-
-// Giả định dữ liệu người dùng (Nếu Redux state rỗng)
 const defaultUser = {
-    id: 1,
-    fullName: "Bạn",
-    avatar: null, // Sẽ dùng placeholder hoặc base64
-};
-
-// Component ChatBubble (Không thay đổi logic)
-const ChatBubble = ({ msg, i, userInfor, handleCopy, copiedMessageIndex, hoveredMessageIndex, setHoveredMessageIndex }) => {
-    const isUser = msg.from === "user";
-    const renderCopyButton = (msg, i) => {
-        const isMsgUser = isUser;
-        const showCopy = isMsgUser ? (hoveredMessageIndex === i || copiedMessageIndex === i) : true;
-        const position = isMsgUser ? { top: "-8px", left: "-8px" } : { top: "-8px", right: "-8px" };
-    
-        if (!showCopy) return null;
-    
-        return (
-            <button
-                onClick={() => handleCopy(msg.text, i)}
-                style={{
-                    position: "absolute",
-                    ...position,
-                    background: isMsgUser ? "#fff" : "#fff",
-                    border: isMsgUser ? "1px solid #d9d9d9" : "1px solid #e1e5e9",
-                    borderRadius: "50%",
-                    width: "24px",
-                    height: "24px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    color: copiedMessageIndex === i ? "#52c41a" : "#8c8c8c", 
-                    boxShadow: "0 1px 4px rgba(0,0,0,0.15)",
-                    transition: "all 0.2s",
-                    zIndex: 10,
-                }}
-                title={copiedMessageIndex === i ? "Đã sao chép!" : "Sao chép"}
-            >
-                <CopyOutlined style={{ fontSize: "12px" }} />
-            </button>
-        );
-      };
-
-    return (
-        <div
-            key={i}
-            style={{
-                margin: "12px 0",
-                display: "flex",
-                justifyContent: isUser ? "flex-end" : "flex-start",
-                alignItems: "flex-end",
-                gap: "10px",
-            }}
-            onMouseEnter={() => setHoveredMessageIndex(i)}
-            onMouseLeave={() => setHoveredMessageIndex(null)}
-        >
-            {/* Avatar Bot */}
-            {!isUser && (
-                <img
-                    src={iconChatbot}
-                    alt="AI"
-                    style={{
-                        width: "38px", height: "38px", borderRadius: "50%",
-                        objectFit: "contain", border: "2.5px solid #fff",
-                        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                    }}
-                />
-            )}
-
-            {/* Bubble */}
-            <div
-                style={{
-                    maxWidth: "75%", padding: "11px 15px", borderRadius: "20px",
-                    backgroundColor: isUser ? "#cff5ffff" : "#ffffff", 
-                    color: "#333", 
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
-                    borderLeft: isUser ? "" : "3px solid #1987f5ff",
-                    borderRight: isUser ? "3px solid #236df5ff" : "",
-                    fontSize: "14.5px", lineHeight: "1.5", position: "relative",
-                }}
-            >
-                {isUser ? (
-                    <span style={{ whiteSpace: "pre-wrap" }}>{msg.text}</span>
-                ) : (
-                    <ReactMarkdown>{msg.text}</ReactMarkdown>
-                )}
-                
-                {/* Nút Copy */}
-                {renderCopyButton(msg, i)}
-            </div>
-
-            {/* Avatar User */}
-            {isUser && (
-                <img
-                    src={userInfor?.avatar || "/defaultImg.png"}
-                    alt="You"
-                    style={{
-                        width: "38px", height: "38px", borderRadius: "50%",
-                        objectFit: "cover", border: "2.5px solid white",
-                        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                    }}
-                />
-            )}
-        </div>
-    );
+    id: 0,
+    fullName: "Khách",
+    avatar: null,
 };
 
 
 export default function CenteredChatModal({ onClose }) {
+    let history = useHistory();
     const userInfor = useSelector((state) => state.user.userInfo) || defaultUser;
     const language = useSelector((state) => state.app.language) || "vi";
     const [conversations, setConversations] = useState([]);
+    const [currentConversationId, setCurrentConversationId] = useState(null);
     const [selectedConversation, setSelectedConversation] = useState(null);
-
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(!!userInfor?.id);
 
     const [messages, setMessages] = useState([
         { from: "bot", text: "Xin chào, tôi có thể giúp gì cho bạn ngày hôm nay? 💫😊" },
@@ -145,39 +47,51 @@ export default function CenteredChatModal({ onClose }) {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    useEffect(() => {
-        if (userInfor?.id) {
-            loadConversationList();
-        }
-    }, []);
-
-    const loadConversationList = async () => {
+    const loadConversationList = useCallback(async () => {
         try {
+            if (!userInfor?.id) return; 
+
             const res = await getConversations(userInfor.id);
-            if (res?.data?.data) {
-                setConversations(res.data.data);
+            if (res?.data) {
+                setConversations(res?.data);
+                console.log("setConversations", res?.data);
             }
         } catch (err) {
             console.error("Failed to load conversations", err);
         }
-    };
+    }, [userInfor.id]);
+
+    useEffect(() => {
+        const loggedIn = !!userInfor?.id;
+        setIsLoggedIn(loggedIn);
+
+        if (loggedIn) {
+            loadConversationList();
+        } else {
+            setShowLoginPrompt(true);
+        }
+    }, [userInfor?.id, loadConversationList]);
 
     const handleSelectConversation = async (id) => {
         setSelectedConversation(id);
-
+        setCurrentConversationId(id);
+        setMessages([]); // xóa tin nhắn cũ trong khi chờ load
         try {
             const res = await getConversationDetail(id);
-            const conv = res.data.data;
+            const conv = res?.data;
 
             if (conv?.messages) {
                 const loadedMessages = conv.messages.map((m) => ({
-                    from: m.sender === "user" ? "user" : "bot",
-                    text: m.text
+                    from: m.role === "user" ? "user" : "bot",
+                    text: m.content
                 }));
                 setMessages(loadedMessages);
             }
         } catch (err) {
             console.error("Failed to load conversation detail", err);
+            setMessages([
+                { from: "bot", text: "Lỗi: Không thể tải chi tiết cuộc trò chuyện này." }
+            ]);
         }
     };
 
@@ -199,7 +113,16 @@ export default function CenteredChatModal({ onClose }) {
     // Hàm xử lý gửi tin nhắn
     const handleSend = async () => {
         if (!input.trim() || isLoading) return;
+        
+        // Lấy ID cuộc trò chuyện hiện tại (chỉ có giá trị nếu đã đăng nhập)
+        let conversationId = currentConversationId;
+        let userIdToSend = userInfor?.id;
 
+        if (!isLoggedIn) {
+            conversationId = null;
+            userIdToSend = null;
+        }
+        
         const userMessage = { from: "user", text: input };
         setMessages((prev) => [...prev, userMessage]);
         setInput("");
@@ -209,13 +132,26 @@ export default function CenteredChatModal({ onClose }) {
         try {
             const response = await chatWithDatabase(
                 input,
+                conversationId,
                 messages,
-                userInfor?.id,
+                userIdToSend,
                 userInfor?.fullName,
                 language
             );
+            
             const botMessage = { from: "bot", text: response.text };
             setMessages((prev) => [...prev, botMessage]);
+            
+            // XỬ LÝ CẬP NHẬT ID (CHỈ KHI ĐÃ ĐĂNG NHẬP)
+            if (isLoggedIn && response.conversationId && response.conversationId !== currentConversationId) {
+                setCurrentConversationId(response.conversationId);
+                setSelectedConversation(response.conversationId);
+                
+                // Cập nhật lại danh sách cuộc trò chuyện nếu là cuộc trò chuyện mới
+                if (!conversations.some(c => c.id === response.conversationId)) {
+                    loadConversationList(); 
+                }
+            }
         } catch (error) {
             console.error("API Gateway error:", error);
             setMessages((prev) => [
@@ -244,12 +180,12 @@ export default function CenteredChatModal({ onClose }) {
     };
     
     // Custom styles cho Modal
-    const PRIMARY_BLUE = "#1890ff"; // Màu xanh chủ đạo
-    const LIGHT_BLUE_BACKGROUND = "#f0f8ff"; // Nền chat nhạt
+    const PRIMARY_BLUE = "#1890ff";
+    const LIGHT_BLUE_BACKGROUND = "#f0f8ff";
     const BORDER_LIGHT = "#e1e5e9";
     const FONT_DARK = "#333";
     const SIDEBAR_WIDTH = 250;
-    const COLLAPSED_WIDTH = 60; // Chiều rộng khi sidebar đóng (chỉ đủ chỗ cho Menu icon)
+    const COLLAPSED_WIDTH = 60;
 
 
     const styles = {
@@ -362,20 +298,31 @@ export default function CenteredChatModal({ onClose }) {
                         {/* Sidebar Menu */}
                         <div style={styles.sidebarMenu}>
                             <div 
-                                style={{ ...styles.menuItem, ...styles.menuItemActive }}
+                                style={{
+                                    ...styles.menuItem, 
+                                    ...(selectedConversation === null ? styles.menuItemActive : {}),
+                                    borderLeft: selectedConversation === null ? `3px solid ${PRIMARY_BLUE}` : 'none',
+                                    color: selectedConversation === null ? PRIMARY_BLUE : FONT_DARK,
+                                }}
                                 onClick={() => {
+                                    // Đảm bảo cả hai state đều reset về null
                                     setSelectedConversation(null);
+                                    setCurrentConversationId(null); 
                                     setMessages([
                                         { from: "bot", text: "Xin chào, tôi có thể giúp gì cho bạn ngày hôm nay? 💫😊" },
                                     ]);
                                 }}
                             >
-                                <div style={{width: '8px', height: '8px', backgroundColor: PRIMARY_BLUE, borderRadius: '50%', marginRight: '10px'}} />
-                                New Chat
-                            </div>
-                            <div style={styles.menuItem}>
-                                <div style={{width: '8px', height: '8px', backgroundColor: '#aaa', borderRadius: '50%', marginRight: '10px'}} />
-                                Recent Chats
+                                <div 
+                                    style={{
+                                        width: '8px', 
+                                        height: '8px', 
+                                        backgroundColor: selectedConversation === null ? PRIMARY_BLUE : '#aaa', 
+                                        borderRadius: '50%', 
+                                        marginRight: '10px'
+                                    }} 
+                                />
+                                 <PlusCircleOutlined style={{ fontSize: 25, color: "#52c41a" }} />
                             </div>
 
                             {/* List conversation */}
@@ -389,10 +336,28 @@ export default function CenteredChatModal({ onClose }) {
                                             fontSize: "14px",
                                             borderBottom: "1px solid #f0f0f0",
                                             cursor: "pointer",
-                                            backgroundColor: selectedConversation === c.id ? "#e6f7ff" : "transparent"
+                                            backgroundColor: selectedConversation === c.id ? "#e6f7ff" : "transparent",
+                                            fontWeight: selectedConversation === c.id ? 600 : 400,
+                                            // Giới hạn hiển thị tiêu đề trong 1 dòng
+                                            whiteSpace: "nowrap",
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis"
                                         }}
                                     >
-                                        {c.title || "Cuộc trò chuyện không tên"}
+                                        <div 
+                                            style={{
+                                                width: '8px', 
+                                                height: '8px', 
+                                                backgroundColor: selectedConversation === c.id ? PRIMARY_BLUE : '#aaa', 
+                                                borderRadius: '50%', 
+                                                marginRight: '10px',
+                                                display: 'inline-block'
+                                            }} 
+                                        />
+                                        {/* Tiêu đề cuộc trò chuyện */}
+                                        <span title={c.title || "Cuộc trò chuyện không tên"}>
+                                            {c.title || "Cuộc trò chuyện không tên"}
+                                        </span>
                                     </div>
                                 ))}
                             </div>
@@ -471,6 +436,38 @@ export default function CenteredChatModal({ onClose }) {
 
                         <div ref={messagesEndRef} />
                     </div>
+
+                    {showLoginPrompt && !isLoggedIn && (
+                    <div style={{ margin: "10px" }}>
+                        <Alert
+                            message="Lưu trữ lịch sử trò chuyện"
+                            description={
+                                <Space direction="vertical" style={{ width: '100%' }}>
+                                    <span>
+                                        Bạn đang sử dụng chế độ Khách. Vui lòng đăng nhập để lưu trữ lịch sử và tiếp tục cuộc trò chuyện sau này.
+                                    </span>
+                                </Space>
+                            }
+                            type="warning"
+                            showIcon
+                            closable
+                            onClose={() => setShowLoginPrompt(false)}
+                            action={
+                                <Button 
+                                    size="small" 
+                                    type="primary"
+                                    style={{ backgroundColor: PRIMARY_BLUE }}
+                                    onClick={() => {
+                                        onClose(); 
+                                        history.push("/login");
+                                    }}
+                                >
+                                    Đăng nhập ngay
+                                </Button>
+                            }
+                        />
+                    </div>
+                )}
 
                     {/* INPUT AREA (Bottom Right) */}
                     <div style={styles.inputArea}>

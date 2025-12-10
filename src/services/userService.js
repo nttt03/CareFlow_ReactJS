@@ -345,6 +345,7 @@ export const reviewDoctor = (
 
 export const chatWithDatabase = async (
   message,
+  conversationId,
   history,
   patientId,
   fullName,
@@ -352,6 +353,7 @@ export const chatWithDatabase = async (
 ) => {
   return await axios.post("/api/chat-with-db", {
     message,
+    conversationId,
     history,
     patientId,
     fullName,
