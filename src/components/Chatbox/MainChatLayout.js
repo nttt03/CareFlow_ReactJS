@@ -5,11 +5,12 @@ import {
   LoadingOutlined,
   SendOutlined,
   MenuOutlined,
-  PlusCircleOutlined
+  PlusCircleOutlined,
+  DeleteOutlined
 } from "@ant-design/icons";
-import { Alert, Button } from 'antd';
+import { Alert, Button, Modal } from 'antd';
 import { useSelector } from "react-redux";
-import { chatWithDatabase, getConversations, getConversationDetail } from "../../services/userService";
+import { chatWithDatabase, getConversations, getConversationDetail, deleteConversation } from "../../services/userService";
 import iconChatbot from "../../assets/images/iconChatbot.png";
 import logoCareflow from "../../assets/careFlow_logo.png";
 import ChatBubble from "./ChatBubble";
@@ -30,6 +31,7 @@ export default function CenteredChatModal({ onClose }) {
     const [selectedConversation, setSelectedConversation] = useState(null);
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(!!userInfor?.id);
+    const [hoveredConversation, setHoveredConversation] = useState(null);
 
     const [messages, setMessages] = useState([
         { from: "bot", text: "Xin chào, tôi có thể giúp gì cho bạn ngày hôm nay? 💫😊" },
@@ -179,6 +181,37 @@ export default function CenteredChatModal({ onClose }) {
         });
     };
 
+    const handleDeleteConversation = async (id) => {
+      try {
+        await deleteConversation(id);
+        await loadConversationList();
+
+        if (currentConversationId === id) {
+          setCurrentConversationId(null);
+          setSelectedConversation(null);
+          setMessages([
+            { from: "bot", text: "Cuộc trò chuyện đã bị xóa." }
+          ]);
+        }
+      } catch (err) {
+        console.error("Failed to delete conversation", err);
+      }
+    };
+
+    const confirmDelete = (id) => {
+      Modal.confirm({
+        title: "Xác nhận xoá cuộc trò chuyện",
+        content: "Bạn có chắc chắn muốn xoá cuộc trò chuyện này không?",
+        okText: "Xoá",
+        okType: "danger",
+        cancelText: "Hủy",
+
+        onOk: async () => {
+          await handleDeleteConversation(id);
+        }
+      });
+    };
+
   return (
     <div className="chat-modal-overlay" onClick={onClose}>
       <div className="chat-container" onClick={(e) => e.stopPropagation()}>
@@ -209,7 +242,7 @@ export default function CenteredChatModal({ onClose }) {
 
               {/* Conversation List */}
               <div className="conversation-list">
-                {conversations.map((c) => (
+                {/* {conversations.map((c) => (
                   <div
                     key={c.id}
                     onClick={() => handleSelectConversation(c.id)}
@@ -218,6 +251,34 @@ export default function CenteredChatModal({ onClose }) {
                   >
                     <div className="dot" />
                     <span>{c.title || "Cuộc trò chuyện không tên"}</span>
+                  </div>
+                ))} */}
+                {conversations.map((c) => (
+                  <div
+                    key={c.id}
+                    className={`conversation-item ${selectedConversation === c.id ? 'active' : ''}`}
+                    onMouseEnter={() => setHoveredConversation(c.id)}
+                    onMouseLeave={() => setHoveredConversation(null)}
+                  >
+
+                    <div className="left"
+                      onClick={() => handleSelectConversation(c.id)}
+                    >
+                      <div className="dot" />
+                      <span>{c.title || "Cuộc trò chuyện không tên"}</span>
+                    </div>
+
+                    {hoveredConversation === c.id && (
+                      <button
+                        className="delete-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          confirmDelete(c.id);
+                        }}
+                      >
+                        <DeleteOutlined />
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
