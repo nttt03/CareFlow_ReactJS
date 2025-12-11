@@ -185,8 +185,10 @@ function Register() {
             >
               <label>Số điện thoại:</label>
               <input
-                type="text"
+                type="tel"
                 name="phoneNumber"
+                autoComplete="new-password"
+                inputMode="numeric"
                 placeholder="Nhập số điện thoại"
                 className={
                   objCheckInput.phoneNumber
@@ -230,6 +232,7 @@ function Register() {
                   type={isShowPassword ? "text" : "password"}
                   name="password"
                   placeholder="Nhập mật khẩu"
+                  autoComplete="new-password"
                   className="form-control"
                   value={formData.password}
                   onChange={handleChange}
@@ -250,6 +253,7 @@ function Register() {
                   type={isShowConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   placeholder="Xác nhận mật khẩu"
+                  autoComplete="new-password"
                   className="form-control"
                   value={formData.confirmPassword}
                   onChange={handleChange}
