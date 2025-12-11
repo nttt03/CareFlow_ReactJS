@@ -373,6 +373,10 @@ export const getAllReview = () => {
   return axios.get(`/api/reviews`);
 };
 
+export const deleteConversation  = (conversationId) => {
+    return axios.put(`/api/soft-delete-conversation/${conversationId}`, { withCredentials: true });
+};
+
 export {
   handleLoginApi,
   registerNewUser,
