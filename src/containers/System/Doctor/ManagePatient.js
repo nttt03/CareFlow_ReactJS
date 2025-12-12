@@ -6,13 +6,13 @@ import {
   getAllPatientForDoctor,
   postSendRemedy,
   postMedicalRecord,
+  UpdateInfoPatient
 } from "../../../services/userService";
 import moment from "moment";
 import { LANGUAGES } from "../../../utils";
 import RemedyModal from "./RemedyModal";
 import { toast } from "react-toastify";
 import {
-  Spin,
   Form,
   Input,
   Button,
@@ -21,8 +21,13 @@ import {
   Row,
   Col,
   message,
+  Select,
+  DatePicker as AntdDatePicker
 } from "antd";
-import { UploadOutlined, LeftOutlined } from "@ant-design/icons";
+import { UploadOutlined, LeftOutlined, EditFilled, CheckOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
+
+const { Option } = Select;
 
 const ManagePatient = () => {
   const user = useSelector((state) => state.user.userInfo);
@@ -31,6 +36,14 @@ const ManagePatient = () => {
   const [currentDate, setCurrentDate] = useState(
     moment(new Date()).startOf("day").valueOf()
   );
+  const [editPatientForm, setEditPatientForm] = useState({
+    fullName: "",
+    dateOfBirth: "",
+    phoneNumber: "",
+    gender: "",
+    addressDetail: "",
+  });
+  const [isEditingPatient, setIsEditingPatient] = useState(false);
   const [dataPatient, setDataPatient] = useState([]);
   const [isOpenRemedyModal, setIsOpenRemedyModal] = useState(false);
   const [dataModal, setDataModal] = useState({});
@@ -48,6 +61,85 @@ const ManagePatient = () => {
     file: null,
   });
 
+  useEffect(() => {
+    if (selectedPatient?.patientData) {
+      const rawDate = selectedPatient.patientData.dateOfBirth;
+
+      let displayDate = "";
+
+      if (rawDate) {
+        if (rawDate.includes("-") && rawDate.length === 10) {
+          displayDate = dayjs(rawDate).format("DD/MM/YYYY");
+        }
+        else if (rawDate.includes("/")) {
+          displayDate = rawDate;
+        }
+      }
+
+      const genderKey = selectedPatient.patientData.genderData?.valueVi === "Nam" 
+      ? "M" 
+      : selectedPatient.patientData.genderData?.valueVi === "Nữ" 
+        ? "F" 
+        : selectedPatient.patientData.gender || "M";
+
+      setEditPatientForm({
+        fullName: selectedPatient.patientData.fullName || "",
+        dateOfBirth: displayDate,
+        phoneNumber: selectedPatient.patientData.phoneNumber || "",
+        gender: genderKey,
+        addressDetail: selectedPatient.patientData.addressDetail || "",
+      });
+    }
+  }, [selectedPatient]);
+
+  const handleSavePatientInfo = async () => {
+    const dbDate = editPatientForm.dateOfBirth
+    ? dayjs(editPatientForm.dateOfBirth, "DD/MM/YYYY").format("YYYY-MM-DD")
+    : null;
+
+    const payload = {
+      userId: selectedPatient?.patientData?.id,
+      fullName: editPatientForm.fullName,
+      dateOfBirth: dbDate,
+      phoneNumber: editPatientForm.phoneNumber,
+      gender: editPatientForm.gender,
+      addressDetail: editPatientForm.addressDetail,
+    };
+
+    try {
+      let res = await UpdateInfoPatient(payload);
+
+      if (res && res.errCode === 0) {
+        message.success("Cập nhật thông tin bệnh nhân thành công!");
+
+        // Cập nhật lại selectedPatient (vẫn giữ định dạng DD/MM/YYYY để hiển thị)
+        setSelectedPatient(prev => ({
+          ...prev,
+          patientData: {
+            ...prev.patientData,
+            fullName: editPatientForm.fullName,
+            dateOfBirth: editPatientForm.dateOfBirth,
+            phoneNumber: editPatientForm.phoneNumber,
+            gender: editPatientForm.gender,
+            addressDetail: editPatientForm.addressDetail,
+            genderData: {
+              ...prev.patientData.genderData,
+              keyMap: editPatientForm.gender,
+              valueVi: editPatientForm.gender === "M" ? "Nam" : editPatientForm.gender === "F" ? "Nữ" : "Khác",
+              valueEn: editPatientForm.gender === "M" ? "Male" : editPatientForm.gender === "F" ? "Female" : "Other",
+            },
+          },
+        }));
+
+        setIsEditingPatient(false);
+      } else {
+        message.error(res.errMessage || "Cập nhật thất bại");
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra");
+    }
+  };
+
   const handleSaveMedicalRecord = async () => {
     const formData = new FormData();
     formData.append("patientId", selectedPatient?.patientId);
@@ -61,7 +153,7 @@ const ManagePatient = () => {
     formData.append("medical_history", recordForm.medical_history);
     if (recordForm.file) formData.append("file", recordForm.file);
     formData.append("updateBy", user?.id);
-    setLoadingMedicalRecord(true)
+    setLoadingMedicalRecord(true);
     let res = await postMedicalRecord(formData);
 
     if (res && res.errCode === 0) {
@@ -71,15 +163,16 @@ const ManagePatient = () => {
           : "Medical record saved successfully!"
       );
       setScreen("LIST");
-      setIsOpenRemedyModal(false)
+      setIsOpenRemedyModal(false);
     } else {
-      setIsOpenRemedyModal(false)
+      setIsOpenRemedyModal(false);
       message.error(
         language === "vi"
           ? "Lưu hồ sơ bệnh án thất bại!"
           : "Failed to save medical record!"
       );
     }
+    setLoadingMedicalRecord(false);
   };
 
   const getDataPatient = useCallback(async () => {
@@ -156,7 +249,6 @@ const ManagePatient = () => {
 
   const handleCreateMedicalRecord = (item) => {
     setSelectedPatient(item);
-    // lấy patientProfile để fill vào form
     setRecordForm({
       description: "",
       height: item?.patientData?.patientProfile?.height || "",
@@ -164,7 +256,8 @@ const ManagePatient = () => {
       underlying_diseases:
         item?.patientData?.patientProfile?.underlying_diseases || "",
       allergies: item?.patientData?.patientProfile?.allergies || "",
-      medical_history: item?.patientData?.patientProfile?.medical_history || "",
+      medical_history:
+        item?.patientData?.patientProfile?.medical_history || "",
       file: null,
     });
     setScreen("CREATE");
@@ -177,14 +270,10 @@ const ManagePatient = () => {
           <div className="patient-detail-container vh-100 overflow-auto bg-white p-3 no-scrollbar">
             <span
               className="text-primary ms-2"
-              style={{
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-              }}
+              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center" }}
               onClick={() => setScreen("LIST")}
             >
-              <LeftOutlined style={{ marginRight: 6 }} />{" "}
+              <LeftOutlined style={{ marginRight: 6 }} />
               {language === "vi" ? "Quay lại danh sách" : "Back to list"}
             </span>
             <h2 className="mb-4 title">
@@ -192,55 +281,152 @@ const ManagePatient = () => {
                 ? "Khám lập hồ sơ bệnh án"
                 : "Create Medical Record"}
             </h2>
-
+            
             <Card
               type="inner"
               title={
-                language === "vi"
-                  ? "Thông tin bệnh nhân"
-                  : "Patient Information"
+                <div className="d-flex justify-content-between align-items-center">
+                  {language === "vi" ? "Thông tin bệnh nhân" : "Patient Information"}
+                  {isEditingPatient ? (
+                    <CheckOutlined
+                      style={{ fontSize: 18, color: "#52c41a", cursor: "pointer" }}
+                      onClick={() => setIsEditingPatient(false)}
+                    />
+                  ) : (
+                    <EditFilled
+                      style={{ fontSize: 18, color: "#1890ff", cursor: "pointer" }}
+                      onClick={() => setIsEditingPatient(true)}
+                    />
+                  )}
+                </div>
               }
-              className="mb-4"
             >
-              <Row gutter={[16, 8]}>
-                <Col xs={24} sm={12}>
-                  <p>
-                    <b>{language === "vi" ? "Họ và tên:" : "Full Name:"}</b>{" "}
-                    {selectedPatient?.patientData?.fullName}
-                  </p>
-                  <p>
-                    <b>{language === "vi" ? "Giới tính:" : "Gender:"}</b>{" "}
-                    {language === LANGUAGES.VI
-                      ? selectedPatient?.patientData?.genderData?.valueVi
-                      : selectedPatient?.patientData?.genderData?.valueEn}
-                  </p>
-                  <p>
-                    <b>{language === "vi" ? "Ngày sinh:" : "Date of Birth:"}</b>{" "}
-                    {selectedPatient?.patientData?.dateOfBirth}
-                  </p>
-                </Col>
-                <Col xs={24} sm={12}>
-                  <p>
-                    <b>{language === "vi" ? "SĐT:" : "Phone:"}</b>{" "}
-                    {selectedPatient?.patientData?.phoneNumber}
-                  </p>
-                  <p>
-                    <b>{language === "vi" ? "Địa chỉ:" : "Address:"}</b>{" "}
-                    {selectedPatient?.patientData?.addressDetail},{" "}
-                    {selectedPatient?.patientData?.provinceData?.name}
-                  </p>
-                  <p>
-                    <b>{language === "vi" ? "Thời gian:" : "Time:"}</b>{" "}
-                    {selectedPatient?.date
-                      ? moment(Number(selectedPatient.date)).format(
-                          "DD/MM/YYYY"
-                        )
-                      : "-"}
-                  </p>
-                </Col>
-              </Row>
-            </Card>
+              {isEditingPatient ? (
+                // === CHẾ ĐỘ CHỈNH SỬA ===
+                <Form layout="vertical">
+                  <Row gutter={[16, 16]}>
+                    <Col xs={24} sm={12}>
+                      <Form.Item label={language === "vi" ? "Họ và tên" : "Full Name"}>
+                        <Input
+                          value={editPatientForm.fullName}
+                          onChange={(e) =>
+                            setEditPatientForm({ ...editPatientForm, fullName: e.target.value })
+                          }
+                        />
+                      </Form.Item>
+                    </Col>
 
+                    <Col xs={24} sm={12}>
+                      <Form.Item label={language === "vi" ? "Ngày sinh" : "Date of Birth"}>
+                        <AntdDatePicker
+                          style={{ width: "100%" }}
+                          format="DD/MM/YYYY"
+                          placeholder="DD/MM/YYYY"
+                          value={
+                            editPatientForm.dateOfBirth
+                              ? dayjs(editPatientForm.dateOfBirth, "DD/MM/YYYY")
+                              : null
+                          }
+                          onChange={(date, dateString) => {
+                            setEditPatientForm({
+                              ...editPatientForm,
+                              dateOfBirth: dateString || "",
+                            });
+                          }}
+                          
+                        />
+                      </Form.Item>
+                  </Col>
+
+                    <Col xs={24} sm={12}>
+                      <Form.Item label={language === "vi" ? "Số điện thoại" : "Phone Number"}>
+                        <Input
+                          value={editPatientForm.phoneNumber}
+                          onChange={(e) =>
+                            setEditPatientForm({
+                              ...editPatientForm,
+                              phoneNumber: e.target.value,
+                            })
+                          }
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col xs={24} sm={12}>
+                      <Form.Item label={language === "vi" ? "Giới tính" : "Gender"}>
+                        <Select
+                          value={editPatientForm.gender}
+                          onChange={(value) =>
+                            setEditPatientForm({ ...editPatientForm, gender: value })
+                          }
+                        >
+                          <Option value="M">Nam</Option>
+                          <Option value="F">Nữ</Option>
+                          <Option value="O">Khác</Option>
+                        </Select>
+                      </Form.Item>
+                    </Col>
+
+                    <Col xs={24}>
+                      <Form.Item label={language === "vi" ? "Địa chỉ" : "Address"}>
+                        <Input.TextArea
+                          rows={2}
+                          value={editPatientForm.addressDetail}
+                          onChange={(e) =>
+                            setEditPatientForm({
+                              ...editPatientForm,
+                              addressDetail: e.target.value,
+                            })
+                          }
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+
+                  <div>
+                    <Button type="primary" onClick={handleSavePatientInfo}>
+                      {language === "vi" ? "Lưu thay đổi" : "Save Changes"}
+                    </Button>
+                    <Button style={{ marginLeft: 8 }} onClick={() => setIsEditingPatient(false)}>
+                      {language === "vi" ? "Hủy" : "Cancel"}
+                    </Button>
+                  </div>
+                </Form>
+              ) : (
+                // === CHẾ ĐỘ XEM THÔNG THƯỜNG ===
+                <Row gutter={[16, 16]}>
+                  <Col xs={24} sm={12}>
+                    <p><b>{language === "vi" ? "Họ và tên:" : "Full Name:"}</b> {selectedPatient?.patientData?.fullName}</p>
+                    
+                    <p>
+                      <b>{language === "vi" ? "Giới tính:" : "Gender:"}</b>{" "}
+                      {selectedPatient?.patientData?.genderData?.valueVi || "—"}
+                    </p>
+                    <p><b>{language === "vi" ? "Ngày sinh:" : "Date of Birth:"}</b>{" "}
+                      {selectedPatient?.patientData?.dateOfBirth || "—"}
+                    </p>
+                  </Col>
+
+                  <Col xs={24} sm={12}>
+                    <p><b>{language === "vi" ? "SĐT:" : "Phone:"}</b> {selectedPatient?.patientData?.phoneNumber || "—"}</p>
+                    <p><b>{language === "vi" ? "Địa chỉ:" : "Address:"}</b>{" "}
+                      {selectedPatient?.patientData?.addressDetail
+                        ? `${selectedPatient?.patientData?.addressDetail}, ${selectedPatient?.patientData?.provinceData?.name || ""}`
+                        : "—"}
+                    </p>
+                    <p><b>{language === "vi" ? "Thời gian khám:" : "Appointment time:"}</b>{" "}
+                      {selectedPatient?.date
+                        ? moment(Number(selectedPatient.date)).format("DD/MM/YYYY")
+                        : "—"} –{" "}
+                      {language === LANGUAGES.VI
+                        ? selectedPatient?.timeTypeDataPatient?.valueVi
+                        : selectedPatient?.timeTypeDataPatient?.valueEn}
+                    </p>
+                  </Col>
+                </Row>
+              )}
+            </Card>
+            
             <Card
               type="inner"
               title={
@@ -253,9 +439,7 @@ const ManagePatient = () => {
                 <Row gutter={16}>
                   <Col xs={24} sm={12}>
                     <Form.Item
-                      label={
-                        language === "vi" ? "Chiều cao" : "Height"
-                      }
+                      label={language === "vi" ? "Chiều cao" : "Height"}
                       name="height"
                     >
                       <Input
@@ -329,7 +513,9 @@ const ManagePatient = () => {
                 </Row>
 
                 <Form.Item
-                  label={language === "vi" ? "Lịch sử bệnh" : "Medical history"}
+                  label={
+                    language === "vi" ? "Lịch sử bệnh" : "Medical history"
+                  }
                   name="medical_history"
                 >
                   <Input.TextArea
@@ -396,9 +582,6 @@ const ManagePatient = () => {
                     ) : (
                       "Save Medical Record"
                     )}
-                    {/* {language === "vi"
-                      ? "Lưu hồ sơ bệnh án"
-                      : "Save medical record"} */}
                   </Button>
                 </Form.Item>
               </Form>
@@ -476,9 +659,7 @@ const ManagePatient = () => {
                                 </button>
                                 <button
                                   className="btn btn-primary"
-                                  onClick={() => {
-                                    handleCreateMedicalRecord(item);
-                                  }}
+                                  onClick={() => handleCreateMedicalRecord(item)}
                                 >
                                   <i className="bi bi-file-earmark-medical me-1"></i>
                                   {language === "vi"
@@ -512,13 +693,13 @@ const ManagePatient = () => {
     <>
       {renderScreen()}
 
-        <RemedyModal
-          isOpenModal={isOpenRemedyModal}
-          dataModal={dataModal}
-          closeRemedyModal={closeRemedyModal}
-          sendRemedy={sendRemedy}
-          isShowLoading={isShowLoading}
-        />
+      <RemedyModal
+        isOpenModal={isOpenRemedyModal}
+        dataModal={dataModal}
+        closeRemedyModal={closeRemedyModal}
+        sendRemedy={sendRemedy}
+        isShowLoading={isShowLoading}
+      />
     </>
   );
 };

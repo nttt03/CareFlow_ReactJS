@@ -385,6 +385,10 @@ export const deleteConversation  = (conversationId) => {
     return axios.put(`/api/soft-delete-conversation/${conversationId}`, { withCredentials: true });
 };
 
+export const UpdateInfoPatient = (inputData) => {
+  return axios.put("/api/update-info-patient", inputData);
+};
+
 export {
   handleLoginApi,
   registerNewUser,
