@@ -107,8 +107,12 @@ const createNewHospital = (data) => {
   return axios.post(`/api/create-new-hospital`, data);
 };
 
+// const getAllHospital = (params) => {
+//   return axios.get(`/api/get-all-hospital-by-admin`, { params });
+// };
+
 const getAllHospital = (params) => {
-  return axios.get(`/api/get-all-hospital-by-admin`, { params });
+  return axios.get(`/api/get-all-hospital-by-patient`, { params });
 };
 
 const getAllDetailHospitalById = (data) => {
@@ -204,6 +208,10 @@ const changePassword = (data) => {
 
 export const getAllHospitalByAdmin = (params) => {
   return axios.get("/api/get-all-hospital-by-admin", { params });
+};
+
+export const getAllHospitalByPatient = (params) => {
+  return axios.get("/api/get-all-hospital", { params });
 };
 
 export const getHospitalById = (id) => {
