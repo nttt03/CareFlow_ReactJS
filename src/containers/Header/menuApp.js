@@ -83,11 +83,11 @@ export const adminMenu = [
         name: "menu.doctor.waiting-approval",
         link: "/system/waiting-approval",
       },
-      {
-        // quản lý hồ sơ bệnh án
-        name: "menu.doctor.manage-medical-record",
-        link: "/system/manage-medical-record",
-      },
+      // {
+      //   // quản lý hồ sơ bệnh án
+      //   name: "menu.doctor.manage-medical-record",
+      //   link: "/system/manage-medical-record",
+      // },
     ],
   },
 

@@ -29,7 +29,7 @@ export default function FeaturesSection() {
       icon: <BellOutlined style={{ fontSize: 38, color: "#ffc107" }} />,
       vi: {
         title: "Nhắc lịch tự động qua Email",
-        desc: "Giúp bệnh nhân không quên lịch khám, giảm hủy lịch đột ngột.",
+        desc: "Giúp bệnh nhân không quên lịch khám.",
       },
       en: {
         title: "Automatic Email Reminders",
@@ -40,24 +40,24 @@ export default function FeaturesSection() {
       icon: <NotificationOutlined style={{ fontSize: 38, color: "#198754" }} />,
       vi: {
         title: "Theo dõi & nhận thông báo realtime",
-        desc: "Thông báo khi lịch được xác nhận, thay đổi hoặc có cập nhật từ bác sĩ.",
+        desc: "Thông báo khi lịch được xác nhận, thay đổi hoặc có cập nhật mới.",
       },
       en: {
         title: "Real-time Tracking & Notifications",
         desc: "Receive instant updates when an appointment is confirmed or changed.",
       },
     },
-    {
-      icon: <SafetyOutlined style={{ fontSize: 38, color: "#d63384" }} />,
-      vi: {
-        title: "Hồ sơ sức khỏe bảo mật",
-        desc: "Mọi thông tin được mã hóa và tuân thủ bảo mật y tế.",
-      },
-      en: {
-        title: "Secure Medical Records",
-        desc: "All data is encrypted and follows medical privacy standards.",
-      },
-    },
+    // {
+    //   icon: <SafetyOutlined style={{ fontSize: 38, color: "#d63384" }} />,
+    //   vi: {
+    //     title: "Hồ sơ sức khỏe bảo mật",
+    //     desc: "Mọi thông tin được mã hóa và tuân thủ bảo mật y tế.",
+    //   },
+    //   en: {
+    //     title: "Secure Medical Records",
+    //     desc: "All data is encrypted and follows medical privacy standards.",
+    //   },
+    // },
   ];
 
   return (
