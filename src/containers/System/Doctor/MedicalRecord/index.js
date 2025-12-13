@@ -1017,6 +1017,16 @@ const MedicalRecord = () => {
                             language === LANGUAGES.VI
                               ? item?.genderData?.valueVi
                               : item?.genderData?.valueEn;
+                          let count = 0;
+                          if (item.medicalRecords && item.medicalRecords.length) {
+                            const recordSet = new Set();
+                            item.medicalRecords.forEach(record => {
+                              if (record?.doctorId === user?.id) {
+                                recordSet.add(record.id);
+                              }
+                            });
+                            count = recordSet.size;
+                          }
                           return (
                             <tr key={index}>
                               <td>{index + 1}</td>
@@ -1026,7 +1036,7 @@ const MedicalRecord = () => {
                                 {item?.addressDetail},{" "}
                                 {item?.provinceData?.name}
                               </td>
-                              <td>{item?.medicalRecords?.length || 0}</td>
+                              <td>{count || 0}</td>
                               <td>
                                 <Button
                                   icon={<EyeOutlined />}
