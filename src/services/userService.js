@@ -389,6 +389,12 @@ export const UpdateInfoPatient = (inputData) => {
   return axios.put("/api/update-info-patient", inputData);
 };
 
+export const getCurrentUserApi = () => {
+  return axios.get("/api/auth/me", {
+    withCredentials: true,
+  });
+};
+
 export {
   handleLoginApi,
   registerNewUser,
