@@ -37,8 +37,32 @@ import VerifyEmail from "./Patient/VerifyEmail.js";
 import Search from "./Patient/Search/index.js";
 import Contact from "../components/Contact/index.js";
 import Review from "../components/Review/index.js";
+import { getCurrentUserApi } from "../services/userService";
+import * as actions from "../store/actions";
 
 class App extends Component {
+
+  componentDidMount() {
+    this.fetchCurrentUser();
+  }
+
+  fetchCurrentUser = async () => {
+    const { dispatch, isLoggedIn } = this.props;
+
+    // Nếu đã login rồi thì không gọi nữa
+    if (isLoggedIn) return;
+
+    try {
+      const res = await getCurrentUserApi();
+
+      if (res?.errCode === 0 && res?.user) {
+        dispatch(actions.userLoginSuccess(res.user));
+      }
+    } catch (error) {
+      dispatch(actions.processLogout());
+    }
+  };
+
   render() {
     return (
       <Fragment>
@@ -140,7 +164,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {dispatch,};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

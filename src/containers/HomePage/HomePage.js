@@ -10,44 +10,44 @@ import FeaturesSection from "../../components/FeaturesSection";
 import Review from "../../components/Review";
 import AllReview from "../../components/AllReview";
 import StatsSection from "../../components/StatsSection";
-import { getCurrentUserApi } from "../../services/userService";
+// import { getCurrentUserApi } from "../../services/userService";
 import { io } from "socket.io-client";
-import * as actions from "../../store/actions";
+// import * as actions from "../../store/actions";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./HomePage.scss";
 
 const HomePage = () => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const userInfo = useSelector((state) => state.user.userInfo);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [pendingBooking, setPendingBooking] = useState(null);
 
-  const fetchedRef = useRef(false);
+  // const fetchedRef = useRef(false);
 
-  useEffect(() => {
-    if (fetchedRef.current) return;
-    fetchedRef.current = true;
+  // useEffect(() => {
+  //   if (fetchedRef.current) return;
+  //   fetchedRef.current = true;
 
-    const fetchCurrentUser = async () => {
-      try {
-        const res = await getCurrentUserApi();
-        if (res?.errCode === 0 && res?.user) {
-          console.log("Logged in user:", res?.user);
-          dispatch(actions.userLoginSuccess(res.user));
-        } else {
-          console.log("User not logged in or no valid user data");
-        }
-      } catch (error) {
-        console.log("Error fetching current user:", error.response?.data || error.message);
-      }
-    };
+  //   const fetchCurrentUser = async () => {
+  //     try {
+  //       const res = await getCurrentUserApi();
+  //       if (res?.errCode === 0 && res?.user) {
+  //         console.log("Logged in user:", res?.user);
+  //         dispatch(actions.userLoginSuccess(res.user));
+  //       } else {
+  //         console.log("User not logged in or no valid user data");
+  //       }
+  //     } catch (error) {
+  //       console.log("Error fetching current user:", error.response?.data || error.message);
+  //     }
+  //   };
 
-    if (!userInfo) {
-      fetchCurrentUser();
-    }
-  }, [dispatch, userInfo]);
+  //   if (!userInfo) {
+  //     fetchCurrentUser();
+  //   }
+  // }, [dispatch, userInfo]);
 
 
   // useEffect(() => {
