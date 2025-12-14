@@ -32,6 +32,7 @@ const { Option } = Select;
 const ManagePatient = () => {
   const user = useSelector((state) => state.user.userInfo);
   const language = useSelector((state) => state.app.language);
+  const [searchName, setSearchName] = useState("");
 
   const [currentDate, setCurrentDate] = useState(
     moment(new Date()).startOf("day").valueOf()
@@ -262,6 +263,13 @@ const ManagePatient = () => {
     });
     setScreen("CREATE");
   };
+
+  const filteredPatients = dataPatient.filter((item) => {
+    const patientName = item?.patientData?.fullName || "";
+    return patientName
+      .toLowerCase()
+      .includes(searchName.trim().toLowerCase());
+  });
 
   const renderScreen = () => {
     switch (screen) {
@@ -599,17 +607,33 @@ const ManagePatient = () => {
                 : "Manage patient examinations"}
             </div>
             <div className="manage-patient-body row">
-              <div className="col-4 form-group mb-3">
-                <label className="form-label">
-                  {language === "vi"
-                    ? "Chọn ngày khám"
-                    : "Select examination date"}
-                </label>
-                <DatePicker
-                  className="form-control"
-                  onChange={handleOnChangeDatePicker}
-                  value={currentDate}
-                />
+              <div className="row mb-3">
+                <div className="col-4">
+                  <label className="form-label">
+                    {language === "vi" ? "Chọn ngày khám" : "Select examination date"}
+                  </label>
+                  <DatePicker
+                    className="form-control"
+                    onChange={handleOnChangeDatePicker}
+                    value={currentDate}
+                  />
+                </div>
+
+                <div className="col-4">
+                  <label className="form-label">
+                    {language === "vi" ? "Tìm theo tên bệnh nhân" : "Search patient name"}
+                  </label>
+                  <Input
+                    placeholder={
+                      language === "vi"
+                        ? "Nhập tên bệnh nhân..."
+                        : "Enter patient name..."
+                    }
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                    allowClear
+                  />
+                </div>
               </div>
               <div className="col-12 table-manage-patient">
                 <table style={{ width: "100%" }}>
@@ -627,8 +651,8 @@ const ManagePatient = () => {
                       <th>{language === "vi" ? "Thao tác" : "Actions"}</th>
                     </tr>
 
-                    {dataPatient && dataPatient.length > 0 ? (
-                      dataPatient.map((item, index) => {
+                    {filteredPatients && filteredPatients.length > 0 ? (
+                      filteredPatients.map((item, index) => {
                         let gender =
                           language === LANGUAGES.VI
                             ? item?.patientData?.genderData?.valueVi
