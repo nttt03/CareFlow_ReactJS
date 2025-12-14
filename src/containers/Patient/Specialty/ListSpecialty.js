@@ -38,6 +38,7 @@ class ListSpecialty extends Component {
       const res = await getAllSpecialty({
         page,
         limit: pageSize,
+        status: "A1",
       });
 
       if (res && res.errCode === 0) {

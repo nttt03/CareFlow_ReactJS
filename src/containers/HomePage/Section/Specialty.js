@@ -19,7 +19,7 @@ class Specialty extends Component {
   async componentDidMount() {
     try {
       this.setState({ isLoading: true });
-      const res = await getAllSpecialty();
+      const res = await getAllSpecialty({ status: "A1" });
       if (res && res.errCode === 0) {
         this.setState({
           dataSpecialty: res.data ? res.data : [],
