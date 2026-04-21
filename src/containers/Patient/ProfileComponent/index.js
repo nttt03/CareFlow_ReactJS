@@ -14,6 +14,7 @@ import Favorites from "./components/Favorites";
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from "../../../store/actions";
 import { useHistory, useLocation } from "react-router-dom";
+import { handleLogoutApi } from "../../../services/userService";
 
 const { Content } = Layout;
 
@@ -39,9 +40,14 @@ const ProfileComponent = () => {
     }
   }, [userInfo, history]);
 
-  const handleLogout = () => {
-    dispatch(actions.processLogout());
-    history.push("/home");
+  const handleLogout = async () => {
+    try {
+      await handleLogoutApi();
+      dispatch(actions.processLogout());
+      history.push("/home");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const handleProfileTab = (tab) => {
@@ -92,7 +98,7 @@ const ProfileComponent = () => {
 
       <Layout
         style={{
-          margin: isMobile ? 0 : "0 10%",
+          margin: isMobile ? 0 : "0 7%",
           paddingTop: isMobile ? "12%" : "7%",
           minHeight: "100vh",
         }}

@@ -21,7 +21,7 @@ class ManageSchedule extends Component {
       selectedDoctor: {},
       currentDate: "",
       rangeTime: [],
-      maxNumber: 10,
+      maxNumber: 5,
       isLoading: false,
     };
   }
@@ -280,10 +280,10 @@ class ManageSchedule extends Component {
                 className="form-control shadow-sm"
                 value={this.state.maxNumber}
                 onChange={this.handleChangeMaxNumber}
-                placeholder="VD: 10"
+                placeholder="VD: 5"
               />
               <small className="text-muted">
-                Mặc định: 10 bệnh nhân (bạn có thể thay đổi)
+                Mặc định: 5 bệnh nhân (bạn có thể thay đổi)
               </small>
             </div>
 

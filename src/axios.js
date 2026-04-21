@@ -1,5 +1,7 @@
 import axios from 'axios';
 import _ from 'lodash';
+import reduxStore from './redux';
+import { processLogout } from './store/actions';
 // import config from './config';
 
 const instance = axios.create({
@@ -7,11 +9,66 @@ const instance = axios.create({
     withCredentials: true
 });
 
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error) => {
+  failedQueue.forEach((prom) => {
+    if (error) prom.reject(error);
+    else prom.resolve();
+  });
+  failedQueue = [];
+};
+
+const logout = async () => {
+  try {
+    await instance.post("/api/logout");
+    reduxStore.dispatch(processLogout());
+  } catch (e) {
+    console.log("Logout error:", e);
+  }
+
+  
+};
+
 instance.interceptors.response.use(
-    (response) => {
-        const {data} = response;
-        return response.data;
+  (response) => {
+    return response.data;
+  },
+  async (err) => {
+    const originalRequest = err.config;
+
+    if (
+      err.response?.status === 401 &&
+      !originalRequest._retry &&
+      originalRequest.url !== "/api/refresh-token"
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        }).then(() => instance(originalRequest));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        await instance.post("/api/refresh-token");
+        processQueue(null);
+        return instance(originalRequest);
+
+      } catch (e) {
+        processQueue(e);
+        await logout();
+        return Promise.reject(e);
+
+      } finally {
+        isRefreshing = false;
+      }
     }
+
+    return Promise.reject(err);
+  }
 );
 
 // const createError = (httpStatusCode, statusCode, errorMessage, problems, errorCode = '') => {

@@ -187,13 +187,13 @@ function ManageHospital({ language }) {
         </div>
       ),
     },
-    {
-      title: language === "vi" ? "Địa chỉ chi tiết" : "Address detail",
-      dataIndex: "addressDetail",
-      key: "addressDetail",
-      width: 250,
-      ellipsis: true,
-    },
+    // {
+    //   title: language === "vi" ? "Địa chỉ chi tiết" : "Address detail",
+    //   dataIndex: "addressDetail",
+    //   key: "addressDetail",
+    //   width: 250,
+    //   ellipsis: true,
+    // },
     {
       title: language === "vi" ? "Trạng thái" : "Status",
       dataIndex: "status",

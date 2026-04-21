@@ -22,7 +22,7 @@ import {
   CalendarOutlined,
 } from "@ant-design/icons";
 import { Dropdown, Badge, message, Drawer, Avatar, Menu } from "antd";
-import { getNotifications, markAsRead } from "../../services/userService";
+import { getNotifications, markAsRead, handleLogoutApi } from "../../services/userService";
 import { io } from "socket.io-client";
 import StatsSection from "../../components/StatsSection";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -45,7 +45,7 @@ class HomeHeader extends Component {
       keyword: "",
       reviewSocketBooking: null,
       notifDropdownOpen: false,
-      isMobile: window.innerWidth < 1285,
+      isMobile: window.innerWidth < 1024,
     };
     this.toggleMenu = this.toggleMenu.bind(this);
   }
@@ -68,10 +68,20 @@ class HomeHeader extends Component {
     }
   };
 
-  handleLogout = () => {
-    this.props.processLogout();
-    this.props.history.push("/home");
-    this.setState({ mobileMenu: false });
+  // handleLogout = () => {
+  //   this.props.processLogout();
+  //   this.props.history.push("/home");
+  //   this.setState({ mobileMenu: false });
+  // };
+  handleLogout = async () => {
+    try {
+      await handleLogoutApi();
+      this.props.processLogout();
+      this.props.history.push("/home");
+      this.setState({ mobileMenu: false });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   openReviewModal = (socketBooking = null) => {
@@ -138,7 +148,7 @@ class HomeHeader extends Component {
   };
 
   handleResize = () => {
-    this.setState({ isMobile: window.innerWidth < 1285 });
+    this.setState({ isMobile: window.innerWidth < 1024 });
   };
 
   componentDidMount() {

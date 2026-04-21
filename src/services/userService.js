@@ -12,6 +12,10 @@ const handleLoginApi = (userEmail, userPassword) => {
   );
 };
 
+const handleLogoutApi = () => {
+  return axios.post("/api/logout", {}, { withCredentials: true });
+};
+
 const registerNewUser = ({ ...formData }) => {
   return axios.post("/api/register", {
     ...formData,
@@ -397,6 +401,7 @@ export const getCurrentUserApi = () => {
 
 export {
   handleLoginApi,
+  handleLogoutApi,
   registerNewUser,
   getAllUsers,
   createNewUserService,

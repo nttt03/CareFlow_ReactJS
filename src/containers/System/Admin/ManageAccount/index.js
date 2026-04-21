@@ -142,15 +142,15 @@ function ManageAccount({
       title: language === "vi" ? "Họ tên" : "Full Name",
       dataIndex: "fullName",
       key: "fullName",
-      width: 250,
+      width: 200,
       render: (text, record) => (
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <Image
             src={getAvatarUrl(record.avatar)}
             alt={record.fullName}
             style={{
-              width: 60,
-              height: 60,
+              width: 50,
+              height: 50,
               objectFit: "cover",
               borderRadius: "50%",
               border: "1px solid #ddd",
@@ -167,7 +167,7 @@ function ManageAccount({
       title: language === "vi" ? "Phân quyền" : "Decentralization",
       dataIndex: "roleId",
       key: "roleId",
-      width: 150,
+      width: 130,
       render: (roleId) => {
         const role = roleRedux?.find((r) => r.keyMap === roleId);
         let color = "default";
@@ -205,7 +205,7 @@ function ManageAccount({
       title: language === "vi" ? "Trạng thái" : "Status",
       dataIndex: "status",
       key: "status",
-      width: 120,
+      width: 100,
       render: (status) => {
         const label =
           language === "vi"
@@ -235,7 +235,7 @@ function ManageAccount({
     {
       title: language === "vi" ? "Hành động" : "Actions",
       key: "action",
-      width: 150,
+      width: 100,
       render: (_, record) => (
         <Space>
           <Button
@@ -257,7 +257,7 @@ function ManageAccount({
   ];
 
   return (
-    <div className="mx-5 mt-3 manage-account-container">
+    <div className="mx-2 mt-3 manage-account-container">
       <div className="title py-2">
         <FormattedMessage id="admin.manage-account.title" />
       </div>
