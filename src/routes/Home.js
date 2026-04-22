@@ -12,7 +12,7 @@ class Home extends Component {
     }
 
     if (!isLoggedIn) {
-      return <Redirect to="/login" />;
+      return <Redirect to="/home" />;
     }
 
     switch (roleId) {
@@ -25,7 +25,7 @@ class Home extends Component {
       case "R4":
         return <Redirect to="/leader-hospital/dashboard" />;
       default:
-        return <Redirect to="/login" />;
+        return <Redirect to="/home" />;
     }
 
     return null;

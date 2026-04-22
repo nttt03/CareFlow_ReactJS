@@ -10,7 +10,7 @@ import { FormattedMessage } from "react-intl";
 import _ from "lodash";
 import { Avatar, Badge, Dropdown, message } from "antd";
 import { CrownTwoTone, BellOutlined, LogoutOutlined } from "@ant-design/icons";
-import { getNotifications, markAsRead } from "../../services/userService";
+import { getNotifications, markAsRead, handleLogoutApi } from "../../services/userService";
 import { io } from "socket.io-client";
 import {
   CheckCircleOutlined,
@@ -181,6 +181,16 @@ class Header extends Component {
     const { processLogout, language, userInfo } = this.props;
     const { notifications } = this.state;
 
+    const handleLogout = async () => {
+    try {
+      await handleLogoutApi();
+      processLogout();
+      this.props.history.push("/login");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
     const renderNotificationItem = (item) => {
       let icon, color;
 
@@ -312,7 +322,7 @@ class Header extends Component {
         </div>
 
         {/* nút logout */}
-        <div className="btn btn-logout" onClick={processLogout}>
+        <div className="btn btn-logout" onClick={handleLogout}>
           <LogoutOutlined style={{ fontSize: "20px" }} />
         </div>
       </div>
