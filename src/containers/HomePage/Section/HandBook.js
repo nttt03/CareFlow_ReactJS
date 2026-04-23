@@ -3,6 +3,9 @@ import { Card, Row, Col } from "antd";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./HandBook.scss";
 import { useSelector } from "react-redux";
+import handbook1 from "../../../assets/handbook1.jpeg";
+import handbook2 from "../../../assets/handbook2.png";
+import handbook3 from "../../../assets/handbook3.png";
 
 const blogsContent = {
   vi: {
@@ -15,7 +18,7 @@ const blogsContent = {
         desc: "Các thói quen giúp cơ thể khỏe mạnh...",
         detail:
           "Các thói quen như uống đủ nước, ngủ đủ giấc, tập thể dục thường xuyên và bổ sung vitamin C sẽ giúp tăng sức đề kháng tối ưu.",
-        img: "https://raw.githubusercontent.com/nttt03/BookingCare_Sharing_host_files/main/HandBook/img1.png",
+        img: handbook1,
         category: "Chăm sóc sức khỏe",
       },
       {
@@ -24,7 +27,7 @@ const blogsContent = {
         desc: "Nhận biết sớm triệu chứng...",
         detail:
           "Đau ngực, khó thở, mệt mỏi kéo dài và đau lan lên tay trái có thể là dấu hiệu sớm bệnh tim. Hãy khám ngay khi có triệu chứng.",
-        img: "https://raw.githubusercontent.com/nttt03/BookingCare_Sharing_host_files/main/HandBook/img2.jpg",
+        img: handbook2,
         category: "Kiến thức y khoa",
       },
       {
@@ -33,7 +36,7 @@ const blogsContent = {
         desc: "Tips đơn giản giúp bạn khỏe mạnh...",
         detail:
           "Giữ ấm cơ thể, rửa tay thường xuyên, ăn nhiều rau xanh – trái cây giúp bạn phòng cảm cúm hiệu quả.",
-        img: "https://raw.githubusercontent.com/nttt03/BookingCare_Sharing_host_files/main/HandBook/img.jpeg",
+        img: handbook3,
         category: "Tips phòng bệnh",
       },
     ],
@@ -48,7 +51,7 @@ const blogsContent = {
         desc: "Healthy daily habits...",
         detail:
           "Drinking enough water, sleeping well, exercising regularly, and increasing vitamin C intake help strengthen immunity.",
-        img: "https://raw.githubusercontent.com/nttt03/BookingCare_Sharing_host_files/main/HandBook/img1.png",
+        img: handbook1,
         category: "Healthcare Tips",
       },
       {
@@ -57,7 +60,7 @@ const blogsContent = {
         desc: "Recognize symptoms early...",
         detail:
           "Chest pain, shortness of breath, fatigue, and pain radiating to the left arm may signal heart disease — seek medical care immediately.",
-        img: "https://raw.githubusercontent.com/nttt03/BookingCare_Sharing_host_files/main/HandBook/img2.jpg",
+        img: handbook2,
         category: "Medical Knowledge",
       },
       {
@@ -66,7 +69,7 @@ const blogsContent = {
         desc: "Simple ways to stay healthy...",
         detail:
           "Keep warm, wash hands often, and eat more vegetables & fruits to effectively prevent flu.",
-        img: "https://raw.githubusercontent.com/nttt03/BookingCare_Sharing_host_files/main/HandBook/img.jpeg",
+        img: handbook3,
         category: "Disease Prevention",
       },
     ],
